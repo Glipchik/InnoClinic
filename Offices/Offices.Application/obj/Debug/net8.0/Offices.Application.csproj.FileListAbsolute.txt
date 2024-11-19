@@ -1,0 +1,16 @@
+C:\Users\user\InnoClinic\Offices\Offices.Application\bin\Debug\net8.0\Offices.Application.deps.json
+C:\Users\user\InnoClinic\Offices\Offices.Application\bin\Debug\net8.0\Offices.Application.dll
+C:\Users\user\InnoClinic\Offices\Offices.Application\bin\Debug\net8.0\Offices.Application.pdb
+C:\Users\user\InnoClinic\Offices\Offices.Application\bin\Debug\net8.0\Offices.Data.dll
+C:\Users\user\InnoClinic\Offices\Offices.Application\bin\Debug\net8.0\Offices.Data.pdb
+C:\Users\user\InnoClinic\Offices\Offices.Application\obj\Debug\net8.0\Offices.Application.csproj.AssemblyReference.cache
+C:\Users\user\InnoClinic\Offices\Offices.Application\obj\Debug\net8.0\Offices.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\user\InnoClinic\Offices\Offices.Application\obj\Debug\net8.0\Offices.Application.AssemblyInfoInputs.cache
+C:\Users\user\InnoClinic\Offices\Offices.Application\obj\Debug\net8.0\Offices.Application.AssemblyInfo.cs
+C:\Users\user\InnoClinic\Offices\Offices.Application\obj\Debug\net8.0\Offices.Application.csproj.CoreCompileInputs.cache
+C:\Users\user\InnoClinic\Offices\Offices.Application\obj\Debug\net8.0\Offices.Application.sourcelink.json
+C:\Users\user\InnoClinic\Offices\Offices.Application\obj\Debug\net8.0\Offices..1159D79D.Up2Date
+C:\Users\user\InnoClinic\Offices\Offices.Application\obj\Debug\net8.0\Offices.Application.dll
+C:\Users\user\InnoClinic\Offices\Offices.Application\obj\Debug\net8.0\refint\Offices.Application.dll
+C:\Users\user\InnoClinic\Offices\Offices.Application\obj\Debug\net8.0\Offices.Application.pdb
+C:\Users\user\InnoClinic\Offices\Offices.Application\obj\Debug\net8.0\ref\Offices.Application.dll
