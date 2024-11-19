@@ -11,8 +11,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Configuring container
-RepositoriesExtension.AddRepositories(builder.Services);
-ServicesExtension.AddServices(builder.Services);
+builder.Services.AddDependencies();
 
 var app = builder.Build();
 

@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Offices.Data.Repositories;
 
-namespace Offices.Application.Extensions
+namespace Offices.Data.Extensions
 {
     public static class RepositoriesExtension
     {
