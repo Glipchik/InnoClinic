@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Offices.Application\Offices.Application.csproj" />
-    <ProjectReference Include="..\Offices.Data\Offices.Data.csproj" />
   </ItemGroup>
 
   <ItemGroup>

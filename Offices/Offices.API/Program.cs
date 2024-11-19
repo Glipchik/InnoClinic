@@ -1,5 +1,5 @@
+using Offices.Application.Extensions;
 using Offices.Application.Services;
-using Offices.Data.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,9 +10,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Adding services to container
-builder.Services.AddScoped<IOfficeService, OfficeService>();
-builder.Services.AddScoped<IOfficeRepository, OfficeRepository>();
+// Configuring container
+RepositoriesExtension.AddRepositories(builder.Services);
+ServicesExtension.AddServices(builder.Services);
 
 var app = builder.Build();
 
