@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Offices.Application.Services;
+using Offices.Data.Extensions;
 using Offices.Data.Repositories;
 
 namespace Offices.Application.Extensions
@@ -16,6 +17,9 @@ namespace Offices.Application.Extensions
         {
             // Adding services in container
             services.AddScoped<IOfficeService, OfficeService>();
+
+            // Adding repositories in container
+            services.AddRepositories();
 
             return services;
         }
