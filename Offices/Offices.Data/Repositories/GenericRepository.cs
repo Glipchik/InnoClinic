@@ -21,7 +21,7 @@ namespace Offices.Data.Repositories
             await _entities.InsertOneAsync(entity);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(string id)
         {
             await _entities.DeleteOneAsync(e => e.Id == id);
         }
@@ -31,7 +31,7 @@ namespace Offices.Data.Repositories
             return await _entities.Find(_ => true).ToListAsync();
         }
 
-        public async Task<T> GetAsync(int id)
+        public async Task<T> GetAsync(string id)
         {
             return await _entities.Find(e => e.Id == id).FirstOrDefaultAsync();
         }
