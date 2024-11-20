@@ -14,7 +14,7 @@ namespace Offices.Data.Extensions
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             // Adding repositories in container
-            services.AddScoped<IGenericRepository<BaseEntity>, GenericRepository<BaseEntity>>();
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
             return services;
         }
