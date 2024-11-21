@@ -8,7 +8,7 @@ namespace Offices.Data.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
-        private readonly MongoDbContext<T> _mongoDbContext;
+        protected readonly MongoDbContext<T> _mongoDbContext;
 
         public GenericRepository(MongoDbContext<T> mongoDbContext)
         {
@@ -20,7 +20,7 @@ namespace Offices.Data.Repositories
             await _mongoDbContext.Entities.InsertOneAsync(entity);
         }
 
-        public async Task DeleteAsync(string id)
+        public virtual async Task DeleteAsync(string id)
         {
             await _mongoDbContext.Entities.DeleteOneAsync(e => e.Id == id);
         }

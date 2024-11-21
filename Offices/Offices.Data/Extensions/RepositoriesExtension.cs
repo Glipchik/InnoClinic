@@ -20,8 +20,8 @@ namespace Offices.Data.Extensions
 
             // Adding repositories in container
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            services.AddScoped<IGenericRepository<Office>, OfficeRepository>();
-            services.AddScoped<IGenericRepository<Doctor>, DoctorRepository>();
+            services.AddScoped<IOfficeRepository, OfficeRepository>();
+            services.AddScoped<IDoctorRepository, DoctorRepository>();
 
             return services;
         }
