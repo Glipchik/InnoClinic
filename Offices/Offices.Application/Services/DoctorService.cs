@@ -27,9 +27,12 @@ namespace Offices.Application.Services
 
         public async Task Create(CreateDoctorModel createDoctorModel, CancellationToken cancellationToken)
         {
+            // Get related to doctor office
+            var officeRelatedToDoctor = await _officeRepository.GetAsync(createDoctorModel.OfficeId, cancellationToken);
             // If specified office is not active, can't create entity
-            if ((await _officeRepository.GetAsync(createDoctorModel.OfficeId, cancellationToken)) == null)
+            if (officeRelatedToDoctor == null)
             {
+                // Throw exception if there is no active office with this id for this worker
                 throw new RelatedObjectNotFoundException();
             }
             await _doctorRepository.CreateAsync(_mapper.Map<Doctor>(createDoctorModel), cancellationToken: cancellationToken);
@@ -37,9 +40,12 @@ namespace Offices.Application.Services
 
         public async Task Update(UpdateDoctorModel updateDoctorModel, CancellationToken cancellationToken)
         {
+            // Get related to doctor office
+            var officeRelatedToDoctor = await _officeRepository.GetAsync(updateDoctorModel.OfficeId, cancellationToken);
             // If specified office is not active, can't update entity
-            if ((await _officeRepository.GetAsync(updateDoctorModel.OfficeId, cancellationToken)) == null)
+            if (officeRelatedToDoctor == null)
             {
+                // Throw exception if there is no active office with this id for this worker
                 throw new RelatedObjectNotFoundException();
             }
             var doctor = _mapper.Map<Doctor>(updateDoctorModel);

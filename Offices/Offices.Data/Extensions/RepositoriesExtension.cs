@@ -16,7 +16,7 @@ namespace Offices.Data.Extensions
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             // Adding database context in container
-            services.AddScoped(typeof(MongoDbContext<>));
+            services.AddScoped<MongoDbContext>();
 
             // Adding repositories in container
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));

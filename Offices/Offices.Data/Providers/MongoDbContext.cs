@@ -9,16 +9,14 @@ using Offices.Data.Entities;
 
 namespace Offices.Data.Providers
 {
-    public class MongoDbContext<T> where T : BaseEntity
+    public class MongoDbContext
     {
-        public readonly IMongoCollection<T> Entities;
+        public readonly IMongoDatabase Database;
 
         public MongoDbContext(IConfiguration configuration) 
         {
             var mongoClient = new MongoClient(configuration["MongoDB:ConnectionString"]);
-            var database = mongoClient.GetDatabase(configuration["MongoDB:DatabaseName"]);
-
-            Entities = database.GetCollection<T>(typeof(T).Name);
+            Database = mongoClient.GetDatabase(configuration["MongoDB:DatabaseName"]);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Threading;
+using AutoMapper;
 using DnsClient.Internal;
 using Offices.Application.Models;
 using Offices.Application.Services.Abstractions;
@@ -48,14 +49,24 @@ namespace Offices.Application.Services
         public async Task Delete(string id, CancellationToken cancellationToken)
         {
             // If there are doctors or receptionists found in this office, can't make this office inactive
-            if ((await _doctorRepository.GetAllAsync(cancellationToken)).Any(d => d.OfficeId == id) || (await _receptionistsRepository.GetAllAsync(cancellationToken)).Any(r => r.OfficeId == id))
+            if (await CheckIfThereAreWorkersInOffice(id, cancellationToken))
             {
+                // Throw exception if someone works in this office, need to free if first
                 throw new RelatedObjectFoundException();
             }
             else
             {
                 await _officeRepository.DeleteAsync(id, cancellationToken);
             }
+        }
+
+        private async Task<bool> CheckIfThereAreWorkersInOffice(string officeId, CancellationToken cancellationToken)
+        {
+            var areAnyDoctorsInOffice = (await _doctorRepository.GetAllAsync(cancellationToken)).Any(d => d.OfficeId == officeId);
+            var areAnyReceptionistsInOffice = (await _receptionistsRepository.GetAllAsync(cancellationToken)).Any(r => r.OfficeId == officeId);
+
+            // If someone works in the office, returns true
+            return areAnyDoctorsInOffice || areAnyReceptionistsInOffice;
         }
     }
 }

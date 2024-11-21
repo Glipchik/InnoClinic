@@ -27,9 +27,12 @@ namespace Offices.Application.Services
         }
         public async Task Create(CreateReceptionistModel createReceptionistModel, CancellationToken cancellationToken)
         {
+            // Get related to receptionist office
+            var officeRelatedToReceptionist = await _officeRepository.GetAsync(createReceptionistModel.OfficeId, cancellationToken);
             // If specified office is not active, can't create entity
-            if ((await _officeRepository.GetAsync(createReceptionistModel.OfficeId, cancellationToken)) == null)
+            if (officeRelatedToReceptionist == null)
             {
+                // Throw exception if there is no active office with this id for this worker
                 throw new RelatedObjectNotFoundException();
             }
             await _receptionistRepository.CreateAsync(_mapper.Map<Receptionist>(createReceptionistModel), cancellationToken);
@@ -37,9 +40,12 @@ namespace Offices.Application.Services
 
         public async Task Update(UpdateReceptionistModel updateReceptionistModel, CancellationToken cancellationToken)
         {
+            // Get related to receptionist office
+            var officeRelatedToReceptionist = await _officeRepository.GetAsync(updateReceptionistModel.OfficeId, cancellationToken);
             // If specified office is not active, can't update entity
-            if ((await _officeRepository.GetAsync(updateReceptionistModel.OfficeId, cancellationToken)) == null)
+            if (officeRelatedToReceptionist == null)
             {
+                // Throw exception if there is no active office with this id for this worker
                 throw new RelatedObjectNotFoundException();
             }
             var receptionist = _mapper.Map<Receptionist>(updateReceptionistModel);

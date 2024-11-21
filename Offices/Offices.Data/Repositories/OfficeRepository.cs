@@ -12,14 +12,14 @@ namespace Offices.Data.Repositories
 {
     public class OfficeRepository: GenericRepository<Office>, IOfficeRepository
     {
-        public OfficeRepository(MongoDbContext<Office> mongoDbContext):
+        public OfficeRepository(MongoDbContext mongoDbContext):
             base(mongoDbContext)
         {
         }
 
         public override async Task DeleteAsync(string id, CancellationToken cancellationToken)
         {
-            await _mongoDbContext.Entities.UpdateOneAsync(Builders<Office>.Filter.Eq(e => e.Id, id), Builders<Office>.Update.Set(e => e.IsActive, true), cancellationToken: cancellationToken);
+            await _collection.UpdateOneAsync(Builders<Office>.Filter.Eq(e => e.Id, id), Builders<Office>.Update.Set(e => e.IsActive, true), cancellationToken: cancellationToken);
         }
     }
 }
