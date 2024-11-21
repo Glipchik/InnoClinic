@@ -9,10 +9,10 @@ namespace Offices.Application.Services.Abstractions
 {
     public interface IDoctorService
     {
-        Task Create(CreateDoctorModel createDoctorModel);
-        Task<DoctorModel> Get(string id);
-        Task<IEnumerable<DoctorModel>> GetAll();
-        Task Update(UpdateDoctorModel updateDoctorModel);
-        Task Delete(string id);
+        Task Create(CreateDoctorModel createDoctorModel, CancellationToken cancellationToken);
+        Task<DoctorModel> Get(string id, CancellationToken cancellationToken);
+        Task<IEnumerable<DoctorModel>> GetAll(CancellationToken cancellationToken);
+        Task Update(UpdateDoctorModel updateDoctorModel, CancellationToken cancellationToken);
+        Task Delete(string id, CancellationToken cancellationToken);
     }
 }

@@ -15,29 +15,29 @@ namespace Offices.Data.Repositories
             _mongoDbContext = mongoDbContext;
         }
 
-        public async Task CreateAsync(T entity)
+        public async Task CreateAsync(T entity, CancellationToken cancellationToken)
         {
-            await _mongoDbContext.Entities.InsertOneAsync(entity);
+            await _mongoDbContext.Entities.InsertOneAsync(entity, cancellationToken: cancellationToken);
         }
 
-        public virtual async Task DeleteAsync(string id)
+        public virtual async Task DeleteAsync(string id, CancellationToken cancellationToken)
         {
-            await _mongoDbContext.Entities.DeleteOneAsync(e => e.Id == id);
+            await _mongoDbContext.Entities.DeleteOneAsync(e => e.Id == id, cancellationToken: cancellationToken);
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken)
         {
-            return await _mongoDbContext.Entities.Find(_ => true).ToListAsync();
+            return await _mongoDbContext.Entities.Find(_ => true).ToListAsync(cancellationToken: cancellationToken);
         }
 
-        public async Task<T> GetAsync(string id)
+        public async Task<T> GetAsync(string id, CancellationToken cancellationToken)
         {
-            return await _mongoDbContext.Entities.Find(e => e.Id == id).FirstOrDefaultAsync();
+            return await _mongoDbContext.Entities.Find(e => e.Id == id).FirstOrDefaultAsync(cancellationToken: cancellationToken);
         }
 
-        public async Task UpdateAsync(T entity)
+        public async Task UpdateAsync(T entity, CancellationToken cancellationToken)
         {
-            await _mongoDbContext.Entities.ReplaceOneAsync(e => e.Id == entity.Id, entity);
+            await _mongoDbContext.Entities.ReplaceOneAsync(e => e.Id == entity.Id, entity, cancellationToken: cancellationToken);
         }
     }
 }

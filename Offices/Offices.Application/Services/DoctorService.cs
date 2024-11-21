@@ -25,41 +25,41 @@ namespace Offices.Application.Services
             _mapper = mapper;
         }
 
-        public async Task Create(CreateDoctorModel createDoctorModel)
+        public async Task Create(CreateDoctorModel createDoctorModel, CancellationToken cancellationToken)
         {
             // If specified office is not active, can't create entity
-            if ((await _officeRepository.GetAsync(createDoctorModel.OfficeId)) == null)
+            if ((await _officeRepository.GetAsync(createDoctorModel.OfficeId, cancellationToken)) == null)
             {
                 throw new RelatedObjectNotFoundException();
             }
-            await _doctorRepository.CreateAsync(_mapper.Map<Doctor>(createDoctorModel));
+            await _doctorRepository.CreateAsync(_mapper.Map<Doctor>(createDoctorModel), cancellationToken: cancellationToken);
         }
 
-        public async Task Update(UpdateDoctorModel updateDoctorModel)
+        public async Task Update(UpdateDoctorModel updateDoctorModel, CancellationToken cancellationToken)
         {
             // If specified office is not active, can't update entity
-            if ((await _officeRepository.GetAsync(updateDoctorModel.OfficeId)) == null)
+            if ((await _officeRepository.GetAsync(updateDoctorModel.OfficeId, cancellationToken)) == null)
             {
                 throw new RelatedObjectNotFoundException();
             }
             var doctor = _mapper.Map<Doctor>(updateDoctorModel);
-            await _doctorRepository.UpdateAsync(doctor);
+            await _doctorRepository.UpdateAsync(doctor, cancellationToken);
         }
 
-        public async Task<DoctorModel> Get(string id)
+        public async Task<DoctorModel> Get(string id, CancellationToken cancellationToken)
         {
-            var doctor = await _doctorRepository.GetAsync(id);
+            var doctor = await _doctorRepository.GetAsync(id, cancellationToken);
             return _mapper.Map<DoctorModel>(doctor);
         }
 
-        public async Task<IEnumerable<DoctorModel>> GetAll()
+        public async Task<IEnumerable<DoctorModel>> GetAll(CancellationToken cancellationToken)
         {
-            return _mapper.Map<IEnumerable<DoctorModel>>(await _doctorRepository.GetAllAsync());
+            return _mapper.Map<IEnumerable<DoctorModel>>(await _doctorRepository.GetAllAsync(cancellationToken));
         }
 
-        public async Task Delete(string id)
+        public async Task Delete(string id, CancellationToken cancellationToken)
         {
-            await _doctorRepository.DeleteAsync(id);
+            await _doctorRepository.DeleteAsync(id, cancellationToken);
         }
     }
 }

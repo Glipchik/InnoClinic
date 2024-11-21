@@ -23,38 +23,38 @@ namespace Offices.Application.Services
             _mapper = mapper;
         }
 
-        public async Task Create(CreateOfficeModel createOfficeModel)
+        public async Task Create(CreateOfficeModel createOfficeModel, CancellationToken cancellationToken)
         {
-            await _officeRepository.CreateAsync(_mapper.Map<Office>(createOfficeModel));
+            await _officeRepository.CreateAsync(_mapper.Map<Office>(createOfficeModel), cancellationToken);
         }
 
-        public async Task Update(UpdateOfficeModel updateOfficeModel)
+        public async Task Update(UpdateOfficeModel updateOfficeModel, CancellationToken cancellationToken)
         {
             var office = _mapper.Map<Office>(updateOfficeModel);
-            await _officeRepository.UpdateAsync(office);
+            await _officeRepository.UpdateAsync(office, cancellationToken);
         }
 
-        public async Task<OfficeModel> Get(string id)
+        public async Task<OfficeModel> Get(string id, CancellationToken cancellationToken)
         {
-            var office = await _officeRepository.GetAsync(id);
+            var office = await _officeRepository.GetAsync(id, cancellationToken);
             return _mapper.Map<OfficeModel>(office);
         }
 
-        public async Task<IEnumerable<OfficeModel>> GetAll()
+        public async Task<IEnumerable<OfficeModel>> GetAll(CancellationToken cancellationToken)
         {
-            return _mapper.Map<IEnumerable<OfficeModel>>(await _officeRepository.GetAllAsync());
+            return _mapper.Map<IEnumerable<OfficeModel>>(await _officeRepository.GetAllAsync(cancellationToken));
         }
 
-        public async Task Delete(string id)
+        public async Task Delete(string id, CancellationToken cancellationToken)
         {
             // If there are doctors or receptionists found in this office, can't make this office inactive
-            if ((await _doctorRepository.GetAllAsync()).Any(d => d.OfficeId == id) || (await _receptionistsRepository.GetAllAsync()).Any(r => r.OfficeId == id))
+            if ((await _doctorRepository.GetAllAsync(cancellationToken)).Any(d => d.OfficeId == id) || (await _receptionistsRepository.GetAllAsync(cancellationToken)).Any(r => r.OfficeId == id))
             {
                 throw new RelatedObjectFoundException();
             }
             else
             {
-                await _officeRepository.DeleteAsync(id);
+                await _officeRepository.DeleteAsync(id, cancellationToken);
             }
         }
     }

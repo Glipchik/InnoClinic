@@ -17,9 +17,9 @@ namespace Offices.Data.Repositories
         {
         }
 
-        public override async Task DeleteAsync(string id)
+        public override async Task DeleteAsync(string id, CancellationToken cancellationToken)
         {
-            await _mongoDbContext.Entities.UpdateOneAsync(Builders<Office>.Filter.Eq(e => e.Id, id), Builders<Office>.Update.Set(e => e.IsActive, true));
+            await _mongoDbContext.Entities.UpdateOneAsync(Builders<Office>.Filter.Eq(e => e.Id, id), Builders<Office>.Update.Set(e => e.IsActive, true), cancellationToken: cancellationToken);
         }
     }
 }

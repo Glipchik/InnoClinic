@@ -25,41 +25,41 @@ namespace Offices.Application.Services
             _receptionistRepository = receptionistRepository;
             _mapper = mapper;
         }
-        public async Task Create(CreateReceptionistModel createReceptionistModel)
+        public async Task Create(CreateReceptionistModel createReceptionistModel, CancellationToken cancellationToken)
         {
             // If specified office is not active, can't create entity
-            if ((await _officeRepository.GetAsync(createReceptionistModel.OfficeId)) == null)
+            if ((await _officeRepository.GetAsync(createReceptionistModel.OfficeId, cancellationToken)) == null)
             {
                 throw new RelatedObjectNotFoundException();
             }
-            await _receptionistRepository.CreateAsync(_mapper.Map<Receptionist>(createReceptionistModel));
+            await _receptionistRepository.CreateAsync(_mapper.Map<Receptionist>(createReceptionistModel), cancellationToken);
         }
 
-        public async Task Update(UpdateReceptionistModel updateReceptionistModel)
+        public async Task Update(UpdateReceptionistModel updateReceptionistModel, CancellationToken cancellationToken)
         {
             // If specified office is not active, can't update entity
-            if ((await _officeRepository.GetAsync(updateReceptionistModel.OfficeId)) == null)
+            if ((await _officeRepository.GetAsync(updateReceptionistModel.OfficeId, cancellationToken)) == null)
             {
                 throw new RelatedObjectNotFoundException();
             }
             var receptionist = _mapper.Map<Receptionist>(updateReceptionistModel);
-            await _receptionistRepository.UpdateAsync(receptionist);
+            await _receptionistRepository.UpdateAsync(receptionist, cancellationToken);
         }
 
-        public async Task<ReceptionistModel> Get(string id)
+        public async Task<ReceptionistModel> Get(string id, CancellationToken cancellationToken)
         {
-            var receptionist = await _receptionistRepository.GetAsync(id);
+            var receptionist = await _receptionistRepository.GetAsync(id, cancellationToken);
             return _mapper.Map<ReceptionistModel>(receptionist);
         }
 
-        public async Task<IEnumerable<ReceptionistModel>> GetAll()
+        public async Task<IEnumerable<ReceptionistModel>> GetAll(CancellationToken cancellationToken)
         {
-            return _mapper.Map<IEnumerable<ReceptionistModel>>(await _receptionistRepository.GetAllAsync());
+            return _mapper.Map<IEnumerable<ReceptionistModel>>(await _receptionistRepository.GetAllAsync(cancellationToken));
         }
 
-        public async Task Delete(string id)
+        public async Task Delete(string id, CancellationToken cancellationToken)
         {
-            await _receptionistRepository.DeleteAsync(id);
+            await _receptionistRepository.DeleteAsync(id, cancellationToken);
         }
     }
 }
