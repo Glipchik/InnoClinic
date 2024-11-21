@@ -16,10 +16,10 @@ namespace Offices.Application.Services
     public class ReceptionistService: IReceptionistService
     {
         private readonly IGenericRepository<Receptionist> _receptionistRepository;
-        private readonly IGenericRepository<Office> _officeRepository;
+        private readonly IOfficeRepository _officeRepository;
         private readonly IMapper _mapper;
 
-        public ReceptionistService(IGenericRepository<Receptionist> receptionistRepository, IGenericRepository<Office> officeRepository, IMapper mapper)
+        public ReceptionistService(IGenericRepository<Receptionist> receptionistRepository, IOfficeRepository officeRepository, IMapper mapper)
         {
             _officeRepository = officeRepository;
             _receptionistRepository = receptionistRepository;

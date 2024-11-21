@@ -14,11 +14,11 @@ namespace Offices.Application.Services
 {
     public class DoctorService: IDoctorService
     {
-        private readonly IGenericRepository<Doctor> _doctorRepository;
-        private readonly IGenericRepository<Office> _officeRepository;
+        private readonly IDoctorRepository _doctorRepository;
+        private readonly IOfficeRepository _officeRepository;
         private readonly IMapper _mapper;
 
-        public DoctorService(IGenericRepository<Doctor> doctorRepository, IGenericRepository<Office> officeRepository, IMapper mapper)
+        public DoctorService(IDoctorRepository doctorRepository, IOfficeRepository officeRepository, IMapper mapper)
         {
             _officeRepository = officeRepository;
             _doctorRepository = doctorRepository;

@@ -11,12 +11,12 @@ namespace Offices.Application.Services
 {
     public class OfficeService : IOfficeService
     {
-        private readonly IGenericRepository<Office> _officeRepository;
-        private readonly IGenericRepository<Doctor> _doctorRepository;
+        private readonly IOfficeRepository _officeRepository;
+        private readonly IDoctorRepository _doctorRepository;
         private readonly IGenericRepository<Receptionist> _receptionistsRepository;
         private readonly IMapper _mapper;
 
-        public OfficeService(IGenericRepository<Office> officeRepository, IGenericRepository<Doctor> doctorRepository, IGenericRepository<Receptionist> receptionistRepository, IMapper mapper)
+        public OfficeService(IOfficeRepository officeRepository, IDoctorRepository doctorRepository, IGenericRepository<Receptionist> receptionistRepository, IMapper mapper)
         {
             _receptionistsRepository = receptionistRepository;
             _doctorRepository = doctorRepository;
@@ -49,7 +49,7 @@ namespace Offices.Application.Services
         public async Task Delete(string id, CancellationToken cancellationToken)
         {
             // If there are doctors or receptionists found in this office, can't make this office inactive
-            if (await CheckIfThereAreWorkersInOffice(id, cancellationToken))
+            if (await CheckIfThereAreDoctorsOrReceptionistsInOffice(id, cancellationToken))
             {
                 // Throw exception if someone works in this office, need to free if first
                 throw new RelatedObjectFoundException();
@@ -60,7 +60,7 @@ namespace Offices.Application.Services
             }
         }
 
-        private async Task<bool> CheckIfThereAreWorkersInOffice(string officeId, CancellationToken cancellationToken)
+        private async Task<bool> CheckIfThereAreDoctorsOrReceptionistsInOffice(string officeId, CancellationToken cancellationToken)
         {
             var areAnyDoctorsInOffice = (await _doctorRepository.GetAllAsync(cancellationToken)).Any(d => d.OfficeId == officeId);
             var areAnyReceptionistsInOffice = (await _receptionistsRepository.GetAllAsync(cancellationToken)).Any(r => r.OfficeId == officeId);
