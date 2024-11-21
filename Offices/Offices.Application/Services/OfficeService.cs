@@ -1,6 +1,61 @@
-﻿namespace Offices.Application.Services
+﻿using AutoMapper;
+using DnsClient.Internal;
+using Offices.Application.Models;
+using Offices.Application.Services.Abstractions;
+using Offices.Data.Entities;
+using Offices.Data.Exceptions;
+using Offices.Data.Repositories.Abstractions;
+
+namespace Offices.Application.Services
 {
-    public class OfficeService: IOfficeService
+    public class OfficeService : IOfficeService
     {
+        private readonly IGenericRepository<Office> _officeRepository;
+        private readonly IGenericRepository<Doctor> _doctorRepository;
+        private readonly IGenericRepository<Receptionist> _receptionistsRepository;
+        private readonly IMapper _mapper;
+
+        public OfficeService(IGenericRepository<Office> officeRepository, IGenericRepository<Doctor> doctorRepository, IGenericRepository<Receptionist> receptionistRepository, IMapper mapper)
+        {
+            _receptionistsRepository = receptionistRepository;
+            _doctorRepository = doctorRepository;
+            _officeRepository = officeRepository;
+            _mapper = mapper;
+        }
+
+        public async Task Create(CreateOfficeModel createOfficeModel)
+        {
+            await _officeRepository.CreateAsync(_mapper.Map<Office>(createOfficeModel));
+        }
+
+        public async Task Update(UpdateOfficeModel updateOfficeModel)
+        {
+            var office = _mapper.Map<Office>(updateOfficeModel);
+            await _officeRepository.UpdateAsync(office);
+        }
+
+        public async Task<OfficeModel> Get(string id)
+        {
+            var office = await _officeRepository.GetAsync(id);
+            return _mapper.Map<OfficeModel>(office);
+        }
+
+        public async Task<IEnumerable<OfficeModel>> GetAll()
+        {
+            return _mapper.Map<IEnumerable<OfficeModel>>(await _officeRepository.GetAllAsync());
+        }
+
+        public async Task Delete(string id)
+        {
+            // If there are doctors or receptionists found in this office, can't make this office inactive
+            if ((await _doctorRepository.GetAllAsync()).Any(d => d.OfficeId == id) || (await _receptionistsRepository.GetAllAsync()).Any(r => r.OfficeId == id))
+            {
+                throw new RelatedObjectFoundException();
+            }
+            else
+            {
+                await _officeRepository.DeleteAsync(id);
+            }
+        }
     }
 }

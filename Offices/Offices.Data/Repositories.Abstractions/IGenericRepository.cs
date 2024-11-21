@@ -1,6 +1,6 @@
 ﻿using Offices.Data.Entities;
 
-namespace Offices.Data.Repositories
+namespace Offices.Data.Repositories.Abstractions
 {
     public interface IGenericRepository<T> where T : BaseEntity
     {
