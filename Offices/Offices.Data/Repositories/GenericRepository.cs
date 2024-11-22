@@ -1,44 +1,43 @@
 ﻿using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 using Offices.Data.Entities;
+using Offices.Data.Providers;
+using Offices.Data.Repositories.Abstractions;
 
 namespace Offices.Data.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
-        private readonly IMongoCollection<T> _entities;
+        protected readonly IMongoCollection<T> _collection;
 
-        public GenericRepository(IConfiguration configuration)
+        public GenericRepository(MongoDbContext mongoDbContext)
         {
-            var mongoClient = new MongoClient(configuration["MongoDB:ConnectionString"]);
-            var database = mongoClient.GetDatabase(configuration["MongoDB:DatabaseName"]);
-
-            _entities = database.GetCollection<T>(typeof(T).Name);
+            _collection = mongoDbContext.Database.GetCollection<T>(typeof(T).Name);
         }
 
-        public async Task CreateAsync(T entity)
+        public async Task CreateAsync(T entity, CancellationToken cancellationToken)
         {
-            await _entities.InsertOneAsync(entity);
+            await _collection.InsertOneAsync(entity, cancellationToken: cancellationToken);
         }
 
-        public async Task DeleteAsync(string id)
+        public virtual async Task DeleteAsync(string id, CancellationToken cancellationToken)
         {
-            await _entities.DeleteOneAsync(e => e.Id == id);
+            await _collection.DeleteOneAsync(e => e.Id == id, cancellationToken: cancellationToken);
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken)
         {
-            return await _entities.Find(_ => true).ToListAsync();
+            return await _collection.Find(_ => true).ToListAsync(cancellationToken: cancellationToken);
         }
 
-        public async Task<T> GetAsync(string id)
+        public async Task<T> GetAsync(string id, CancellationToken cancellationToken)
         {
-            return await _entities.Find(e => e.Id == id).FirstOrDefaultAsync();
+            return await _collection.Find(e => e.Id == id).FirstOrDefaultAsync(cancellationToken: cancellationToken);
         }
 
-        public async Task UpdateAsync(T entity)
+        public async Task UpdateAsync(T entity, CancellationToken cancellationToken)
         {
-            await _entities.ReplaceOneAsync(e => e.Id == entity.Id, entity);
+            await _collection.ReplaceOneAsync(e => e.Id == entity.Id, entity, cancellationToken: cancellationToken);
         }
     }
 }
