@@ -33,7 +33,7 @@ namespace Offices.Application.Services
             if (officeRelatedToReceptionist == null)
             {
                 // Throw exception if there is no active office with this id for this worker
-                throw new RelatedObjectNotFoundException();
+                throw new RelatedObjectNotFoundException($"Can't create receptionist because office with id {createReceptionistModel.OfficeId} is not active or doesn't exist!");
             }
             await _receptionistRepository.CreateAsync(_mapper.Map<Receptionist>(createReceptionistModel), cancellationToken);
         }
@@ -46,7 +46,7 @@ namespace Offices.Application.Services
             if (officeRelatedToReceptionist == null)
             {
                 // Throw exception if there is no active office with this id for this worker
-                throw new RelatedObjectNotFoundException();
+                throw new RelatedObjectNotFoundException($"Can't update receptionist with id {updateReceptionistModel.Id} because office with id {updateReceptionistModel.OfficeId} is not active or doesn't exist!");
             }
             var receptionist = _mapper.Map<Receptionist>(updateReceptionistModel);
             await _receptionistRepository.UpdateAsync(receptionist, cancellationToken);

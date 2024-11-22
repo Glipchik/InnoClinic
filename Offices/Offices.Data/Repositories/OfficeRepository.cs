@@ -12,9 +12,14 @@ namespace Offices.Data.Repositories
 {
     public class OfficeRepository: GenericRepository<Office>, IOfficeRepository
     {
+        protected readonly IMongoCollection<Doctor> _doctorCollection;
+        protected readonly IMongoCollection<Receptionist> _receptionistCollection;
+
         public OfficeRepository(MongoDbContext mongoDbContext):
             base(mongoDbContext)
         {
+            _doctorCollection = mongoDbContext.Database.GetCollection<Doctor>(typeof(Doctor).Name); ;
+            _receptionistCollection = mongoDbContext.Database.GetCollection<Receptionist>(typeof(Receptionist).Name); ;
         }
 
         public override async Task DeleteAsync(string id, CancellationToken cancellationToken)
