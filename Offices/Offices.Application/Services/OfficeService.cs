@@ -62,11 +62,11 @@ namespace Offices.Application.Services
 
         private async Task<bool> CheckIfThereAreDoctorsOrReceptionistsInOffice(string officeId, CancellationToken cancellationToken)
         {
-            var areAnyDoctorsInOffice = (await _doctorRepository.GetDoctorsFromOffice(officeId, cancellationToken)).Count();
-            var areAnyReceptionistsInOffice = (await _receptionistsRepository.GetReceptionistsFromOffice(officeId, cancellationToken)).Count();
+            var DoctorsInOfficeCount = (await _doctorRepository.GetDoctorsFromOffice(officeId, cancellationToken)).Count();
+            var ReceptionistsInOfficeCount = (await _receptionistsRepository.GetReceptionistsFromOffice(officeId, cancellationToken)).Count();
 
             // If someone works in the office, returns true
-            return (areAnyDoctorsInOffice > 0) || (areAnyReceptionistsInOffice > 0);
+            return (DoctorsInOfficeCount > 0) || (ReceptionistsInOfficeCount > 0);
         }
     }
 }
