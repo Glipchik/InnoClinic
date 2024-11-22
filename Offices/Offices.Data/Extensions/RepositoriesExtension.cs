@@ -22,6 +22,7 @@ namespace Offices.Data.Extensions
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IOfficeRepository, OfficeRepository>();
             services.AddScoped<IDoctorRepository, DoctorRepository>();
+            services.AddScoped<IReceptionistRepository, ReceptionistRepository>();
 
             return services;
         }
