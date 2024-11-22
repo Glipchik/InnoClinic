@@ -12,7 +12,9 @@ namespace Offices.API.MappingProfiles
             // Offices mapping
             CreateMap<UpdateOfficeModel, Office>();
             CreateMap<Office, OfficeDto>();
-            CreateMap<CreateOfficeModel, Office>();
+            CreateMap<OfficeModel, OfficeDto>();
+            CreateMap<CreateOfficeDto, CreateOfficeModel>();
+            CreateMap<UpdateOfficeDto, UpdateOfficeModel>();
 
             // Doctors mapping
             CreateMap<UpdateDoctorModel, Doctor>();

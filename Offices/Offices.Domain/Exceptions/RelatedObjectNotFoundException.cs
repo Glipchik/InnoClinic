@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Offices.Domain.Exceptions;
 
-namespace Offices.Data.Exceptions
+namespace Offices.Domain.Exceptions
 {
-    public class RelatedObjectNotFoundException : Exception
+    public class RelatedObjectNotFoundException : ValidationException
     {
         public RelatedObjectNotFoundException()
             : base("Related object not found.")

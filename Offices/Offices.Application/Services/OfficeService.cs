@@ -4,8 +4,8 @@ using DnsClient.Internal;
 using Offices.Application.Models;
 using Offices.Application.Services.Abstractions;
 using Offices.Data.Entities;
-using Offices.Data.Exceptions;
 using Offices.Data.Repositories.Abstractions;
+using Offices.Domain.Exceptions;
 
 namespace Offices.Application.Services
 {

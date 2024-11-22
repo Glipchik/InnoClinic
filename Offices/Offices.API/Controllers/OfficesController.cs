@@ -13,10 +13,10 @@ namespace Offices.API.Controllers
     public class OfficesController : ControllerBase
     {
         private readonly IOfficeService _officeService;
-        private readonly ILogger _logger;
+        private readonly ILogger<OfficesController> _logger;
         private readonly IMapper _mapper;
 
-        public OfficesController(IOfficeService officeService, ILogger logger, IMapper mapper)
+        public OfficesController(IOfficeService officeService, ILogger<OfficesController> logger, IMapper mapper)
         {
             _officeService = officeService;
             _logger = logger;
@@ -41,22 +41,30 @@ namespace Offices.API.Controllers
             return _mapper.Map<OfficeDto>(office);
         }
 
-        //// POST api/<ValuesController>
-        //[HttpPost]
-        //public void Post([FromBody] string value)
-        //{
-        //}
+        // POST api/Offices
+        [HttpPost]
+        public async void Post([FromBody] CreateOfficeDto createOfficeDto, CancellationToken cancellationToken)
+        {
+            var officeModel = _mapper.Map<CreateOfficeModel>(createOfficeDto);
+            await _officeService.Create(officeModel, cancellationToken);
+            _logger.LogInformation("New office was successfully created");
+        }
 
-        //// PUT api/<ValuesController>/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
+        // PUT api/Offices
+        [HttpPut]
+        public async void Put([FromBody] UpdateOfficeDto updateOfficeDto, CancellationToken cancellationToken)
+        {
+            var officeModel = _mapper.Map<UpdateOfficeModel>(updateOfficeDto);
+            await _officeService.Update(officeModel, cancellationToken);
+            _logger.LogInformation("Office with id {id} was successfully updated", updateOfficeDto.Id);
+        }
 
-        //// DELETE api/<ValuesController>/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
+        // DELETE api/Offices/5
+        [HttpDelete("{id}")]
+        public async void Delete(string id, CancellationToken cancellationToken)
+        {
+            await _officeService.Delete(id, cancellationToken);
+            _logger.LogInformation("Office with id {id} was successfully deleted", id);
+        }
     }
 }

@@ -1,4 +1,5 @@
 using Offices.API.Extensions;
+using Offices.API.Infrastructure;
 using Offices.Application.Extensions;
 using Offices.Application.Services;
 
@@ -14,6 +15,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Global exception handler
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
+// Adding problem details
+builder.Services.AddProblemDetails();
+
 // Configuring container
 builder.Services.AddServices();
 builder.Services.AddApiExtensions();
@@ -26,6 +33,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseExceptionHandler();
 
 app.MapControllers();
 
