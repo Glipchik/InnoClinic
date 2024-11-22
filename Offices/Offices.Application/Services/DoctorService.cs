@@ -33,7 +33,7 @@ namespace Offices.Application.Services
             if (officeRelatedToDoctor == null)
             {
                 // Throw exception if there is no active office with this id for this worker
-                throw new RelatedObjectNotFoundException();
+                throw new RelatedObjectNotFoundException($"Can't create doctor because office with id {createDoctorModel.OfficeId} is not active or doesn't exist!");
             }
             await _doctorRepository.CreateAsync(_mapper.Map<Doctor>(createDoctorModel), cancellationToken: cancellationToken);
         }
@@ -46,7 +46,7 @@ namespace Offices.Application.Services
             if (officeRelatedToDoctor == null)
             {
                 // Throw exception if there is no active office with this id for this worker
-                throw new RelatedObjectNotFoundException();
+                throw new RelatedObjectNotFoundException($"Can't update doctor with id {updateDoctorModel.Id} because office with id {updateDoctorModel.OfficeId} is not active or doesn't exist!");
             }
             var doctor = _mapper.Map<Doctor>(updateDoctorModel);
             await _doctorRepository.UpdateAsync(doctor, cancellationToken);

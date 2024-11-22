@@ -12,10 +12,14 @@ namespace Offices.Application.Services
     public class OfficeService : IOfficeService
     {
         private readonly IOfficeRepository _officeRepository;
+        private readonly IDoctorRepository _doctorRepository;
+        private readonly IReceptionistRepository _receptionistsRepository;
         private readonly IMapper _mapper;
 
-        public OfficeService(IOfficeRepository officeRepository, IMapper mapper)
+        public OfficeService(IOfficeRepository officeRepository, IDoctorRepository doctorRepository, IReceptionistRepository receptionistRepository, IMapper mapper)
         {
+            _receptionistsRepository = receptionistRepository;
+            _doctorRepository = doctorRepository;
             _officeRepository = officeRepository;
             _mapper = mapper;
         }
@@ -45,15 +49,24 @@ namespace Offices.Application.Services
         public async Task Delete(string id, CancellationToken cancellationToken)
         {
             // If there are doctors or receptionists found in this office, can't make this office inactive
-            if (await _officeRepository.CheckIfThereAreDoctorsOrReceptionistsInOffice(id, cancellationToken))
+            if (await CheckIfThereAreDoctorsOrReceptionistsInOffice(id, cancellationToken))
             {
                 // Throw exception if someone works in this office, need to free if first
-                throw new RelatedObjectFoundException();
+                throw new RelatedObjectFoundException($"Can't delete office with id {id}, because someone works there, move them!");
             }
             else
             {
                 await _officeRepository.DeleteAsync(id, cancellationToken);
             }
+        }
+
+        private async Task<bool> CheckIfThereAreDoctorsOrReceptionistsInOffice(string officeId, CancellationToken cancellationToken)
+        {
+            var areAnyDoctorsInOffice = (await _doctorRepository.GetDoctorsFromOffice(officeId, cancellationToken)).Count();
+            var areAnyReceptionistsInOffice = (await _receptionistsRepository.GetReceptionistsFromOffice(officeId, cancellationToken)).Count();
+
+            // If someone works in the office, returns true
+            return (areAnyDoctorsInOffice > 0) || (areAnyReceptionistsInOffice > 0);
         }
     }
 }

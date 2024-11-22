@@ -9,6 +9,5 @@ namespace Offices.Data.Repositories.Abstractions
 {
     public interface IOfficeRepository : IGenericRepository<Office>
     {
-        Task<bool> CheckIfThereAreDoctorsOrReceptionistsInOffice(string officeId, CancellationToken cancellationToken);
     }
 }
