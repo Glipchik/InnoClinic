@@ -12,9 +12,23 @@ namespace Offices.Data.Repositories
 {
     public class OfficeRepository: GenericRepository<Office>, IOfficeRepository
     {
+        protected readonly IMongoCollection<Doctor> _doctorCollection;
+        protected readonly IMongoCollection<Receptionist> _receptionistCollection;
+
         public OfficeRepository(MongoDbContext mongoDbContext):
             base(mongoDbContext)
         {
+            _doctorCollection = mongoDbContext.Database.GetCollection<Doctor>(typeof(Doctor).Name); ;
+            _receptionistCollection = mongoDbContext.Database.GetCollection<Receptionist>(typeof(Receptionist).Name); ;
+        }
+
+        public async Task<bool> CheckIfThereAreDoctorsOrReceptionistsInOffice(string officeId, CancellationToken cancellationToken)
+        {
+            var areAnyDoctorsInOffice = await (await _doctorCollection.FindAsync(d => d.OfficeId == officeId, cancellationToken: cancellationToken)).AnyAsync(cancellationToken: cancellationToken);
+            var areAnyReceptionistsInOffice = await (await _receptionistCollection.FindAsync(r => r.OfficeId == officeId, cancellationToken: cancellationToken)).AnyAsync(cancellationToken: cancellationToken);
+
+            // If someone works in the office, returns true
+            return areAnyDoctorsInOffice || areAnyReceptionistsInOffice;
         }
 
         public override async Task DeleteAsync(string id, CancellationToken cancellationToken)

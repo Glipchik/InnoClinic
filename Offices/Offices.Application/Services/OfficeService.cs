@@ -12,14 +12,10 @@ namespace Offices.Application.Services
     public class OfficeService : IOfficeService
     {
         private readonly IOfficeRepository _officeRepository;
-        private readonly IDoctorRepository _doctorRepository;
-        private readonly IGenericRepository<Receptionist> _receptionistsRepository;
         private readonly IMapper _mapper;
 
-        public OfficeService(IOfficeRepository officeRepository, IDoctorRepository doctorRepository, IGenericRepository<Receptionist> receptionistRepository, IMapper mapper)
+        public OfficeService(IOfficeRepository officeRepository, IMapper mapper)
         {
-            _receptionistsRepository = receptionistRepository;
-            _doctorRepository = doctorRepository;
             _officeRepository = officeRepository;
             _mapper = mapper;
         }
@@ -49,7 +45,7 @@ namespace Offices.Application.Services
         public async Task Delete(string id, CancellationToken cancellationToken)
         {
             // If there are doctors or receptionists found in this office, can't make this office inactive
-            if (await CheckIfThereAreDoctorsOrReceptionistsInOffice(id, cancellationToken))
+            if (await _officeRepository.CheckIfThereAreDoctorsOrReceptionistsInOffice(id, cancellationToken))
             {
                 // Throw exception if someone works in this office, need to free if first
                 throw new RelatedObjectFoundException();
@@ -58,15 +54,6 @@ namespace Offices.Application.Services
             {
                 await _officeRepository.DeleteAsync(id, cancellationToken);
             }
-        }
-
-        private async Task<bool> CheckIfThereAreDoctorsOrReceptionistsInOffice(string officeId, CancellationToken cancellationToken)
-        {
-            var areAnyDoctorsInOffice = (await _doctorRepository.GetAllAsync(cancellationToken)).Any(d => d.OfficeId == officeId);
-            var areAnyReceptionistsInOffice = (await _receptionistsRepository.GetAllAsync(cancellationToken)).Any(r => r.OfficeId == officeId);
-
-            // If someone works in the office, returns true
-            return areAnyDoctorsInOffice || areAnyReceptionistsInOffice;
         }
     }
 }
