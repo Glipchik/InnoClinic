@@ -1,7 +1,11 @@
+using Offices.API.Extensions;
 using Offices.Application.Extensions;
 using Offices.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 
 // Add services to the container.
 
@@ -12,6 +16,7 @@ builder.Services.AddSwaggerGen();
 
 // Configuring container
 builder.Services.AddServices();
+builder.Services.AddApiExtensions();
 
 var app = builder.Build();
 
