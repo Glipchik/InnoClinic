@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Offices.Domain.Exceptions
 {
-    public class NotFoundException : ValidationException
+    public class NotFoundException : BadRequestException
     {
         public NotFoundException()
             : base("Requested object not found.")

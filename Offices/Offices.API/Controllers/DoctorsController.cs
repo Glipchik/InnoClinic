@@ -51,13 +51,13 @@ namespace Offices.API.Controllers
         /// <response code="200">Returns the list of doctors</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpGet]
-        public async Task<IActionResult> Get(CancellationToken cancellationToken)
+        public async Task<IEnumerable<DoctorDto>> Get(CancellationToken cancellationToken)
         {
             var doctors = await _doctorService.GetAll(cancellationToken);
             _logger.LogInformation("Requested doctors list");
 
             var doctorDtos = _mapper.Map<IEnumerable<DoctorDto>>(doctors);
-            return Ok(doctorDtos);
+            return doctorDtos;
         }
 
         /// <summary>
@@ -66,22 +66,28 @@ namespace Offices.API.Controllers
         /// <param name="id">The ID of the doctor to retrieve.</param>
         /// <returns>Returns the doctor object.</returns>
         /// <response code="200">If the doctor is found</response>
-        /// <response code="204">If the doctor is not found</response>
+        /// <response code="400">If the doctor is not found</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(string id, CancellationToken cancellationToken)
+        public async Task<DoctorDto> Get(string id, CancellationToken cancellationToken)
         {
             // Validation
             var objectIdDtoValidation = await _objectIdDtoValidator.ValidateAsync(new ObjectIdDto(id), cancellationToken);
             if (!objectIdDtoValidation.IsValid)
             {
-                objectIdDtoValidation.AddToModelState(ModelState, _logger);
-                return BadRequest(ModelState);
+                var validationErrors = objectIdDtoValidation.Errors
+                    .GroupBy(e => e.PropertyName)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Select(e => e.ErrorMessage).ToArray()
+                    );
+
+                throw new Domain.Exceptions.ValidationException(validationErrors);
             }
 
             var doctor = await _doctorService.Get(id, cancellationToken);
             _logger.LogInformation("Requested doctor with id {id}", id);
-            return Ok(_mapper.Map<DoctorDto>(doctor));
+            return _mapper.Map<DoctorDto>(doctor);
         }
 
         /// <summary>
@@ -92,20 +98,25 @@ namespace Offices.API.Controllers
         /// <response code="400">If validation errors occured</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] CreateDoctorDto createDoctorDto, CancellationToken cancellationToken)
+        public async Task Post([FromBody] CreateDoctorDto createDoctorDto, CancellationToken cancellationToken)
         {
             // Validation
             var doctorValidation = await _createDoctorDtoValidator.ValidateAsync(createDoctorDto, cancellationToken);
             if (!doctorValidation.IsValid)
             {
-                doctorValidation.AddToModelState(ModelState, _logger);
-                return BadRequest(ModelState);
+                var validationErrors = doctorValidation.Errors
+                    .GroupBy(e => e.PropertyName)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Select(e => e.ErrorMessage).ToArray()
+                    );
+
+                throw new Domain.Exceptions.ValidationException(validationErrors);
             }
 
             var doctorCreateModel = _mapper.Map<CreateDoctorModel>(createDoctorDto);
             await _doctorService.Create(doctorCreateModel, cancellationToken);
             _logger.LogInformation("New doctor was successfully created");
-            return Ok();
         }
 
         /// <summary>
@@ -116,20 +127,25 @@ namespace Offices.API.Controllers
         /// <response code="400">If the doctor is not found or validation errors occured</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpPut]
-        public async Task<IActionResult> Put([FromBody] UpdateDoctorDto updateDoctorDto, CancellationToken cancellationToken)
+        public async Task Put([FromBody] UpdateDoctorDto updateDoctorDto, CancellationToken cancellationToken)
         {
             // Validation
             var doctorValidation = await _updateDoctorDtoValidator.ValidateAsync(updateDoctorDto, cancellationToken);
             if (!doctorValidation.IsValid)
             {
-                doctorValidation.AddToModelState(ModelState, _logger);
-                return BadRequest(ModelState);
+                var validationErrors = doctorValidation.Errors
+                    .GroupBy(e => e.PropertyName)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Select(e => e.ErrorMessage).ToArray()
+                    );
+
+                throw new Domain.Exceptions.ValidationException(validationErrors);
             }
 
             var updateDoctorModel = _mapper.Map<UpdateDoctorModel>(updateDoctorDto);
             await _doctorService.Update(updateDoctorModel, cancellationToken);
             _logger.LogInformation("Doctor with id {id} was successfully updated", updateDoctorDto.Id);
-            return Ok();
         }
 
         /// <summary>
@@ -140,19 +156,24 @@ namespace Offices.API.Controllers
         /// <response code="400">If the doctor is not found</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(string id, CancellationToken cancellationToken)
+        public async Task Delete(string id, CancellationToken cancellationToken)
         {
             // Validation
             var objectIdDtoValidation = await _objectIdDtoValidator.ValidateAsync(new ObjectIdDto(id), cancellationToken);
             if (!objectIdDtoValidation.IsValid)
             {
-                objectIdDtoValidation.AddToModelState(ModelState, _logger);
-                return BadRequest(ModelState);
+                var validationErrors = objectIdDtoValidation.Errors
+                    .GroupBy(e => e.PropertyName)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Select(e => e.ErrorMessage).ToArray()
+                    );
+
+                throw new Domain.Exceptions.ValidationException(validationErrors);
             }
 
             await _doctorService.Delete(id, cancellationToken);
             _logger.LogInformation("Doctor with id {id} was successfully deleted", id);
-            return Ok();
         }
     }
 }

@@ -7,7 +7,7 @@ using Offices.Domain.Exceptions;
 
 namespace Offices.Domain.Exceptions
 {
-    public class RelatedObjectNotFoundException : ValidationException
+    public class RelatedObjectNotFoundException : BadRequestException
     {
         public RelatedObjectNotFoundException()
             : base("Related object not found.")

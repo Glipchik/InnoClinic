@@ -39,7 +39,12 @@ namespace Offices.Data.Repositories
 
         public async Task<T> GetAsync(string id, CancellationToken cancellationToken)
         {
-            return await (await _collection.FindAsync(d => d.Id == id, cancellationToken: cancellationToken)).FirstOrDefaultAsync(cancellationToken);
+            var entity = await (await _collection.FindAsync(d => d.Id == id, cancellationToken: cancellationToken)).FirstOrDefaultAsync(cancellationToken);
+            if (entity == null)
+            {
+                throw new NotFoundException($"Object with id {id} not found!");
+            }
+            return entity;
         }
 
         public async Task UpdateAsync(T entity, CancellationToken cancellationToken)

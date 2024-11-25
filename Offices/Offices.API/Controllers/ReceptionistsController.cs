@@ -51,13 +51,13 @@ namespace Offices.API.Controllers
         /// <response code="200">Returns the list of receptionists</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpGet]
-        public async Task<IActionResult> Get(CancellationToken cancellationToken)
+        public async Task<IEnumerable<ReceptionistDto>> Get(CancellationToken cancellationToken)
         {
             var receptionists = await _receptionistService.GetAll(cancellationToken);
             _logger.LogInformation("Requested receptionists list");
 
             var receptionistDtos = _mapper.Map<IEnumerable<ReceptionistDto>>(receptionists);
-            return Ok(receptionistDtos);
+            return receptionistDtos;
         }
 
         /// <summary>
@@ -66,22 +66,28 @@ namespace Offices.API.Controllers
         /// <param name="id">The ID of the receptionist to retrieve.</param>
         /// <returns>Returns the receptionist object.</returns>
         /// <response code="200">If the receptionist is found</response>
-        /// <response code="204">If the receptionist is not found</response>
+        /// <response code="404">If the receptionist is not found</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(string id, CancellationToken cancellationToken)
+        public async Task<ReceptionistDto> Get(string id, CancellationToken cancellationToken)
         {
             // Validation
             var objectIdDtoValidation = await _objectIdDtoValidator.ValidateAsync(new ObjectIdDto(id), cancellationToken);
             if (!objectIdDtoValidation.IsValid)
             {
-                objectIdDtoValidation.AddToModelState(ModelState, _logger);
-                return BadRequest(ModelState);
+                var validationErrors = objectIdDtoValidation.Errors
+                    .GroupBy(e => e.PropertyName)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Select(e => e.ErrorMessage).ToArray()
+                    );
+
+                throw new Domain.Exceptions.ValidationException(validationErrors);
             }
 
             var receptionist = await _receptionistService.Get(id, cancellationToken);
             _logger.LogInformation("Requested receptionist with id {id}", id);
-            return Ok(_mapper.Map<ReceptionistDto>(receptionist));
+            return _mapper.Map<ReceptionistDto>(receptionist);
         }
 
         /// <summary>
@@ -92,20 +98,25 @@ namespace Offices.API.Controllers
         /// <response code="400">If validation errors occured</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] CreateReceptionistDto createReceptionistDto, CancellationToken cancellationToken)
+        public async Task Post([FromBody] CreateReceptionistDto createReceptionistDto, CancellationToken cancellationToken)
         {
             // Validation
             var receptionistValidation = await _createReceptionistDtoValidator.ValidateAsync(createReceptionistDto, cancellationToken);
             if (!receptionistValidation.IsValid)
             {
-                receptionistValidation.AddToModelState(ModelState, _logger);
-                return BadRequest(ModelState);
+                var validationErrors = receptionistValidation.Errors
+                    .GroupBy(e => e.PropertyName)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Select(e => e.ErrorMessage).ToArray()
+                    );
+
+                throw new Domain.Exceptions.ValidationException(validationErrors);
             }
 
             var receptionistCreateModel = _mapper.Map<CreateReceptionistModel>(createReceptionistDto);
             await _receptionistService.Create(receptionistCreateModel, cancellationToken);
             _logger.LogInformation("New receptionist was successfully created");
-            return Ok();
         }
 
         /// <summary>
@@ -113,23 +124,29 @@ namespace Offices.API.Controllers
         /// </summary>
         /// <param name="updateReceptionistDto">The receptionist object fields containing details.</param>
         /// <response code="200">If the receptionist is updated</response>
-        /// <response code="400">If the receptionist is not found or validation errors occured</response>
+        /// <response code="404">If the receptionist is not found</response>
+        /// <response code="400">If validation errors occured</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpPut]
-        public async Task<IActionResult> Put([FromBody] UpdateReceptionistDto updateReceptionistDto, CancellationToken cancellationToken)
+        public async Task Put([FromBody] UpdateReceptionistDto updateReceptionistDto, CancellationToken cancellationToken)
         {
             // Validation
             var receptionistValidation = await _updateReceptionistDtoValidator.ValidateAsync(updateReceptionistDto, cancellationToken);
             if (!receptionistValidation.IsValid)
             {
-                receptionistValidation.AddToModelState(ModelState, _logger);
-                return BadRequest(ModelState);
+                var validationErrors = receptionistValidation.Errors
+                    .GroupBy(e => e.PropertyName)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Select(e => e.ErrorMessage).ToArray()
+                    );
+
+                throw new Domain.Exceptions.ValidationException(validationErrors);
             }
 
             var updateReceptionistModel = _mapper.Map<UpdateReceptionistModel>(updateReceptionistDto);
             await _receptionistService.Update(updateReceptionistModel, cancellationToken);
             _logger.LogInformation("Receptionist with id {id} was successfully updated", updateReceptionistDto.Id);
-            return Ok();
         }
 
         /// <summary>
@@ -137,22 +154,27 @@ namespace Offices.API.Controllers
         /// </summary>
         /// <param name="id">The receptionist Id of object to delete.</param>
         /// <response code="200">If the receptionist is deleted</response>
-        /// <response code="400">If the receptionist is not found</response>
+        /// <response code="404">If the receptionist is not found</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(string id, CancellationToken cancellationToken)
+        public async Task Delete(string id, CancellationToken cancellationToken)
         {
             // Validation
             var objectIdDtoValidation = await _objectIdDtoValidator.ValidateAsync(new ObjectIdDto(id), cancellationToken);
             if (!objectIdDtoValidation.IsValid)
             {
-                objectIdDtoValidation.AddToModelState(ModelState, _logger);
-                return BadRequest(ModelState);
+                var validationErrors = objectIdDtoValidation.Errors
+                    .GroupBy(e => e.PropertyName)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Select(e => e.ErrorMessage).ToArray()
+                    );
+
+                throw new Domain.Exceptions.ValidationException(validationErrors);
             }
 
             await _receptionistService.Delete(id, cancellationToken);
             _logger.LogInformation("Receptionist with id {id} was successfully deleted", id);
-            return Ok();
         }
     }
 }

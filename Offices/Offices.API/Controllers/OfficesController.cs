@@ -55,13 +55,13 @@ namespace Offices.API.Controllers
         /// <response code="200">Returns the list of offices</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpGet]
-        public async Task<IActionResult> Get(CancellationToken cancellationToken)
+        public async Task<IEnumerable<OfficeDto>> Get(CancellationToken cancellationToken)
         {
             var offices = await _officeService.GetAll(cancellationToken);
             _logger.LogInformation("Requested offices list");
 
             var officeDtos = _mapper.Map<IEnumerable<OfficeDto>>(offices);
-            return Ok(officeDtos);
+            return officeDtos;
         }
 
         /// <summary>
@@ -70,22 +70,28 @@ namespace Offices.API.Controllers
         /// <param name="id">The ID of the office to retrieve.</param>
         /// <returns>Returns the office object.</returns>
         /// <response code="200">If the office is found</response>
-        /// <response code="204">If the office is not found</response>
+        /// <response code="404">If the office is not found</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(string id, CancellationToken cancellationToken)
+        public async Task<OfficeDto> Get(string id, CancellationToken cancellationToken)
         {
             // Validation
             var objectIdDtoValidation = await _objectIdDtoValidator.ValidateAsync(new ObjectIdDto(id), cancellationToken);
             if (!objectIdDtoValidation.IsValid)
             {
-                objectIdDtoValidation.AddToModelState(ModelState, _logger);
-                return BadRequest(ModelState);
+                var validationErrors = objectIdDtoValidation.Errors
+                    .GroupBy(e => e.PropertyName)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Select(e => e.ErrorMessage).ToArray()
+                    );
+
+                throw new Domain.Exceptions.ValidationException(validationErrors);
             }
 
             var office = await _officeService.Get(id, cancellationToken);
             _logger.LogInformation("Requested office with id {id}", id);
-            return Ok(_mapper.Map<OfficeDto>(office));
+            return _mapper.Map<OfficeDto>(office);
         }
 
         /// <summary>
@@ -102,8 +108,14 @@ namespace Offices.API.Controllers
             var officeValidation = await _createOfficeDtoValidator.ValidateAsync(createOfficeDto, cancellationToken);
             if (!officeValidation.IsValid)
             {
-                officeValidation.AddToModelState(ModelState, _logger);
-                return BadRequest(ModelState);
+                var validationErrors = officeValidation.Errors
+                    .GroupBy(e => e.PropertyName)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Select(e => e.ErrorMessage).ToArray()
+                    );
+
+                throw new Domain.Exceptions.ValidationException(validationErrors);
             }
 
             var createOfficeModel = _mapper.Map<CreateOfficeModel>(createOfficeDto);
@@ -117,7 +129,8 @@ namespace Offices.API.Controllers
         /// </summary>
         /// <param name="updateOfficeDto">The office object fields containing details such as ID and address.</param>
         /// <response code="200">If the office is updated</response>
-        /// <response code="400">If the office is not found or validation errors occured</response>
+        /// <response code="404">If the office is not found</response>
+        /// <response code="400">If validation errors occured</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpPut]
         public async Task<IActionResult> Put([FromBody] UpdateOfficeDto updateOfficeDto, CancellationToken cancellationToken)
@@ -126,8 +139,14 @@ namespace Offices.API.Controllers
             var officeValidation = await _updateOfficeDtoValidator.ValidateAsync(updateOfficeDto, cancellationToken);
             if (!officeValidation.IsValid)
             {
-                officeValidation.AddToModelState(ModelState, _logger);
-                return BadRequest(ModelState);
+                var validationErrors = officeValidation.Errors
+                    .GroupBy(e => e.PropertyName)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Select(e => e.ErrorMessage).ToArray()
+                    );
+
+                throw new Domain.Exceptions.ValidationException(validationErrors);
             }
 
             var updateOfficeModel = _mapper.Map<UpdateOfficeModel>(updateOfficeDto);
@@ -141,7 +160,7 @@ namespace Offices.API.Controllers
         /// </summary>
         /// <param name="id">The office Id of object to delete.</param>
         /// <response code="200">If the office is deleted</response>
-        /// <response code="400">If the office is not found</response>
+        /// <response code="404">If the office is not found</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id, CancellationToken cancellationToken)
@@ -150,8 +169,14 @@ namespace Offices.API.Controllers
             var objectIdDtoValidation = await _objectIdDtoValidator.ValidateAsync(new ObjectIdDto(id), cancellationToken);
             if (!objectIdDtoValidation.IsValid)
             {
-                objectIdDtoValidation.AddToModelState(ModelState, _logger);
-                return BadRequest(ModelState);
+                var validationErrors = objectIdDtoValidation.Errors
+                    .GroupBy(e => e.PropertyName)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Select(e => e.ErrorMessage).ToArray()
+                    );
+
+                throw new Domain.Exceptions.ValidationException(validationErrors);
             }
 
             await _officeService.Delete(id, cancellationToken);
