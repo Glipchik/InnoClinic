@@ -4,21 +4,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Offices.Data.Exceptions
+namespace Offices.Domain.Exceptions
 {
-    public class RelatedObjectFoundException : Exception
+    public class BadRequestException: Exception
     {
-        public RelatedObjectFoundException()
+        public BadRequestException()
             : base("Related object found.")
         {
         }
 
-        public RelatedObjectFoundException(string message)
+        public BadRequestException(string message)
             : base(message)
         {
         }
 
-        public RelatedObjectFoundException(string message, Exception innerException)
+        public BadRequestException(string message, Exception innerException)
             : base(message, innerException)
         {
         }

@@ -15,9 +15,9 @@ using Offices.Data.Repositories.Abstractions;
 
 namespace Offices.Application.Extensions
 {
-    public static class ServicesExtension
+    public static class ApplicationExtensions
     {
-        public static IServiceCollection AddServices(this IServiceCollection services)
+        public static IServiceCollection AddApplicationExtensions(this IServiceCollection services)
         {
             // Adding mapping profile
             services.AddAutoMapper(typeof(ApplicationMappingProfile));
@@ -27,8 +27,8 @@ namespace Offices.Application.Extensions
             services.AddScoped<IDoctorService, DoctorService>();
             services.AddScoped<IReceptionistService, ReceptionistService>();
 
-            // Adding repositories in container
-            services.AddRepositories();
+            // Adding data extensions in container
+            services.AddDataExtensions();
 
             return services;
         }
