@@ -11,9 +11,9 @@ using Offices.Data.Repositories.Abstractions;
 
 namespace Offices.Data.Extensions
 {
-    public static class RepositoriesExtension
+    public static class DataExtensions
     {
-        public static IServiceCollection AddRepositories(this IServiceCollection services)
+        public static IServiceCollection AddDataExtensions(this IServiceCollection services)
         {
             // Adding database context in container
             services.AddScoped<MongoDbContext>();

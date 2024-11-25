@@ -3,6 +3,8 @@ using MongoDB.Driver;
 using Offices.Data.Entities;
 using Offices.Data.Providers;
 using Offices.Data.Repositories.Abstractions;
+using Offices.Domain.Exceptions;
+using SharpCompress.Common;
 
 namespace Offices.Data.Repositories
 {
@@ -22,6 +24,11 @@ namespace Offices.Data.Repositories
 
         public virtual async Task DeleteAsync(string id, CancellationToken cancellationToken)
         {
+            var entityToUpdate = await _collection.Find(e => e.Id == id).FirstOrDefaultAsync(cancellationToken: cancellationToken);
+            if (entityToUpdate == null)
+            {
+                throw new NotFoundException($"Object with id {id} not found!");
+            }
             await _collection.DeleteOneAsync(e => e.Id == id, cancellationToken: cancellationToken);
         }
 
@@ -32,11 +39,16 @@ namespace Offices.Data.Repositories
 
         public async Task<T> GetAsync(string id, CancellationToken cancellationToken)
         {
-            return await _collection.Find(e => e.Id == id).FirstOrDefaultAsync(cancellationToken: cancellationToken);
+            return await (await _collection.FindAsync(d => d.Id == id, cancellationToken: cancellationToken)).FirstOrDefaultAsync(cancellationToken);
         }
 
         public async Task UpdateAsync(T entity, CancellationToken cancellationToken)
         {
+            var entityToUpdate = await _collection.Find(e => e.Id == entity.Id).FirstOrDefaultAsync(cancellationToken: cancellationToken);
+            if (entityToUpdate == null)
+            {
+                throw new NotFoundException($"Object with id {entity.Id} not found!");
+            }
             await _collection.ReplaceOneAsync(e => e.Id == entity.Id, entity, cancellationToken: cancellationToken);
         }
     }

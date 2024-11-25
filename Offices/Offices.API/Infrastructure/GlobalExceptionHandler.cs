@@ -35,7 +35,6 @@ namespace Offices.API.Infrastructure
             }
             else
             {
-                // Обработка всех других исключений
                 problemDetails = new ProblemDetails
                 {
                     Status = StatusCodes.Status500InternalServerError,
@@ -44,13 +43,6 @@ namespace Offices.API.Infrastructure
                 };
                 httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
             }
-
-            problemDetails = new ProblemDetails
-            {
-                Status = StatusCodes.Status500InternalServerError,
-                Title = "Server error",
-                Detail = "An unexpected error occurred. Please try again later."
-            };
             httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
 
             httpContext.Response.StatusCode = problemDetails.Status.Value;

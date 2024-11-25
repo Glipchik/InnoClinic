@@ -7,8 +7,8 @@ namespace Offices.API.Validators
     {
         public CreateOfficeDtoValidator()
         {
-            RuleFor(office => office.Address).NotEmpty();
-            RuleFor(office => office.RegistryPhoneNumber).NotEmpty();
+            RuleFor(office => office.Address).NotEmpty().MaximumLength(150);
+            RuleFor(office => office.RegistryPhoneNumber).NotEmpty().MaximumLength(20);
         }
     }
 }

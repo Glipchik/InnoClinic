@@ -10,21 +10,19 @@ namespace Offices.API.MappingProfiles
         public ApiMappingProfile() 
         {
             // Offices mapping
-            CreateMap<UpdateOfficeModel, Office>();
-            CreateMap<Office, OfficeDto>();
             CreateMap<OfficeModel, OfficeDto>();
             CreateMap<CreateOfficeDto, CreateOfficeModel>();
             CreateMap<UpdateOfficeDto, UpdateOfficeModel>();
 
             // Doctors mapping
-            CreateMap<UpdateDoctorModel, Doctor>();
-            CreateMap<Doctor, DoctorModel>();
-            CreateMap<CreateDoctorModel, Doctor>();
+            CreateMap<DoctorModel, DoctorDto>();
+            CreateMap<CreateDoctorDto, CreateDoctorModel>();
+            CreateMap<UpdateDoctorDto, UpdateDoctorModel>();
 
             // Receptionists mapping
-            CreateMap<UpdateReceptionistModel, Receptionist>();
-            CreateMap<Receptionist, ReceptionistModel>();
-            CreateMap<CreateReceptionistModel, Receptionist>();
+            CreateMap<ReceptionistModel, ReceptionistDto>();
+            CreateMap<CreateReceptionistDto, CreateReceptionistModel>();
+            CreateMap<UpdateReceptionistDto, UpdateReceptionistModel>();
         }
     }
 }

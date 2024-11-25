@@ -49,7 +49,7 @@ namespace Offices.Application.Services
         public async Task Delete(string id, CancellationToken cancellationToken)
         {
             // If there are doctors or receptionists found in this office, can't make this office inactive
-            if (await CheckIfThereAreDoctorsOrReceptionistsInOffice(id, cancellationToken))
+            if (await CheckIfThereAreActiveDoctorsOrReceptionistsInOffice(id, cancellationToken))
             {
                 // Throw exception if someone works in this office, need to free if first
                 throw new RelatedObjectFoundException($"Can't delete office with id {id}, because someone works there, move them!");
@@ -60,10 +60,10 @@ namespace Offices.Application.Services
             }
         }
 
-        private async Task<bool> CheckIfThereAreDoctorsOrReceptionistsInOffice(string officeId, CancellationToken cancellationToken)
+        private async Task<bool> CheckIfThereAreActiveDoctorsOrReceptionistsInOffice(string officeId, CancellationToken cancellationToken)
         {
-            var doctorsInOfficeCount = (await _doctorRepository.GetDoctorsFromOffice(officeId, cancellationToken)).Count();
-            var receptionistsInOfficeCount = (await _receptionistsRepository.GetReceptionistsFromOffice(officeId, cancellationToken)).Count();
+            var doctorsInOfficeCount = (await _doctorRepository.GetActiveDoctorsFromOffice(officeId, cancellationToken)).Count();
+            var receptionistsInOfficeCount = (await _receptionistsRepository.GetActiveReceptionistsFromOffice(officeId, cancellationToken)).Count();
 
             // If someone works in the office, returns true
             return (doctorsInOfficeCount > 0) || (receptionistsInOfficeCount > 0);

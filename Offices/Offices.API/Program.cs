@@ -1,3 +1,4 @@
+using System.Reflection;
 using Offices.API.Extensions;
 using Offices.API.Infrastructure;
 using Offices.Application.Extensions;
@@ -13,16 +14,14 @@ builder.Logging.AddConsole();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-// Global exception handler
-builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-
-// Adding problem details
-builder.Services.AddProblemDetails();
+builder.Services.AddSwaggerGen(options =>
+{
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    options.IncludeXmlComments(xmlPath);
+});
 
 // Configuring container
-builder.Services.AddServices();
 builder.Services.AddApiExtensions();
 
 var app = builder.Build();
