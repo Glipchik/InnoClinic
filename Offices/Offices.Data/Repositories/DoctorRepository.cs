@@ -8,6 +8,8 @@ using MongoDB.Driver;
 using Offices.Data.Entities;
 using Offices.Data.Providers;
 using Offices.Data.Repositories.Abstractions;
+using Offices.Domain.Exceptions;
+using SharpCompress.Common;
 
 namespace Offices.Data.Repositories
 {
@@ -20,12 +22,17 @@ namespace Offices.Data.Repositories
 
         public override async Task DeleteAsync(string id, CancellationToken cancellationToken)
         {
+            var doctorToDelete = await (await _collection.FindAsync(d => d.Id == id, cancellationToken: cancellationToken)).FirstOrDefaultAsync(cancellationToken);
+            if (doctorToDelete == null)
+            {
+                throw new NotFoundException($"Doctor with id {id} not found!");
+            }
             await _collection.UpdateOneAsync(Builders<Doctor>.Filter.Eq(e => e.Id, id), Builders<Doctor>.Update.Set(e => e.Status, "Inactive"), cancellationToken: cancellationToken);
         }
 
-        public async Task<IEnumerable<Doctor>> GetDoctorsFromOffice(string officeId, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Doctor>> GetActiveDoctorsFromOffice(string officeId, CancellationToken cancellationToken)
         {
-            var cursor = await _collection.FindAsync(d => d.OfficeId == officeId, cancellationToken: cancellationToken);
+            var cursor = await _collection.FindAsync(d => d.OfficeId == officeId && d.Status != "Inactive", cancellationToken: cancellationToken);
             return await cursor.ToListAsync(cancellationToken);
         }
     }
