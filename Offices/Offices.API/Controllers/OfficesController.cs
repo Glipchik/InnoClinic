@@ -102,7 +102,7 @@ namespace Offices.API.Controllers
         /// <response code="400">If validation errors occured</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] CreateOfficeDto createOfficeDto, CancellationToken cancellationToken)
+        public async Task Post([FromBody] CreateOfficeDto createOfficeDto, CancellationToken cancellationToken)
         {
             // Validation
             var officeValidation = await _createOfficeDtoValidator.ValidateAsync(createOfficeDto, cancellationToken);
@@ -121,7 +121,6 @@ namespace Offices.API.Controllers
             var createOfficeModel = _mapper.Map<CreateOfficeModel>(createOfficeDto);
             await _officeService.Create(createOfficeModel, cancellationToken);
             _logger.LogInformation("New office was successfully created");
-            return Ok();
         }
 
         /// <summary>
@@ -133,7 +132,7 @@ namespace Offices.API.Controllers
         /// <response code="400">If validation errors occured</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpPut]
-        public async Task<IActionResult> Put([FromBody] UpdateOfficeDto updateOfficeDto, CancellationToken cancellationToken)
+        public async Task Put([FromBody] UpdateOfficeDto updateOfficeDto, CancellationToken cancellationToken)
         {
             // Validation
             var officeValidation = await _updateOfficeDtoValidator.ValidateAsync(updateOfficeDto, cancellationToken);
@@ -152,7 +151,6 @@ namespace Offices.API.Controllers
             var updateOfficeModel = _mapper.Map<UpdateOfficeModel>(updateOfficeDto);
             await _officeService.Update(updateOfficeModel, cancellationToken);
             _logger.LogInformation("Office with id {id} was successfully updated", updateOfficeDto.Id);
-            return Ok();
         }
 
         /// <summary>
@@ -163,7 +161,7 @@ namespace Offices.API.Controllers
         /// <response code="404">If the office is not found</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(string id, CancellationToken cancellationToken)
+        public async Task Delete(string id, CancellationToken cancellationToken)
         {
             // Validation
             var objectIdDtoValidation = await _objectIdDtoValidator.ValidateAsync(new ObjectIdDto(id), cancellationToken);
@@ -181,7 +179,6 @@ namespace Offices.API.Controllers
 
             await _officeService.Delete(id, cancellationToken);
             _logger.LogInformation("Office with id {id} was successfully deleted", id);
-            return Ok();
         }
     }
 }
