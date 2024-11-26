@@ -66,6 +66,7 @@ namespace Offices.API.Controllers
         /// <param name="id">The ID of the receptionist to retrieve.</param>
         /// <returns>Returns the receptionist object.</returns>
         /// <response code="200">If the receptionist is found</response>
+        /// <response code="400">If validation errors occured</response>
         /// <response code="404">If the receptionist is not found</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpGet("{id}")]
@@ -155,6 +156,7 @@ namespace Offices.API.Controllers
         /// <param name="id">The receptionist Id of object to delete.</param>
         /// <response code="200">If the receptionist is deleted</response>
         /// <response code="404">If the receptionist is not found</response>
+        /// <response code="400">If validation errors occured</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpDelete("{id}")]
         public async Task Delete(string id, CancellationToken cancellationToken)

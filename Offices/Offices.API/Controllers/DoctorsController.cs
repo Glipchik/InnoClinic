@@ -66,7 +66,8 @@ namespace Offices.API.Controllers
         /// <param name="id">The ID of the doctor to retrieve.</param>
         /// <returns>Returns the doctor object.</returns>
         /// <response code="200">If the doctor is found</response>
-        /// <response code="400">If the doctor is not found</response>
+        /// <response code="400">If validation errors occured</response>
+        /// <response code="404">If the doctor is not found</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpGet("{id}")]
         public async Task<DoctorDto> Get(string id, CancellationToken cancellationToken)
@@ -124,7 +125,8 @@ namespace Offices.API.Controllers
         /// </summary>
         /// <param name="updateDoctorDto">The doctor object fields containing details.</param>
         /// <response code="200">If the doctor is updated</response>
-        /// <response code="400">If the doctor is not found or validation errors occured</response>
+        /// <response code="404">If the doctor is not found</response>
+        /// <response code="400">If validation errors occured</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpPut]
         public async Task Put([FromBody] UpdateDoctorDto updateDoctorDto, CancellationToken cancellationToken)
@@ -153,7 +155,8 @@ namespace Offices.API.Controllers
         /// </summary>
         /// <param name="id">The doctor Id of object to delete.</param>
         /// <response code="200">If the doctor is deleted</response>
-        /// <response code="400">If the doctor is not found</response>
+        /// <response code="404">If the doctor is not found</response>
+        /// <response code="400">If validation errors occured</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpDelete("{id}")]
         public async Task Delete(string id, CancellationToken cancellationToken)

@@ -45,14 +45,5 @@ namespace Offices.API.Extensions
 
             return services;
         }
-
-        public static void AddToModelState(this ValidationResult result, ModelStateDictionary modelState, ILogger logger)
-        {
-            foreach (var error in result.Errors)
-            {
-                logger.LogInformation("Validation error with property {propertyName }: {errorMessage}", error.PropertyName, error.ErrorMessage);
-                modelState.AddModelError(error.PropertyName, error.ErrorMessage);
-            }
-        }
     }
 }

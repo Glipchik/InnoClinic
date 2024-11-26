@@ -71,6 +71,7 @@ namespace Offices.API.Controllers
         /// <returns>Returns the office object.</returns>
         /// <response code="200">If the office is found</response>
         /// <response code="404">If the office is not found</response>
+        /// <response code="400">If validation errors occured</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpGet("{id}")]
         public async Task<OfficeDto> Get(string id, CancellationToken cancellationToken)
@@ -159,6 +160,7 @@ namespace Offices.API.Controllers
         /// <param name="id">The office Id of object to delete.</param>
         /// <response code="200">If the office is deleted</response>
         /// <response code="404">If the office is not found</response>
+        /// <response code="400">If validation errors occured</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpDelete("{id}")]
         public async Task Delete(string id, CancellationToken cancellationToken)
