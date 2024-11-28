@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 
 namespace Services.Domain.Enums
 {
-    internal class DoctorStatus
+    public enum DoctorStatus
     {
+        AtWork,
+        OnVacation,
+        SickDay,
+        SickLeave,
+        LeaveWithoutPay,
+        Inactive
     }
 }

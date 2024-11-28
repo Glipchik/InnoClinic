@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Services.Domain.Enums;
 
 namespace Services.Domain.Entities
 {
@@ -28,6 +29,6 @@ namespace Services.Domain.Entities
         public Specialization Specialization { get; set; }
 
         [Required]
-        public string Status { get; set; }
+        public DoctorStatus Status { get; set; } = DoctorStatus.AtWork;
     }
 }

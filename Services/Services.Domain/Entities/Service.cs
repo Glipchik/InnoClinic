@@ -23,8 +23,8 @@ namespace Services.Domain.Entities
         public string ServiceName { get; set; }
 
         [Required]
-        [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than 0.")]
-        public double Price { get; set; }
+        [Range(0.0, double.MaxValue, ErrorMessage = "Price can't be less than zero.")]
+        public decimal Price { get; set; }
 
         [Required]
         public Guid SpecializationId { get; set; }
