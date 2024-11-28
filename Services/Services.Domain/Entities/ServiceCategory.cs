@@ -16,7 +16,6 @@ namespace Services.Domain.Entities
         public string CategoryName { get; set; }
 
         [Required]
-        [Range(1, int.MaxValue, ErrorMessage = "TimeSlotSize must be greater than 0.")]
-        public int TimeSlotSize { get; set; }
+        public TimeSpan TimeSlotSize { get; set; }
     }
 }
