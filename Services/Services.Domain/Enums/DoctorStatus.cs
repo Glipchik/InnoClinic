@@ -8,6 +8,7 @@ namespace Services.Domain.Enums
 {
     public enum DoctorStatus
     {
+        None = 0,
         AtWork,
         OnVacation,
         SickDay,
