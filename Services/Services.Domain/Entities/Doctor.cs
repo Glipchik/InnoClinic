@@ -9,11 +9,8 @@ using Services.Domain.Enums;
 
 namespace Services.Domain.Entities
 {
-    public class Doctor
+    public class Doctor : BaseEntity
     {
-        [Key]
-        public Guid Id { get; set; }
-
         [Required]
         public string FirstName { get; set; }
 
