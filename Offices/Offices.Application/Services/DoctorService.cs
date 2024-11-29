@@ -29,8 +29,8 @@ namespace Offices.Application.Services
         {
             // Get related to doctor office
             var officeRelatedToDoctor = await _officeRepository.GetAsync(createDoctorModel.OfficeId, cancellationToken);
-            // If specified office is not active, can't create entity
-            if (officeRelatedToDoctor == null)
+            // If specified office is not active or not found, can't create entity
+            if (officeRelatedToDoctor == null || !officeRelatedToDoctor.IsActive)
             {
                 // Throw exception if there is no active office with this id for this worker
                 throw new RelatedObjectNotFoundException($"Can't create doctor because office with id {createDoctorModel.OfficeId} is not active or doesn't exist!");
@@ -42,8 +42,8 @@ namespace Offices.Application.Services
         {
             // Get related to doctor office
             var officeRelatedToDoctor = await _officeRepository.GetAsync(updateDoctorModel.OfficeId, cancellationToken);
-            // If specified office is not active, can't update entity
-            if (officeRelatedToDoctor == null)
+            // If specified office is not active or not found, can't update entity
+            if (officeRelatedToDoctor == null || !officeRelatedToDoctor.IsActive)
             {
                 // Throw exception if there is no active office with this id for this worker
                 throw new RelatedObjectNotFoundException($"Can't update doctor with id {updateDoctorModel.Id} because office with id {updateDoctorModel.OfficeId} is not active or doesn't exist!");

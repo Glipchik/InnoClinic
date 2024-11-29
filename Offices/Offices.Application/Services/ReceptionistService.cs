@@ -13,7 +13,7 @@ using Offices.Domain.Exceptions;
 
 namespace Offices.Application.Services
 {
-    public class ReceptionistService: IReceptionistService
+    public class ReceptionistService : IReceptionistService
     {
         private readonly IGenericRepository<Receptionist> _receptionistRepository;
         private readonly IOfficeRepository _officeRepository;
@@ -29,8 +29,8 @@ namespace Offices.Application.Services
         {
             // Get related to receptionist office
             var officeRelatedToReceptionist = await _officeRepository.GetAsync(createReceptionistModel.OfficeId, cancellationToken);
-            // If specified office is not active, can't create entity
-            if (officeRelatedToReceptionist == null)
+            // If specified office is not active or not found, can't create entity
+            if (officeRelatedToReceptionist == null || !officeRelatedToReceptionist.IsActive)
             {
                 // Throw exception if there is no active office with this id for this worker
                 throw new RelatedObjectNotFoundException($"Can't create receptionist because office with id {createReceptionistModel.OfficeId} is not active or doesn't exist!");
@@ -42,8 +42,8 @@ namespace Offices.Application.Services
         {
             // Get related to receptionist office
             var officeRelatedToReceptionist = await _officeRepository.GetAsync(updateReceptionistModel.OfficeId, cancellationToken);
-            // If specified office is not active, can't update entity
-            if (officeRelatedToReceptionist == null)
+            // If specified office is not active or not found, can't update entity
+            if (officeRelatedToReceptionist == null || !officeRelatedToReceptionist.IsActive)
             {
                 // Throw exception if there is no active office with this id for this worker
                 throw new RelatedObjectNotFoundException($"Can't update receptionist with id {updateReceptionistModel.Id} because office with id {updateReceptionistModel.OfficeId} is not active or doesn't exist!");
