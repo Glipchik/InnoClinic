@@ -8,11 +8,8 @@ using System.Threading.Tasks;
 
 namespace Services.Domain.Entities
 {
-    public class Service
+    public class Service : BaseEntity
     {
-        [Key]
-        public Guid Id { get; set; }
-
         [Required]
         public Guid ServiceCategoryId { get; set; }
 
