@@ -5,11 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 using Services.Domain.Entities;
 
-namespace Services.Application.Repositories.Abstractions
+namespace Services.Domain.Repositories.Abstractions
 {
     public interface IUnitOfWork
     {
-        IGenericRepository<T> GetRepository<T>() where T : BaseEntity;
+        IDoctorRepository GetDoctorRepository();
+        IServiceCategoryRepository GetServiceCategoryRepository();
+        IServiceRepository GetServiceRepository();
+        ISpecializationRepository GetSpecializationRepository();
+
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
         Task BeginTransactionAsync();
         Task CommitTransactionAsync();
