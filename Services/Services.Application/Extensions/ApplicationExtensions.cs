@@ -18,10 +18,10 @@ namespace Services.Application.Extensions
             services.AddAutoMapper(typeof(ApplicationMapping));
 
             // Adding services
-            services.AddScoped<IServiceCategoryService, ServiceCategoryService>();
+            services.AddScoped<IServiceCategoryManager, ServiceCategoryManager>();
             services.AddScoped<IDoctorService, DoctorService>();
             services.AddScoped<ISpecializationService, SpecializationService>();
-            services.AddScoped<IServiceService, ServiceService>();
+            services.AddScoped<IServiceManager, ServiceManager>();
 
             return services;
         }

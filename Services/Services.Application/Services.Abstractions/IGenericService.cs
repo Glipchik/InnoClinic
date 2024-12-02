@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Services.Application.Services.Abstractions
 {
-    public interface IGeneralService<CreateModel, Model, UpdateModel>
+    public interface IGenericService<CreateModel, Model, UpdateModel>
     where Model : BaseModel
     where UpdateModel : BaseModel
     {

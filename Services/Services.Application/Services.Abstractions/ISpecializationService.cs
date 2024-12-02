@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Services.Application.Services.Abstractions
 {
-    public interface ISpecializationService : IGeneralService<CreateSpecializationModel, SpecializationModel, UpdateSpecializationModel>
+    public interface ISpecializationService : IGenericService<CreateSpecializationModel, SpecializationModel, UpdateSpecializationModel>
     {
     }
 }

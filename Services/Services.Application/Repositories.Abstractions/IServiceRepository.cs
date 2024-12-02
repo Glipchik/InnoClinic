@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Services.Application.Repositories.Abstractions
 {
-    public interface IServiceRepository : IGeneralRepository<Service>
+    public interface IServiceRepository : IGenericRepository<Service>
     {
         Task<IEnumerable<Service>> GetActiveServicesWithCategoryAsync(Guid serviceCategoryId, CancellationToken cancellationToken);
     }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Services.Application.Repositories.Abstractions
 {
-    public interface IServiceCategoryRepository : IGeneralRepository<ServiceCategory>
+    public interface IServiceCategoryRepository : IGenericRepository<ServiceCategory>
     {
     }
 }

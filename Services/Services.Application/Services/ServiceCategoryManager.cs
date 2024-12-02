@@ -12,13 +12,13 @@ using System.Threading.Tasks;
 
 namespace Services.Application.Services
 {
-    public class ServiceCategoryService : IServiceCategoryService
+    public class ServiceCategoryManager : IServiceCategoryManager
     {
         private readonly IServiceCategoryRepository _serviceCategoryRepository;
         private readonly IServiceRepository _serviceRepository;
         private readonly IMapper _mapper;
 
-        public ServiceCategoryService(IServiceCategoryRepository serviceCategoryRepository, IMapper mapper, IServiceRepository serviceRepository)
+        public ServiceCategoryManager(IServiceCategoryRepository serviceCategoryRepository, IMapper mapper, IServiceRepository serviceRepository)
         {
             _mapper = mapper;
             _serviceCategoryRepository = serviceCategoryRepository;

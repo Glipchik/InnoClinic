@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Services.Application.Services.Abstractions
 {
-    public interface IDoctorService : IGeneralService<CreateDoctorModel, DoctorModel, UpdateDoctorModel>
+    public interface IDoctorService : IGenericService<CreateDoctorModel, DoctorModel, UpdateDoctorModel>
     {
     }
 }

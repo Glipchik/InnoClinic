@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Services.Application.Repositories.Abstractions
 {
-    public interface IDoctorRepository : IGeneralRepository<Doctor>
+    public interface IDoctorRepository : IGenericRepository<Doctor>
     {
         Task<IEnumerable<Doctor>> GetActiveDoctorsWithSpecializationAsync(Guid specializationId, CancellationToken cancellationToken);
     }

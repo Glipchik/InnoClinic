@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Services.Application.Repositories.Abstractions
 {
-    public interface IGeneralRepository<T> where T : BaseEntity
+    public interface IGenericRepository<T> where T : BaseEntity
     {
         Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken);
         Task<T> GetAsync(Guid id, CancellationToken cancellationToken);
