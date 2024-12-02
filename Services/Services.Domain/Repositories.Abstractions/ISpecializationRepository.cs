@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services.Application.Repositories.Abstractions
+namespace Services.Domain.Repositories.Abstractions
 {
-    public interface IServiceCategoryRepository : IGenericRepository<ServiceCategory>
+    public interface ISpecializationRepository : IGenericRepository<Specialization>
     {
     }
 }
