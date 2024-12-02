@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Services.Application.Repositories.Abstractions;
+using Services.Domain.Repositories.Abstractions;
 using Services.Domain.Entities;
 using Services.Domain.Exceptions;
 using Services.Infrastructure.Contexts;
@@ -27,7 +27,7 @@ namespace Services.Infrastructure.Repositories
             await _context.Set<T>().AddAsync(entity, cancellationToken);
         }
 
-        public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
+        public virtual async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
             var entityToDelete = await _context.Set<T>().FindAsync(id, cancellationToken) ?? throw new NotFoundException($"Entity with id: {id} not found. Can't delete.");
             _context.Set<T>().Remove(entityToDelete);
@@ -35,7 +35,7 @@ namespace Services.Infrastructure.Repositories
 
         public async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken)
         {
-            return (IEnumerable<T>)_context.Set<T>().ToListAsync(cancellationToken);
+            return (IEnumerable<T>)_context.Set<T>().AsNoTracking().ToListAsync(cancellationToken);
         }
 
         public async Task<T> GetAsync(Guid id, CancellationToken cancellationToken)
