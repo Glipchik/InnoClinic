@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Services.Domain.Entities;
-using Services.Domain.Exceptions;
 using Services.Domain.Repositories.Abstractions;
 using Services.Infrastructure.Contexts;
 
@@ -26,7 +25,7 @@ namespace Services.Infrastructure.Repositories
 
         public async override Task DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
-            var serviceToDelete = await _context.Set<Service>().FindAsync(id) ?? throw new NotFoundException($"Service with id: {id} not found. Can't delete.");
+            var serviceToDelete = await _context.Set<Service>().FindAsync(id);
             serviceToDelete.IsActive = false;
             _context.Set<Service>().Update(serviceToDelete);
         }

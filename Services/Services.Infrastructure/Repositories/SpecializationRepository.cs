@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Services.Domain.Entities;
-using Services.Domain.Exceptions;
 using Services.Domain.Repositories.Abstractions;
 using Services.Infrastructure.Contexts;
 
@@ -21,7 +20,7 @@ namespace Services.Infrastructure.Repositories
 
         public async override Task DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
-            var specializationToDelete = await _context.Set<Specialization>().FindAsync(id) ?? throw new NotFoundException($"Specialization with id: {id} not found. Can't delete.");
+            var specializationToDelete = await _context.Set<Specialization>().FindAsync(id);
             specializationToDelete.IsActive = false;
             _context.Set<Specialization>().Update(specializationToDelete);
         }

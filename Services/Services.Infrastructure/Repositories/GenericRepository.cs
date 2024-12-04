@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Services.Domain.Repositories.Abstractions;
 using Services.Domain.Entities;
-using Services.Domain.Exceptions;
 using Services.Infrastructure.Contexts;
 
 namespace Services.Infrastructure.Repositories
@@ -29,7 +28,7 @@ namespace Services.Infrastructure.Repositories
 
         public virtual async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
-            var entityToDelete = await _context.Set<T>().FindAsync(id) ?? throw new NotFoundException($"Entity with id: {id} not found. Can't delete.");
+            var entityToDelete = await _context.Set<T>().FindAsync(id);
             _context.Set<T>().Remove(entityToDelete);
         }
 
@@ -40,12 +39,12 @@ namespace Services.Infrastructure.Repositories
 
         public async Task<T> GetAsync(Guid id, CancellationToken cancellationToken)
         {
-            return await _context.Set<T>().FindAsync(id) ?? throw new NotFoundException($"Entity with id: {id} not found.");
+            return await _context.Set<T>().FindAsync(id);
         }
 
         public async Task UpdateAsync(T entity, CancellationToken cancellationToken)
         {
-            var entityToUpdate = await _context.Set<T>().FindAsync(entity.Id) ?? throw new NotFoundException($"Entity with id: {entity.Id} not found. Can't update.");
+            var entityToUpdate = await _context.Set<T>().FindAsync(entity.Id);
             _context.Set<T>().Update(entity);
         }
     }
