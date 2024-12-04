@@ -9,29 +9,19 @@ using System.Threading.Tasks;
 
 namespace Services.Application.Mapper
 {
-    public class ApplicationMapping : Profile
+    public partial class ApplicationMapping : Profile
     {
+        partial void AddDoctorMapping();
+        partial void AddServiceMapping();
+        partial void AddServiceCategoryMapping();
+        partial void AddSpecializationMapping();
+
         public ApplicationMapping()
         {
-            // Doctor mapping
-            CreateMap<UpdateDoctorModel, Doctor>();
-            CreateMap<Doctor, DoctorModel>();
-            CreateMap<CreateDoctorModel, Doctor>();
-
-            // Service category mapping
-            CreateMap<UpdateServiceCategoryModel, ServiceCategory>();
-            CreateMap<ServiceCategory, ServiceCategoryModel>();
-            CreateMap<CreateServiceCategoryModel, ServiceCategory>();
-
-            // Service mapping
-            CreateMap<UpdateServiceModel, Service>();
-            CreateMap<Service, ServiceModel>();
-            CreateMap<CreateServiceModel, Service>();
-
-            // Specialization mapping
-            CreateMap<UpdateSpecializationModel, Specialization>();
-            CreateMap<Specialization, SpecializationModel>();
-            CreateMap<CreateSpecializationModel, Specialization>();
+            AddDoctorMapping();
+            AddServiceCategoryMapping();
+            AddSpecializationMapping();
+            AddServiceMapping();
         }
     }
 }
