@@ -68,28 +68,20 @@ namespace Services.Application.Services
 
         public async Task Update(UpdateServiceModel updateModel, CancellationToken cancellationToken)
         {
-            // Get related to service specialization
-            var specializationRelatedToService = await _unitOfWork.ServiceRepository.GetAsync(updateModel.SpecializationId, cancellationToken);
-
-            // Get related to service category
-            var categoryRelatedToService = await _unitOfWork.ServiceRepository.GetAsync(updateModel.ServiceCategoryId, cancellationToken);
-
-            // If specified specialization is not active or not found, can't update entity
-            if (specializationRelatedToService == null || !specializationRelatedToService.IsActive)
-            {
-                throw new RelatedObjectNotFoundException($"Related specialization with id {updateModel.SpecializationId} is not found or not active.");
-            }
-
-            // If specified category not found, can't create entity
-            if (categoryRelatedToService == null)
-            {
-                throw new RelatedObjectNotFoundException($"Related category with id {updateModel.ServiceCategoryId} is not found.");
-            }
-
             var serviceToUpdate = await _unitOfWork.ServiceRepository.GetAsync(updateModel.Id, cancellationToken);
             if (serviceToUpdate == null)
             {
                 throw new NotFoundException($"Service with id: {updateModel.Id} is not found. Can't update.");
+            }
+
+            if (serviceToUpdate.Specialization == null || !serviceToUpdate.Specialization.IsActive)
+            {
+                throw new RelatedObjectNotFoundException($"Related specialization with id {updateModel.SpecializationId} is not found or not active.");
+            }
+
+            if (serviceToUpdate.ServiceCategory == null)
+            {
+                throw new RelatedObjectNotFoundException($"Related category with id {updateModel.ServiceCategoryId} is not found.");
             }
 
             await _unitOfWork.ServiceRepository.UpdateAsync(_mapper.Map<Service>(updateModel), cancellationToken);

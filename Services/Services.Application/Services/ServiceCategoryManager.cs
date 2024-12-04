@@ -31,13 +31,12 @@ namespace Services.Application.Services
 
         public async Task Delete(Guid id, CancellationToken cancellationToken)
         {
-            var servicesRelatedToCategory = await _unitOfWork.ServiceRepository.GetActiveServicesByCategoryIdAsync(id, cancellationToken);
+            var (servicesRelatedToCategory, serviceCategoryToDelete) = await _unitOfWork.ServiceCategoryRepository.GetServiceCategoryAndRelatedActiveServices(id, cancellationToken);
             if (servicesRelatedToCategory.Any())
-            {
+            {   
                 throw new RelatedObjectNotFoundException($"Related active services to category with id {id} found. Can't delete category.");
             }
 
-            var serviceCategoryToDelete = await _unitOfWork.ServiceCategoryRepository.GetAsync(id, cancellationToken);
             if (serviceCategoryToDelete == null)
             {
                 throw new NotFoundException($"Service category with id: {id} is not found. Can't delete.");
