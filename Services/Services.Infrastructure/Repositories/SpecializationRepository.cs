@@ -21,7 +21,7 @@ namespace Services.Infrastructure.Repositories
 
         public async override Task DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
-            var specializationToDelete = await _context.Set<Specialization>().FindAsync(id, cancellationToken) ?? throw new NotFoundException($"Specialization with id: {id} not found. Can't delete.");
+            var specializationToDelete = await _context.Set<Specialization>().FindAsync(id) ?? throw new NotFoundException($"Specialization with id: {id} not found. Can't delete.");
             specializationToDelete.IsActive = false;
             _context.Set<Specialization>().Update(specializationToDelete);
         }

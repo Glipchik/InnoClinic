@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Services.Domain.Exceptions
 {
-    public class NotFoundException : BadRequestException
+    public class NotFoundException : Exception
     {
         public NotFoundException()
             : base("Object not found.")

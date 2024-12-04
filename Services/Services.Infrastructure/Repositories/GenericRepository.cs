@@ -29,23 +29,23 @@ namespace Services.Infrastructure.Repositories
 
         public virtual async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
-            var entityToDelete = await _context.Set<T>().FindAsync(id, cancellationToken) ?? throw new NotFoundException($"Entity with id: {id} not found. Can't delete.");
+            var entityToDelete = await _context.Set<T>().FindAsync(id) ?? throw new NotFoundException($"Entity with id: {id} not found. Can't delete.");
             _context.Set<T>().Remove(entityToDelete);
         }
 
         public async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken)
         {
-            return (IEnumerable<T>)_context.Set<T>().AsNoTracking().ToListAsync(cancellationToken);
+            return await _context.Set<T>().AsNoTracking().ToListAsync(cancellationToken);
         }
 
         public async Task<T> GetAsync(Guid id, CancellationToken cancellationToken)
         {
-            return await _context.Set<T>().FindAsync(id, cancellationToken) ?? throw new NotFoundException($"Entity with id: {id} not found.");
+            return await _context.Set<T>().FindAsync(id) ?? throw new NotFoundException($"Entity with id: {id} not found.");
         }
 
         public async Task UpdateAsync(T entity, CancellationToken cancellationToken)
         {
-            var entityToUpdate = await _context.Set<T>().FindAsync(entity.Id, cancellationToken) ?? throw new NotFoundException($"Entity with id: {entity.Id} not found. Can't update.");
+            var entityToUpdate = await _context.Set<T>().FindAsync(entity.Id) ?? throw new NotFoundException($"Entity with id: {entity.Id} not found. Can't update.");
             _context.Set<T>().Update(entity);
         }
     }

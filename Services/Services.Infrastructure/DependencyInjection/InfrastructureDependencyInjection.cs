@@ -12,9 +12,9 @@ using Services.Infrastructure.Repositories;
 
 namespace Services.Infrastructure.Extensions
 {
-    public static class InfrastructureExtension
+    public static class InfrastructureDependencyInjection
     {
-        public static IServiceCollection AddInfrastructureExtensions(this IServiceCollection services)
+        public static IServiceCollection AddInfrastructureDependencyInjection(this IServiceCollection services)
         {
             // Adding repositories
             services.AddScoped<IDoctorRepository, DoctorRepository>();

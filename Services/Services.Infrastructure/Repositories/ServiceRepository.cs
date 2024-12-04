@@ -19,14 +19,14 @@ namespace Services.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Service>> GetActiveServicesWithCategoryAsync(Guid serviceCategoryId, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Service>> GetActiveServicesByCategoryIdAsync(Guid serviceCategoryId, CancellationToken cancellationToken)
         {
             return await _context.Set<Service>().AsNoTracking().Where(s => s.ServiceCategoryId == serviceCategoryId && s.IsActive == true).ToListAsync(cancellationToken);
         }
 
         public async override Task DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
-            var serviceToDelete = await _context.Set<Service>().FindAsync(id, cancellationToken) ?? throw new NotFoundException($"Service with id: {id} not found. Can't delete.");
+            var serviceToDelete = await _context.Set<Service>().FindAsync(id) ?? throw new NotFoundException($"Service with id: {id} not found. Can't delete.");
             serviceToDelete.IsActive = false;
             _context.Set<Service>().Update(serviceToDelete);
         }

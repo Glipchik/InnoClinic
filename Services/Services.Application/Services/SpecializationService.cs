@@ -32,7 +32,7 @@ namespace Services.Application.Services
 
         public async Task Delete(Guid id, CancellationToken cancellationToken)
         {
-            var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken: cancellationToken);
+            var transaction = _unitOfWork.BeginTransaction(cancellationToken: cancellationToken);
             try
             {
                 var doctorsWithSpecializationId = await _unitOfWork.DoctorRepository.GetActiveDoctorsBySpecializationIdAsync(id, cancellationToken);

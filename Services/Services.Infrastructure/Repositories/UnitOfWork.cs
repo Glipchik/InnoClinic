@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Transactions;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore;
+using System.Data;
 using Services.Domain.Entities;
 using Services.Domain.Repositories.Abstractions;
 using Services.Infrastructure.Contexts;
@@ -11,13 +14,20 @@ namespace Services.Infrastructure.Repositories
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
         private readonly AppDbContext _context;
-        private IDbContextTransaction _transaction;
+        private IDbContextTransaction? _currentTransaction;
 
-        // Репозитории
         private IDoctorRepository _doctorRepository;
+        public IDoctorRepository DoctorRepository => _doctorRepository;
+
         private IServiceCategoryRepository _serviceCategoryRepository;
+        public IServiceCategoryRepository ServiceCategoryRepository => _serviceCategoryRepository;
+
         private IServiceRepository _serviceRepository;
+        public IServiceRepository ServiceRepository => _serviceRepository;
+
         private ISpecializationRepository _specializationRepository;
+        public ISpecializationRepository SpecializationRepository => _specializationRepository;
+
 
         public UnitOfWork(AppDbContext context,
             IDoctorRepository doctorRepository,
@@ -37,44 +47,48 @@ namespace Services.Infrastructure.Repositories
             return await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task BeginTransactionAsync()
+        public IDbContextTransaction BeginTransaction(
+            System.Data.IsolationLevel isolationLevel = System.Data.IsolationLevel.ReadCommitted,
+            CancellationToken cancellationToken = default)
         {
-            _transaction = await _context.Database.BeginTransactionAsync();
+            if (_currentTransaction != null)
+            {
+                throw new InvalidOperationException("A transaction is already in progress.");
+            }
+
+            _currentTransaction = _context.Database.BeginTransaction(isolationLevel);
+
+            return _currentTransaction;
         }
 
         public async Task CommitTransactionAsync()
         {
-            if (_transaction == null)
-                throw new InvalidOperationException("Transaction has not been started.");
+            if (_currentTransaction == null)
+            {
+                throw new InvalidOperationException("There is no active transaction to commit.");
+            }
 
-            await _transaction.CommitAsync();
-            await _transaction.DisposeAsync();
-            _transaction = null;
+            await _currentTransaction.CommitAsync();
+            await _currentTransaction.DisposeAsync();
+            _currentTransaction = null;
         }
 
         public async Task RollbackTransactionAsync()
         {
-            if (_transaction == null)
-                throw new InvalidOperationException("Transaction has not been started.");
+            if (_currentTransaction == null)
+            {
+                throw new InvalidOperationException("There is no active transaction to roll back.");
+            }
 
-            await _transaction.RollbackAsync();
-            await _transaction.DisposeAsync();
-            _transaction = null;
+            await _currentTransaction.RollbackAsync();
+            await _currentTransaction.DisposeAsync();
+            _currentTransaction = null;
         }
 
         public void Dispose()
         {
-            _transaction?.Dispose();
+            _currentTransaction?.Dispose();
             _context.Dispose();
         }
-
-        // Методы для получения репозиториев
-        public IDoctorRepository GetDoctorRepository() => _doctorRepository;
-
-        public IServiceCategoryRepository GetServiceCategoryRepository() => _serviceCategoryRepository;
-
-        public IServiceRepository GetServiceRepository() => _serviceRepository;
-
-        public ISpecializationRepository GetSpecializationRepository() => _specializationRepository;
     }
 }
