@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Services.Application.Exceptions;
 
 namespace Services.Application.Services
 {
@@ -35,6 +36,12 @@ namespace Services.Application.Services
             var transaction = _unitOfWork.BeginTransaction(cancellationToken: cancellationToken);
             try
             {
+                var specializationToDelete = await _unitOfWork.SpecializationRepository.GetAsync(id, cancellationToken);
+                if (specializationToDelete == null)
+                {
+                    throw new NotFoundException($"Specialization with id: {id} is not found. Can't delete.");
+                }
+
                 var doctorsWithSpecializationId = await _unitOfWork.DoctorRepository.GetActiveDoctorsBySpecializationIdAsync(id, cancellationToken);
 
                 foreach (var doctor in doctorsWithSpecializationId)
@@ -44,7 +51,7 @@ namespace Services.Application.Services
                 }
 
                 await _unitOfWork.SpecializationRepository.DeleteAsync(id, cancellationToken);
-                await _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
                 await transaction.CommitAsync(cancellationToken);
             }
             catch
@@ -66,6 +73,12 @@ namespace Services.Application.Services
 
         public async Task Update(UpdateSpecializationModel updateModel, CancellationToken cancellationToken)
         {
+            var specializationToUpdate = await _unitOfWork.SpecializationRepository.GetAsync(updateModel.Id, cancellationToken);
+            if (specializationToUpdate == null)
+            {
+                throw new NotFoundException($"Specialization with id: {updateModel.Id} is not found. Can't update.");
+            }
+
             await _unitOfWork.SpecializationRepository.UpdateAsync(_mapper.Map<Specialization>(updateModel), cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
