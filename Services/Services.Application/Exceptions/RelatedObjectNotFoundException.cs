@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services.Domain.Exceptions
+namespace Services.Application.Exceptions
 {
     public class RelatedObjectNotFoundException : BadRequestException
     {

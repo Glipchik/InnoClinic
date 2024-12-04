@@ -5,9 +5,9 @@ using Services.Application.Mapper;
 
 namespace Services.Application.Extensions
 {
-    public static class ApplicationExtensions
+    public static class ApplicationDependencyInjection
     {
-        public static IServiceCollection AddApplicationExtensions(this IServiceCollection services)
+        public static IServiceCollection AddApplicationDependencyInjection(this IServiceCollection services)
         {
             // Adding mapping profile
             services.AddAutoMapper(typeof(ApplicationMapping));

@@ -9,6 +9,6 @@ namespace Services.Domain.Repositories.Abstractions
 {
     public interface IDoctorRepository : IGenericRepository<Doctor>
     {
-        Task<IEnumerable<Doctor>> GetActiveDoctorsWithSpecializationAsync(Guid specializationId, CancellationToken cancellationToken);
+        Task<IEnumerable<Doctor>> GetActiveDoctorsBySpecializationIdAsync(Guid specializationId, CancellationToken cancellationToken);
     }
 }

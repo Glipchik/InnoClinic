@@ -26,38 +26,47 @@ namespace Services.Application.Services
 
         public async Task Create(CreateSpecializationModel createModel, CancellationToken cancellationToken)
         {
-            await _unitOfWork.GetSpecializationRepository().CreateAsync(_mapper.Map<Specialization>(createModel), cancellationToken);
+            await _unitOfWork.SpecializationRepository.CreateAsync(_mapper.Map<Specialization>(createModel), cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
         public async Task Delete(Guid id, CancellationToken cancellationToken)
         {
-            await _unitOfWork.BeginTransactionAsync();
-            var doctorsWithSpecializationId = await _unitOfWork.GetDoctorRepository().GetActiveDoctorsWithSpecializationAsync(id, cancellationToken);
-
-            foreach (var doctor in doctorsWithSpecializationId)
+            var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken: cancellationToken);
+            try
             {
-                doctor.Status = _mapper.Map<DoctorStatus>(DoctorStatusModel.Inactive);
-                await _unitOfWork.GetDoctorRepository().UpdateAsync(doctor, cancellationToken);
-            }
+                var doctorsWithSpecializationId = await _unitOfWork.DoctorRepository.GetActiveDoctorsBySpecializationIdAsync(id, cancellationToken);
 
-            await _unitOfWork.GetSpecializationRepository().DeleteAsync(id, cancellationToken);
-            await _unitOfWork.CommitTransactionAsync();
+                foreach (var doctor in doctorsWithSpecializationId)
+                {
+                    doctor.Status = _mapper.Map<DoctorStatus>(DoctorStatusModel.Inactive);
+                    await _unitOfWork.DoctorRepository.UpdateAsync(doctor, cancellationToken);
+                }
+
+                await _unitOfWork.SpecializationRepository.DeleteAsync(id, cancellationToken);
+                await _unitOfWork.SaveChangesAsync();
+                await transaction.CommitAsync(cancellationToken);
+            }
+            catch
+            {
+                await transaction.RollbackAsync(cancellationToken);
+                throw;
+            }
         }
 
         public async Task<SpecializationModel> Get(Guid id, CancellationToken cancellationToken)
         {
-            return _mapper.Map<SpecializationModel>(await _unitOfWork.GetSpecializationRepository().GetAsync(id, cancellationToken));
+            return _mapper.Map<SpecializationModel>(await _unitOfWork.SpecializationRepository.GetAsync(id, cancellationToken));
         }
 
         public async Task<IEnumerable<SpecializationModel>> GetAll(CancellationToken cancellationToken)
         {
-            return _mapper.Map<IEnumerable<SpecializationModel>>(await _unitOfWork.GetSpecializationRepository().GetAllAsync(cancellationToken));
+            return _mapper.Map<IEnumerable<SpecializationModel>>(await _unitOfWork.SpecializationRepository.GetAllAsync(cancellationToken));
         }
 
         public async Task Update(UpdateSpecializationModel updateModel, CancellationToken cancellationToken)
         {
-            await _unitOfWork.GetSpecializationRepository().UpdateAsync(_mapper.Map<Specialization>(updateModel), cancellationToken);
+            await _unitOfWork.SpecializationRepository.UpdateAsync(_mapper.Map<Specialization>(updateModel), cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
     }
