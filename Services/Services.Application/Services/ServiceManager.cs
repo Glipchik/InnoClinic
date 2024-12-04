@@ -46,6 +46,12 @@ namespace Services.Application.Services
 
         public async Task Delete(Guid id, CancellationToken cancellationToken)
         {
+            var serviceToDelete = await _unitOfWork.ServiceRepository.GetAsync(id, cancellationToken);
+            if (serviceToDelete == null)
+            {
+                throw new NotFoundException($"Service with id: {id} is not found. Can't delete.");
+            }
+
             await _unitOfWork.ServiceRepository.DeleteAsync(id, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
@@ -78,6 +84,12 @@ namespace Services.Application.Services
             if (categoryRelatedToService == null)
             {
                 throw new RelatedObjectNotFoundException($"Related category with id {updateModel.ServiceCategoryId} is not found.");
+            }
+
+            var serviceToUpdate = await _unitOfWork.ServiceRepository.GetAsync(updateModel.Id, cancellationToken);
+            if (serviceToUpdate == null)
+            {
+                throw new NotFoundException($"Service with id: {updateModel.Id} is not found. Can't update.");
             }
 
             await _unitOfWork.ServiceRepository.UpdateAsync(_mapper.Map<Service>(updateModel), cancellationToken);

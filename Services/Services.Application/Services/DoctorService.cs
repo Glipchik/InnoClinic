@@ -37,6 +37,12 @@ namespace Services.Application.Services
 
         public async Task Delete(Guid id, CancellationToken cancellationToken)
         {
+            var doctorToDelete = await _unitOfWork.DoctorRepository.GetAsync(id, cancellationToken);
+            if (doctorToDelete == null)
+            {
+                throw new NotFoundException($"Doctor with id: {id} is not found. Can't create.");
+            }
+
             await _unitOfWork.DoctorRepository.DeleteAsync(id, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
@@ -58,6 +64,13 @@ namespace Services.Application.Services
             {
                 throw new RelatedObjectNotFoundException($"Related specialization with id {updateModel.SpecializationId} is not found or not active.");
             }
+
+            var doctorToUpdate = await _unitOfWork.DoctorRepository.GetAsync(updateModel.Id, cancellationToken);
+            if (doctorToUpdate == null)
+            {
+                throw new NotFoundException($"Doctor with id: {updateModel.Id} is not found. Can't update.");
+            }
+
             await _unitOfWork.DoctorRepository.UpdateAsync(_mapper.Map<Doctor>(updateModel), cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
