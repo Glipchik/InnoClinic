@@ -14,5 +14,10 @@ namespace Services.Infrastructure.Repositories
         public ServiceCategoryRepository(AppDbContext context) : base(context)
         {
         }
+
+        public Task<(IEnumerable<Service> servicesRelatedToCategory, ServiceCategory? serviceCategory)> GetServiceCategoryAndRelatedActiveServices(Guid id, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

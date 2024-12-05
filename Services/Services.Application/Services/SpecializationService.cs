@@ -33,12 +33,7 @@ namespace Services.Application.Services
 
         public async Task Delete(Guid id, CancellationToken cancellationToken)
         {
-<<<<<<< HEAD
-            var transaction = _unitOfWork.BeginTransaction(cancellationToken: cancellationToken);
-            try
-=======
-            using (var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken: cancellationToken))
->>>>>>> feat/NIS-13912-imlement-services-api-application-layer
+            using (var transaction = _unitOfWork.BeginTransaction(cancellationToken: cancellationToken))
             {
                 var (doctorsRelatedToSpecialization, specializationToDelete) = await _unitOfWork.SpecializationRepository.GetSpecializationAndRelatedActiveDoctors(id, cancellationToken);
                 if (specializationToDelete == null)

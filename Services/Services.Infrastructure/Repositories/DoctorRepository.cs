@@ -19,11 +19,6 @@ namespace Services.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Doctor>> GetActiveDoctorsBySpecializationIdAsync(Guid specializationId, CancellationToken cancellationToken)
-        {
-            return await _context.Set<Doctor>().AsNoTracking().Where(d => d.SpecializationId == specializationId && d.Status != Domain.Enums.DoctorStatus.Inactive).ToListAsync(cancellationToken);
-        }
-
         public async override Task DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
             var doctorToDelete = await _context.Set<Doctor>().FindAsync(id);

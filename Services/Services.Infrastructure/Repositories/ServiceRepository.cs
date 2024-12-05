@@ -18,11 +18,6 @@ namespace Services.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Service>> GetActiveServicesByCategoryIdAsync(Guid serviceCategoryId, CancellationToken cancellationToken)
-        {
-            return await _context.Set<Service>().AsNoTracking().Where(s => s.ServiceCategoryId == serviceCategoryId && s.IsActive == true).ToListAsync(cancellationToken);
-        }
-
         public async override Task DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
             var serviceToDelete = await _context.Set<Service>().FindAsync(id);

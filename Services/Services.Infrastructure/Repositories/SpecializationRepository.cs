@@ -24,5 +24,10 @@ namespace Services.Infrastructure.Repositories
             specializationToDelete.IsActive = false;
             _context.Set<Specialization>().Update(specializationToDelete);
         }
+
+        public Task<(IEnumerable<Doctor> doctorsRelatedToSpecialization, Specialization? specialization)> GetSpecializationAndRelatedActiveDoctors(Guid id, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
