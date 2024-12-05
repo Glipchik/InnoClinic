@@ -29,7 +29,6 @@ namespace Services.Application.Services
 
             var categoryRelatedToService = await _unitOfWork.ServiceRepository.GetAsync(createModel.ServiceCategoryId, cancellationToken);
 
-            // If specified specialization is not active or not found, can't create entity
             if (specializationRelatedToService == null || !specializationRelatedToService.IsActive)
             {
                 throw new RelatedObjectNotFoundException($"Related specialization with id {createModel.SpecializationId} is not found or not active.");

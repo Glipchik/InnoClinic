@@ -14,5 +14,7 @@ namespace Services.Domain.Entities
 
         [Required]
         public bool IsActive { get; set; } = true;
+
+        public ICollection<Doctor> Doctors { get; set; } = [];
     }
 }

@@ -35,13 +35,13 @@ namespace Services.Application.Services
         {
             using (var transaction = _unitOfWork.BeginTransaction(cancellationToken: cancellationToken))
             {
-                var (doctorsRelatedToSpecialization, specializationToDelete) = await _unitOfWork.SpecializationRepository.GetSpecializationAndRelatedActiveDoctors(id, cancellationToken);
+                var specializationToDelete = await _unitOfWork.SpecializationRepository.GetAsync(id, cancellationToken);
                 if (specializationToDelete == null)
                 {
                     throw new NotFoundException($"Specialization with id: {id} is not found. Can't delete.");
                 }
 
-                foreach (var doctor in doctorsRelatedToSpecialization)
+                foreach (var doctor in specializationToDelete.Doctors)
                 {
                     doctor.Status = _mapper.Map<DoctorStatus>(DoctorStatusModel.Inactive);
                     await _unitOfWork.DoctorRepository.UpdateAsync(doctor, cancellationToken);
