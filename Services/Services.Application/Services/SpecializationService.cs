@@ -33,7 +33,7 @@ namespace Services.Application.Services
 
         public async Task Delete(Guid id, CancellationToken cancellationToken)
         {
-            using (var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken: cancellationToken))
+            using (var transaction = _unitOfWork.BeginTransaction(cancellationToken: cancellationToken))
             {
                 var specializationToDelete = await _unitOfWork.SpecializationRepository.GetAsync(id, cancellationToken);
                 if (specializationToDelete == null)

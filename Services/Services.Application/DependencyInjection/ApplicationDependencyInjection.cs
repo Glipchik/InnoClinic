@@ -9,10 +9,8 @@ namespace Services.Application.Extensions
     {
         public static IServiceCollection AddApplicationDependencyInjection(this IServiceCollection services)
         {
-            // Adding mapping profile
             services.AddAutoMapper(typeof(ApplicationMapping));
 
-            // Adding services
             services.AddScoped<IServiceCategoryManager, ServiceCategoryManager>();
             services.AddScoped<IDoctorService, DoctorService>();
             services.AddScoped<ISpecializationService, SpecializationService>();
