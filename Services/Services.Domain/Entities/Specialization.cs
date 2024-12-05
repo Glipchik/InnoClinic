@@ -7,15 +7,14 @@ using System.Threading.Tasks;
 
 namespace Services.Domain.Entities
 {
-    public class Specialization
+    public class Specialization : BaseEntity
     {
-        [Key]
-        public Guid Id { get; set; }
-
         [Required]
         public string SpecializationName { get; set; }
 
         [Required]
         public bool IsActive { get; set; } = true;
+
+        public ICollection<Doctor> Doctors { get; set; } = [];
     }
 }

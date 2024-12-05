@@ -7,15 +7,14 @@ using System.Threading.Tasks;
 
 namespace Services.Domain.Entities
 {
-    public class ServiceCategory
+    public class ServiceCategory : BaseEntity
     {
-        [Key]
-        public Guid Id { get; set; }
-
         [Required]
         public string CategoryName { get; set; }
 
         [Required]
         public TimeSpan TimeSlotSize { get; set; }
-    }
+
+        public ICollection<Service> Services { get; set; } = [];
+        }
 }
