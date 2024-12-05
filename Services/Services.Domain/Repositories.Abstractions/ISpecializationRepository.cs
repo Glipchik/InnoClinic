@@ -9,6 +9,5 @@ namespace Services.Domain.Repositories.Abstractions
 {
     public interface ISpecializationRepository : IGenericRepository<Specialization>
     {
-        Task<(IEnumerable<Doctor> doctorsRelatedToSpecialization, Specialization? specialization)> GetSpecializationAndRelatedActiveDoctors(Guid id, CancellationToken cancellationToken);
     }
 }

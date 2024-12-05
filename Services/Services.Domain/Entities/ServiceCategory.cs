@@ -14,5 +14,7 @@ namespace Services.Domain.Entities
 
         [Required]
         public TimeSpan TimeSlotSize { get; set; }
-    }
+
+        public ICollection<Service> Services { get; set; } = [];
+        }
 }
