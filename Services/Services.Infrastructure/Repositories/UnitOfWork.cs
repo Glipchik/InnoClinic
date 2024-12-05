@@ -61,30 +61,6 @@ namespace Services.Infrastructure.Repositories
             return _currentTransaction;
         }
 
-        public async Task CommitTransactionAsync()
-        {
-            if (_currentTransaction == null)
-            {
-                throw new InvalidOperationException("There is no active transaction to commit.");
-            }
-
-            await _currentTransaction.CommitAsync();
-            await _currentTransaction.DisposeAsync();
-            _currentTransaction = null;
-        }
-
-        public async Task RollbackTransactionAsync()
-        {
-            if (_currentTransaction == null)
-            {
-                throw new InvalidOperationException("There is no active transaction to roll back.");
-            }
-
-            await _currentTransaction.RollbackAsync();
-            await _currentTransaction.DisposeAsync();
-            _currentTransaction = null;
-        }
-
         public void Dispose()
         {
             _currentTransaction?.Dispose();
