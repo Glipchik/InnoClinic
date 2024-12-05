@@ -25,5 +25,19 @@ namespace Services.Infrastructure.Repositories
             doctorToDelete.Status = Domain.Enums.DoctorStatus.Inactive;
             _context.Set<Doctor>().Update(doctorToDelete);
         }
+
+        public async override Task<IEnumerable<Doctor>> GetAllAsync(CancellationToken cancellationToken)
+        {
+            return await _context.Set<Doctor>().AsNoTracking()
+                .Include(d => d.Specialization)
+                .ToListAsync(cancellationToken);
+        }
+
+        public async override Task<Doctor> GetAsync(Guid id, CancellationToken cancellationToken)
+        {
+            return await _context.Set<Doctor>().AsNoTracking()
+                .Include(d => d.Specialization)
+                .FirstOrDefaultAsync(s => s.Id == id, cancellationToken: cancellationToken);
+        }
     }
 }

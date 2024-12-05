@@ -32,12 +32,12 @@ namespace Services.Infrastructure.Repositories
             _context.Set<T>().Remove(entityToDelete);
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken)
+        public virtual async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken)
         {
             return await _context.Set<T>().AsNoTracking().ToListAsync(cancellationToken);
         }
 
-        public async Task<T> GetAsync(Guid id, CancellationToken cancellationToken)
+        public virtual async Task<T> GetAsync(Guid id, CancellationToken cancellationToken)
         {
             return await _context.Set<T>().FindAsync(id);
         }

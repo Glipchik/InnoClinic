@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Services.Domain.Entities;
 using Services.Domain.Repositories.Abstractions;
 using Services.Infrastructure.Contexts;
@@ -25,9 +26,18 @@ namespace Services.Infrastructure.Repositories
             _context.Set<Specialization>().Update(specializationToDelete);
         }
 
-        public Task<(IEnumerable<Doctor> doctorsRelatedToSpecialization, Specialization? specialization)> GetSpecializationAndRelatedActiveDoctors(Guid id, CancellationToken cancellationToken)
+        public async override Task<IEnumerable<Specialization>> GetAllAsync(CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return await _context.Set<Specialization>().AsNoTracking()
+                .Include(s => s.Doctors)
+                .ToListAsync(cancellationToken);
+        }
+
+        public async override Task<Specialization> GetAsync(Guid id, CancellationToken cancellationToken)
+        {
+            return await _context.Set<Specialization>().AsNoTracking()
+                .Include(s => s.Doctors)
+                .FirstOrDefaultAsync(s => s.Id == id, cancellationToken: cancellationToken);
         }
     }
 }

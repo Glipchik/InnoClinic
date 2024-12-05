@@ -24,5 +24,21 @@ namespace Services.Infrastructure.Repositories
             serviceToDelete.IsActive = false;
             _context.Set<Service>().Update(serviceToDelete);
         }
+
+        public async override Task<IEnumerable<Service>> GetAllAsync(CancellationToken cancellationToken)
+        {
+            return await _context.Set<Service>().AsNoTracking()
+                .Include(s => s.Specialization)
+                .Include(s => s.ServiceCategory)
+                .ToListAsync(cancellationToken);
+        }
+
+        public async override Task<Service> GetAsync(Guid id, CancellationToken cancellationToken)
+        {
+            return await _context.Set<Service>().AsNoTracking()
+                .Include(s => s.Specialization)
+                .Include(s => s.ServiceCategory)
+                .FirstOrDefaultAsync(s => s.Id == id, cancellationToken: cancellationToken);
+        }
     }
 }
