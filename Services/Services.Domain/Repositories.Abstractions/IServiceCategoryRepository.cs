@@ -9,5 +9,6 @@ namespace Services.Domain.Repositories.Abstractions
 {
     public interface IServiceCategoryRepository : IGenericRepository<ServiceCategory>
     {
+        Task<(IEnumerable<Service> servicesRelatedToCategory, ServiceCategory? serviceCategory)> GetServiceCategoryAndRelatedActiveServices(Guid id, CancellationToken cancellationToken);
     }
 }

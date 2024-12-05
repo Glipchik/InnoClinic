@@ -20,7 +20,5 @@ namespace Services.Domain.Repositories.Abstractions
         IDbContextTransaction BeginTransaction(
             IsolationLevel isolationLevel = IsolationLevel.ReadCommitted,
             CancellationToken cancellationToken = default);
-        Task CommitTransactionAsync();
-        Task RollbackTransactionAsync();
     }
 }

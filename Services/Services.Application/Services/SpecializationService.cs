@@ -33,18 +33,20 @@ namespace Services.Application.Services
 
         public async Task Delete(Guid id, CancellationToken cancellationToken)
         {
+<<<<<<< HEAD
             var transaction = _unitOfWork.BeginTransaction(cancellationToken: cancellationToken);
             try
+=======
+            using (var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken: cancellationToken))
+>>>>>>> feat/NIS-13912-imlement-services-api-application-layer
             {
-                var specializationToDelete = await _unitOfWork.SpecializationRepository.GetAsync(id, cancellationToken);
+                var (doctorsRelatedToSpecialization, specializationToDelete) = await _unitOfWork.SpecializationRepository.GetSpecializationAndRelatedActiveDoctors(id, cancellationToken);
                 if (specializationToDelete == null)
                 {
                     throw new NotFoundException($"Specialization with id: {id} is not found. Can't delete.");
                 }
 
-                var doctorsWithSpecializationId = await _unitOfWork.DoctorRepository.GetActiveDoctorsBySpecializationIdAsync(id, cancellationToken);
-
-                foreach (var doctor in doctorsWithSpecializationId)
+                foreach (var doctor in doctorsRelatedToSpecialization)
                 {
                     doctor.Status = _mapper.Map<DoctorStatus>(DoctorStatusModel.Inactive);
                     await _unitOfWork.DoctorRepository.UpdateAsync(doctor, cancellationToken);
@@ -53,11 +55,6 @@ namespace Services.Application.Services
                 await _unitOfWork.SpecializationRepository.DeleteAsync(id, cancellationToken);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
                 await transaction.CommitAsync(cancellationToken);
-            }
-            catch
-            {
-                await transaction.RollbackAsync(cancellationToken);
-                throw;
             }
         }
 

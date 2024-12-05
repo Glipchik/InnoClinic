@@ -59,16 +59,15 @@ namespace Services.Application.Services
 
         public async Task Update(UpdateDoctorModel updateModel, CancellationToken cancellationToken)
         {
-            var specializationRelatedToDoctor = await _unitOfWork.SpecializationRepository.GetAsync(updateModel.SpecializationId, cancellationToken);
-            if (specializationRelatedToDoctor == null || !specializationRelatedToDoctor.IsActive)
-            {
-                throw new RelatedObjectNotFoundException($"Related specialization with id {updateModel.SpecializationId} is not found or not active.");
-            }
-
             var doctorToUpdate = await _unitOfWork.DoctorRepository.GetAsync(updateModel.Id, cancellationToken);
             if (doctorToUpdate == null)
             {
                 throw new NotFoundException($"Doctor with id: {updateModel.Id} is not found. Can't update.");
+            }
+
+            if (doctorToUpdate.Specialization == null || !doctorToUpdate.Specialization.IsActive)
+            {
+                throw new RelatedObjectNotFoundException($"Related specialization with id {updateModel.SpecializationId} is not found or not active.");
             }
 
             await _unitOfWork.DoctorRepository.UpdateAsync(_mapper.Map<Doctor>(updateModel), cancellationToken);
