@@ -44,7 +44,6 @@ namespace Services.Infrastructure.Repositories
 
         public async Task UpdateAsync(T entity, CancellationToken cancellationToken)
         {
-            var entityToUpdate = await _context.Set<T>().FindAsync(entity.Id);
             _context.Set<T>().Update(entity);
         }
     }

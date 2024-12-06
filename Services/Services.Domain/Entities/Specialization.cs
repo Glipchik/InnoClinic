@@ -16,5 +16,7 @@ namespace Services.Domain.Entities
         public bool IsActive { get; set; } = true;
 
         public ICollection<Doctor> Doctors { get; set; } = [];
+
+        public ICollection<Service> Services { get; set; } = [];
     }
 }
