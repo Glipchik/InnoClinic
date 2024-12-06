@@ -25,9 +25,9 @@ namespace Services.Application.Services
 
         public async Task Create(CreateServiceModel createModel, CancellationToken cancellationToken)
         {
-            var specializationRelatedToService = await _unitOfWork.ServiceRepository.GetAsync(createModel.SpecializationId, cancellationToken);
+            var specializationRelatedToService = await _unitOfWork.SpecializationRepository.GetAsync(createModel.SpecializationId, cancellationToken);
 
-            var categoryRelatedToService = await _unitOfWork.ServiceRepository.GetAsync(createModel.ServiceCategoryId, cancellationToken);
+            var categoryRelatedToService = await _unitOfWork.ServiceCategoryRepository.GetAsync(createModel.ServiceCategoryId, cancellationToken);
 
             if (specializationRelatedToService == null || !specializationRelatedToService.IsActive)
             {
@@ -73,12 +73,16 @@ namespace Services.Application.Services
                 throw new NotFoundException($"Service with id: {updateModel.Id} is not found. Can't update.");
             }
 
-            if (serviceToUpdate.Specialization == null || !serviceToUpdate.Specialization.IsActive)
+            var specializationRelatedToService = await _unitOfWork.SpecializationRepository.GetAsync(updateModel.SpecializationId, cancellationToken);
+
+            var categoryRelatedToService = await _unitOfWork.ServiceCategoryRepository.GetAsync(updateModel.ServiceCategoryId, cancellationToken);
+
+            if (specializationRelatedToService == null || !specializationRelatedToService.IsActive)
             {
                 throw new RelatedObjectNotFoundException($"Related specialization with id {updateModel.SpecializationId} is not found or not active.");
             }
 
-            if (serviceToUpdate.ServiceCategory == null)
+            if (categoryRelatedToService == null)
             {
                 throw new RelatedObjectNotFoundException($"Related category with id {updateModel.ServiceCategoryId} is not found.");
             }

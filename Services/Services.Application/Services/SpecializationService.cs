@@ -47,6 +47,12 @@ namespace Services.Application.Services
                     await _unitOfWork.DoctorRepository.UpdateAsync(doctor, cancellationToken);
                 }
 
+                foreach (var service in specializationToDelete.Services)
+                {
+                    service.IsActive = false;
+                    await _unitOfWork.ServiceRepository.UpdateAsync(service, cancellationToken);
+                }
+
                 await _unitOfWork.SpecializationRepository.DeleteAsync(id, cancellationToken);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
                 await transaction.CommitAsync(cancellationToken);

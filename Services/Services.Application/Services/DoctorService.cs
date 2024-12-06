@@ -65,7 +65,9 @@ namespace Services.Application.Services
                 throw new NotFoundException($"Doctor with id: {updateModel.Id} is not found. Can't update.");
             }
 
-            if (doctorToUpdate.Specialization == null || !doctorToUpdate.Specialization.IsActive)
+            var specializationRelatedToDoctor = await _unitOfWork.SpecializationRepository.GetAsync(updateModel.SpecializationId, cancellationToken);
+
+            if (specializationRelatedToDoctor == null || !specializationRelatedToDoctor.IsActive)
             {
                 throw new RelatedObjectNotFoundException($"Related specialization with id {updateModel.SpecializationId} is not found or not active.");
             }

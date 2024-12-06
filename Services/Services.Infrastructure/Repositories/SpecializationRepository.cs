@@ -30,6 +30,7 @@ namespace Services.Infrastructure.Repositories
         {
             return await _context.Set<Specialization>().AsNoTracking()
                 .Include(s => s.Doctors)
+                .Include(s => s.Services)
                 .ToListAsync(cancellationToken);
         }
 
@@ -37,6 +38,7 @@ namespace Services.Infrastructure.Repositories
         {
             return await _context.Set<Specialization>().AsNoTracking()
                 .Include(s => s.Doctors)
+                .Include(s => s.Services)
                 .FirstOrDefaultAsync(s => s.Id == id, cancellationToken: cancellationToken);
         }
     }

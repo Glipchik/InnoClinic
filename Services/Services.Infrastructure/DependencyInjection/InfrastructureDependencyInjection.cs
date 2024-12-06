@@ -4,9 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using Services.Application.Mapper;
-using Services.Application.Services.Abstractions;
-using Services.Application.Services;
 using Services.Domain.Repositories.Abstractions;
 using Services.Infrastructure.Repositories;
 using Services.Infrastructure.Contexts;
@@ -21,8 +18,8 @@ namespace Services.Infrastructure.Extensions
         public static IServiceCollection AddInfrastructureDependencyInjection(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
-
+                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
+                       .EnableSensitiveDataLogging());
 
             services.AddScoped<IDoctorRepository, DoctorRepository>();
             services.AddScoped<IServiceCategoryRepository, ServiceCategoryRepository>();
