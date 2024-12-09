@@ -4,306 +4,218 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoFixture;
+using AutoFixture.AutoMoq;
 using AutoMapper;
 using MongoDB.Driver.Core.Misc;
 using Moq;
 using Offices.Application.MappingProfiles;
 using Offices.Application.Models;
 using Offices.Application.Services;
+using Offices.Application.Services.Abstractions;
 using Offices.Data.Entities;
 using Offices.Data.Repositories.Abstractions;
+using Offices.Domain.Exceptions;
+using Shouldly;
 
 namespace Offices.Tests
 {
     public class ReceptionistServiceTests
     {
-        private readonly IMapper _mapper;
+        private readonly IFixture _fixture;
+        private readonly Mock<IOfficeRepository> _officeRepositoryMock;
+        private readonly Mock<IReceptionistRepository> _receptionistRepositoryMock;
+        private readonly Mock<IMapper> _mapperMock;
+        private readonly ReceptionistService _receptionistService;
 
         public ReceptionistServiceTests()
         {
-            var configuration = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<ApplicationMappingProfile>();
-            });
-
-            _mapper = configuration.CreateMapper();
+            _fixture = new Fixture().Customize(new AutoMoqCustomization());
+            _mapperMock = _fixture.Freeze<Mock<IMapper>>();
+            _officeRepositoryMock = _fixture.Freeze<Mock<IOfficeRepository>>();
+            _receptionistRepositoryMock = _fixture.Freeze<Mock<IReceptionistRepository>>();
+            _receptionistService = new ReceptionistService(_receptionistRepositoryMock.Object, _officeRepositoryMock.Object, _mapperMock.Object);
         }
 
         [Fact]
-        public async void GetReceptionistById_Returns_Receptionist()
+        public async Task Create_ShouldBeSuccess()
         {
             // Arrange
-            var fixture = new Fixture();
-            var receptionistRepositoryMock = new Mock<IReceptionistRepository>();
-            receptionistRepositoryMock.Setup(repo => repo.GetAsync(It.IsAny<string>(), CancellationToken.None))
-                              .ReturnsAsync(new Receptionist
-                              {
-                                  Id = "1231231-1231-123",
-                                  FirstName = "John",
-                                  LastName = fixture.Create<string>(),
-                                  MiddleName = fixture.Create<string>(),
-                                  OfficeId = fixture.Create<string>()
-                              });
+            var officeId = "1231231-1231-123";
+            var office = CreateOffice(Id: officeId, IsActive: true);
 
-            var officeRepositoryMock = new Mock<IOfficeRepository>();
+            _officeRepositoryMock.Setup(repo => repo.GetAsync(It.IsAny<string>(), CancellationToken.None))
+                                 .ReturnsAsync(office);
 
-            var receptionistService = new ReceptionistService(receptionistRepositoryMock.Object, officeRepositoryMock.Object, _mapper);
+            var createReceptionistModel = _fixture.Build<CreateReceptionistModel>()
+                                                  .With(r => r.OfficeId, officeId)
+                                                  .Create();
 
-            // Act
-            var receptionistModel = await receptionistService.Get("1231231-1231-123", CancellationToken.None);
-
-            // Assert
-            Assert.NotNull(receptionistModel);
-            Assert.Equal("John", receptionistModel.FirstName);
+            // Act and Assert
+            await Should.NotThrowAsync(async () =>
+            {
+                await _receptionistService.Create(createReceptionistModel, CancellationToken.None);
+            });
         }
 
         [Fact]
-        public async void CreateReceptionist_ShouldBe_Success()
+        public async Task Create_RelatedOfficeNotActive_ShouldBeException()
         {
             // Arrange
-            var fixture = new Fixture();
-            var officeRepositoryMock = new Mock<IOfficeRepository>();
-            officeRepositoryMock.Setup(repo => repo.GetAsync(It.IsAny<string>(), CancellationToken.None))
-                              .ReturnsAsync(new Office
-                              {
-                                  Id = "1231231-1231-123",
-                                  Address = fixture.Create<string>(),
-                                  PhotoURL = fixture.Create<string>(),
-                                  RegistryPhoneNumber = fixture.Create<string>(),
-                                  IsActive = true
-                              });
+            var officeId = "1231231-1231-123";
+            var office = CreateOffice(Id: officeId, IsActive: false);
 
-            var receptionistRepositoryMock = new Mock<IReceptionistRepository>();
+            _officeRepositoryMock.Setup(repo => repo.GetAsync(officeId, CancellationToken.None))
+                                 .ReturnsAsync(office);
 
-            var receptionistService = new ReceptionistService(receptionistRepositoryMock.Object, officeRepositoryMock.Object, _mapper);
+            var createReceptionistModel = _fixture.Build<CreateReceptionistModel>()
+                                                  .With(r => r.OfficeId, officeId)
+                                                  .Create();
 
-            var createDoctorModel = new CreateReceptionistModel
-            (
-                FirstName: fixture.Create<string>(),
-                LastName: fixture.Create<string>(),
-                MiddleName: fixture.Create<string>(),
-                OfficeId: "1231231-1231-123"
-            );
-
-            // Act
-            var exception = await Record.ExceptionAsync(async () =>
+            // Act and Assert
+            await Should.ThrowAsync<RelatedObjectNotFoundException>(async () =>
             {
-                await receptionistService.Create(createDoctorModel, CancellationToken.None);
+                await _receptionistService.Create(createReceptionistModel, CancellationToken.None);
             });
-
-            // Assert
-            Assert.Null(exception);
         }
 
         [Fact]
-        public async void CreateReceptionist_WhenRelatedOfficeNotActive_ShouldBe_Exception()
+        public async Task Create_RelatedOfficeNotFound_ShouldBeException()
         {
             // Arrange
-            var fixture = new Fixture();
-            var officeRepositoryMock = new Mock<IOfficeRepository>();
-            officeRepositoryMock.Setup(repo => repo.GetAsync("1231231-1231-123", CancellationToken.None))
-                              .ReturnsAsync(new Office
-                              {
-                                  Id = "1231231-1231-123",
-                                  Address = fixture.Create<string>(),
-                                  PhotoURL = fixture.Create<string>(),
-                                  RegistryPhoneNumber = fixture.Create<string>(),
-                                  IsActive = false
-                              });
+            var officeId = "1231231-1231-123";
+            _officeRepositoryMock.Setup(repo => repo.GetAsync(It.Is<string>(id => id == officeId), CancellationToken.None))
+                                 .ReturnsAsync((Office?)null);
 
-            var receptionistRepositoryMock = new Mock<IReceptionistRepository>();
+            var createReceptionistModel = _fixture.Build<CreateReceptionistModel>()
+                                                  .With(r => r.OfficeId, officeId)
+                                                  .Create();
 
-            var receptionistService = new ReceptionistService(receptionistRepositoryMock.Object, officeRepositoryMock.Object, _mapper);
-
-            var createReceptionistModel = new CreateReceptionistModel
-            (
-                FirstName: "John",
-                LastName: fixture.Create<string>(),
-                MiddleName: fixture.Create<string>(),
-                OfficeId: "1231231-1231-123"
-            );
-
-            // Act
-            var exception = await Record.ExceptionAsync(async () =>
+            // Act and Assert
+            await Should.ThrowAsync<RelatedObjectNotFoundException>(async () =>
             {
-                await receptionistService.Create(createReceptionistModel, CancellationToken.None);
+                await _receptionistService.Create(createReceptionistModel, CancellationToken.None);
             });
-
-            // Assert
-            Assert.NotNull(exception);
         }
 
         [Fact]
-        public async void CreateReceptionist_WhenRelatedOfficeNotFound_ShouldBe_Exception()
+        public async void Update_ShouldBeSuccess()
         {
             // Arrange
-            var fixture = new Fixture();
-            var officeRepositoryMock = new Mock<IOfficeRepository>();
-            officeRepositoryMock
-                .Setup(repo => repo.GetAsync(It.Is<string>(id => id == "1231231-1231-123"), CancellationToken.None))
-                .ReturnsAsync((Office?)null);
+            var officeId = "1231231-1231-124";
+            var receptionistId = "1231231-1231-123";
 
+            _officeRepositoryMock
+                .Setup(repo => repo.GetAsync(It.Is<string>(id => id == officeId), CancellationToken.None))
+                .ReturnsAsync(CreateOffice(Id: officeId, IsActive: true));
 
-            var receptionistRepositoryMock = new Mock<IReceptionistRepository>();
+            _receptionistRepositoryMock.Setup(repo => repo.GetAsync(It.Is<string>(id => id == receptionistId), CancellationToken.None))
+                              .ReturnsAsync(CreateReceptionist(Id: receptionistId, OfficeId: officeId));
 
-            var receptionistService = new ReceptionistService(receptionistRepositoryMock.Object, officeRepositoryMock.Object, _mapper);
+            var updateReceptionistModel = _fixture.Build<UpdateReceptionistModel>()
+                                                  .With(r => r.Id, receptionistId)
+                                                  .With(r => r.OfficeId, officeId)
+                                                  .Create();
 
-            var createReceptionistModel = new CreateReceptionistModel
-            (
-                FirstName: "John",
-                LastName: fixture.Create<string>(),
-                MiddleName: fixture.Create<string>(),
-                OfficeId: "1231231-1231-123"
-            );
-
-            // Act
-            var exception = await Record.ExceptionAsync(async () =>
+            // Act and Assert
+            await Should.NotThrowAsync(async () =>
             {
-                await receptionistService.Create(createReceptionistModel, CancellationToken.None);
+                await _receptionistService.Update(updateReceptionistModel, CancellationToken.None);
             });
-
-            // Assert
-            Assert.NotNull(exception);
         }
 
         [Fact]
-        public async void UpdateReceptionist_ShouldBe_Success()
+        public async Task Update_RelatedOfficeNotFound_ShouldBeException()
         {
             // Arrange
-            var fixture = new Fixture();
-            var officeRepositoryMock = new Mock<IOfficeRepository>();
-            officeRepositoryMock
-                .Setup(repo => repo.GetAsync(It.Is<string>(id => id == "1231231-1231-124"), CancellationToken.None))
-                .ReturnsAsync(new Office
-                {
-                    Id = "1231231-1231-124",
-                    Address = fixture.Create<string>(),
-                    PhotoURL = fixture.Create<string>(),
-                    RegistryPhoneNumber = fixture.Create<string>(),
-                    IsActive = true
-                });
+            var officeId = "1231231-1231-124";
+            var receptionistId = "1231231-1231-123";
 
-            var receptionistRepositoryMock = new Mock<IReceptionistRepository>();
-            receptionistRepositoryMock.Setup(repo => repo.GetAsync(It.Is<string>(id => id == "1231231-1231-123"), CancellationToken.None))
-                              .ReturnsAsync(new Receptionist
-                              {
-                                  Id = "1231231-1231-123",
-                                  FirstName = "John",
-                                  LastName = fixture.Create<string>(),
-                                  MiddleName = fixture.Create<string>(),
-                                  OfficeId = "1231231-1231-124"
-                              });
+            var receptionist = _fixture.Build<Receptionist>()
+                                       .With(r => r.Id, receptionistId)
+                                       .With(r => r.OfficeId, officeId)
+                                       .With(r => r.FirstName, "John")
+                                       .With(r => r.LastName, _fixture.Create<string>())
+                                       .With(r => r.MiddleName, _fixture.Create<string>())
+                                       .Create();
 
-            var receptionistService = new ReceptionistService(receptionistRepositoryMock.Object, officeRepositoryMock.Object, _mapper);
+            _officeRepositoryMock.Setup(repo => repo.GetAsync(officeId, CancellationToken.None))
+                                 .ReturnsAsync((Office?)null);
+            _receptionistRepositoryMock.Setup(repo => repo.GetAsync(receptionistId, CancellationToken.None))
+                                       .ReturnsAsync(receptionist);
 
-            var updateReceptionistModel = new UpdateReceptionistModel
-            (
-                Id: "1231231-1231-123",
-                FirstName: "New Joe",
-                LastName: fixture.Create<string>(),
-                MiddleName: fixture.Create<string>(),
-                OfficeId: "1231231-1231-124"
-            );
+            var updateReceptionistModel = _fixture.Build<UpdateReceptionistModel>()
+                                                  .With(m => m.Id, receptionistId)
+                                                  .With(m => m.OfficeId, officeId)
+                                                  .With(m => m.FirstName, "New Joe")
+                                                  .Create();
 
-            // Act
-            var exception = await Record.ExceptionAsync(async () =>
+            // Act and Assert
+            await Should.ThrowAsync<RelatedObjectNotFoundException>(async () => 
             {
-                await receptionistService.Update(updateReceptionistModel, CancellationToken.None);
+                await _receptionistService.Update(updateReceptionistModel, CancellationToken.None);
             });
-
-            // Assert
-            Assert.Null(exception);
         }
 
         [Fact]
-        public async void UpdateReceptionist_WhenRelatedOfficeNotFound_ShouldBe_Exception()
+        public async Task Update_RelatedOfficeIsNotActive_ShouldBeException()
         {
             // Arrange
-            var fixture = new Fixture();
-            var officeRepositoryMock = new Mock<IOfficeRepository>();
-            officeRepositoryMock
-                .Setup(repo => repo.GetAsync(It.Is<string>(id => id == "1231231-1231-124"), CancellationToken.None))
-                .ReturnsAsync((Office?)null);
+            var officeId = "1231231-1231-124";
+            var receptionistId = "1231231-1231-123";
 
-            var receptionistRepositoryMock = new Mock<IReceptionistRepository>();
-            receptionistRepositoryMock.Setup(repo => repo.GetAsync(It.Is<string>(id => id == "1231231-1231-123"), CancellationToken.None))
-                              .ReturnsAsync(new Receptionist
-                              {
-                                  Id = "1231231-1231-123",
-                                  FirstName = "John",
-                                  LastName = fixture.Create<string>(),
-                                  MiddleName = fixture.Create<string>(),
-                                  OfficeId = "1231231-1231-124"
-                              });
+            var office = _fixture.Build<Office>()
+                                 .With(o => o.Id, officeId)
+                                 .With(o => o.IsActive, false)
+                                 .Create();
 
-            var receptionistService = new ReceptionistService(receptionistRepositoryMock.Object, officeRepositoryMock.Object, _mapper);
+            var receptionist = _fixture.Build<Receptionist>()
+                                       .With(r => r.Id, receptionistId)
+                                       .With(r => r.OfficeId, officeId)
+                                       .With(r => r.FirstName, "John")
+                                       .With(r => r.LastName, _fixture.Create<string>())
+                                       .With(r => r.MiddleName, _fixture.Create<string>())
+                                       .Create();
 
-            var updateReceptionistModel = new UpdateReceptionistModel
-            (
-                Id: "1231231-1231-123",
-                FirstName: "New Joe",
-                LastName: fixture.Create<string>(),
-                MiddleName: fixture.Create<string>(),
-                OfficeId: "1231231-1231-124"
-            );
+            _officeRepositoryMock.Setup(repo => repo.GetAsync(officeId, CancellationToken.None))
+                                 .ReturnsAsync(office);
 
-            // Act
-            var exception = await Record.ExceptionAsync(async () =>
+            _receptionistRepositoryMock.Setup(repo => repo.GetAsync(receptionistId, CancellationToken.None))
+                                       .ReturnsAsync(receptionist);
+
+            var updateReceptionistModel = _fixture.Build<UpdateReceptionistModel>()
+                                                  .With(m => m.Id, receptionistId)
+                                                  .With(m => m.OfficeId, officeId)
+                                                  .With(m => m.FirstName, "New Joe")
+                                                  .Create();
+
+            // Act and Assert
+            await Should.ThrowAsync<RelatedObjectNotFoundException>(async () =>
             {
-                await receptionistService.Update(updateReceptionistModel, CancellationToken.None);
+                await _receptionistService.Update(updateReceptionistModel, CancellationToken.None);
             });
-
-            // Assert
-            Assert.NotNull(exception);
         }
 
-        [Fact]
-        public async void UpdateReceptionist_WhenRelatedOfficeIsNotActive_ShouldBe_Exception()
+
+        private Office CreateOffice(string? Id = null, string? Address = null, string? PhotoURL = null, string? RegistryPhoneNumber = null, bool? IsActive = null)
         {
-            // Arrange
-            var fixture = new Fixture();
-            var officeRepositoryMock = new Mock<IOfficeRepository>();
-            officeRepositoryMock
-                .Setup(repo => repo.GetAsync(It.Is<string>(id => id == "1231231-1231-124"), CancellationToken.None))
-                .ReturnsAsync(new Office
-                {
-                    Id = "1231231-1231-124",
-                    Address = fixture.Create<string>(),
-                    PhotoURL = fixture.Create<string>(),
-                    RegistryPhoneNumber = fixture.Create<string>(),
-                    IsActive = false
-                });
+            return _fixture.Build<Office>()
+                .With(x => x.Id, Id ?? _fixture.Create<string>())
+                .With(x => x.Address, Address ?? _fixture.Create<string>())
+                .With(x => x.PhotoURL, PhotoURL ?? _fixture.Create<string>())
+                .With(x => x.RegistryPhoneNumber, RegistryPhoneNumber ?? _fixture.Create<string>())
+                .With(x => x.IsActive, IsActive ?? _fixture.Create<bool>())
+                .Create();
+        }
 
-            var receptionistRepositoryMock = new Mock<IReceptionistRepository>();
-            receptionistRepositoryMock.Setup(repo => repo.GetAsync(It.Is<string>(id => id == "1231231-1231-123"), CancellationToken.None))
-                              .ReturnsAsync(new Receptionist
-                              {
-                                  Id = "1231231-1231-123",
-                                  FirstName = "John",
-                                  LastName = fixture.Create<string>(),
-                                  MiddleName = fixture.Create<string>(),
-                                  OfficeId = "1231231-1231-124"
-                              });
-
-            var receptionistService = new ReceptionistService(receptionistRepositoryMock.Object, officeRepositoryMock.Object, _mapper);
-
-            var updateReceptionistModel = new UpdateReceptionistModel
-            (
-                Id: "1231231-1231-123",
-                FirstName: "New Joe",
-                LastName: fixture.Create<string>(),
-                MiddleName: fixture.Create<string>(),
-                OfficeId: "1231231-1231-124"
-            );
-
-            // Act
-            var exception = await Record.ExceptionAsync(async () =>
-            {
-                await receptionistService.Update(updateReceptionistModel, CancellationToken.None);
-            });
-
-            // Assert
-            Assert.NotNull(exception);
+        private Receptionist CreateReceptionist(string? Id = null, string? FirstName = null, string? LastName = null, string? MiddleName = null, string? OfficeId = null)
+        {
+            return _fixture.Build<Receptionist>()
+                .With(x => x.Id, Id ?? _fixture.Create<string>())
+                .With(x => x.FirstName, FirstName ?? _fixture.Create<string>())
+                .With(x => x.LastName, LastName ?? _fixture.Create<string>())
+                .With(x => x.MiddleName, MiddleName ?? _fixture.Create<string>())
+                .With(x => x.OfficeId, OfficeId ?? _fixture.Create<string>())
+                .Create();
         }
     }
 }
