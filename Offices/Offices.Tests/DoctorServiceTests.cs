@@ -1,6 +1,7 @@
 using System.Net;
 using AutoFixture;
 using AutoFixture.AutoMoq;
+using AutoFixture.Xunit2;
 using AutoMapper;
 using MongoDB.Driver.Core.Misc;
 using Moq;
@@ -31,16 +32,11 @@ namespace Offices.Tests
             _doctorService = new DoctorService(_doctorRepositoryMock.Object, _officeRepositoryMock.Object, _mapperMock.Object);
         }
 
-        [Fact]
-        public async void Create_RelatedOfficeExists_ShouldBeSuccess()
+        [Theory]
+        [AutoData]
+        public async void Create_RelatedOfficeExists_ShouldBeSuccess(CreateDoctorModel createDoctorModel)
         {
             // Arrange
-            var officeId = "1231231-1231-123";
-
-            var createDoctorModel = _fixture.Build<CreateDoctorModel>()
-                .With(d => d.OfficeId, officeId)
-                .Create();
-
             var office = CreateOffice(createDoctorModel.OfficeId, IsActive: true);
 
             _officeRepositoryMock.Setup(repo => repo.GetAsync(createDoctorModel.OfficeId, CancellationToken.None))
@@ -57,16 +53,11 @@ namespace Offices.Tests
             });
         }
 
-        [Fact]
-        public async void Create_RelatedOfficeNotActive_ShouldBeException()
+        [Theory]
+        [AutoData]
+        public async void Create_RelatedOfficeNotActive_ShouldBeException(CreateDoctorModel createDoctorModel)
         {
             // Arrange
-            var officeId = "1231231-1231-123";
-
-            var createDoctorModel = _fixture.Build<CreateDoctorModel>()
-                .With(d => d.OfficeId, officeId)
-                .Create();
-
             var inactiveOffice = CreateOffice(createDoctorModel.OfficeId, IsActive: false);
 
             _officeRepositoryMock.Setup(repo => repo.GetAsync(createDoctorModel.OfficeId, CancellationToken.None))
@@ -79,16 +70,11 @@ namespace Offices.Tests
             });
         }
 
-        [Fact]
-        public async void Create_RelatedOfficeNotFound_ShouldBeException()
+        [Theory]
+        [AutoData]
+        public async void Create_RelatedOfficeNotFound_ShouldBeException(CreateDoctorModel createDoctorModel)
         {
             // Arrange
-            var officeId = "1231231-1231-123";
-
-            var createDoctorModel = _fixture.Build<CreateDoctorModel>()
-                .With(d => d.OfficeId, officeId)
-                .Create();
-
             _officeRepositoryMock
                 .Setup(repo => repo.GetAsync(createDoctorModel.OfficeId, CancellationToken.None))
                 .ReturnsAsync((Office?)null);
@@ -100,18 +86,11 @@ namespace Offices.Tests
             });
         }
 
-        [Fact]
-        public async void Update_OfficeExists_ShouldBeSuccess()
+        [Theory]
+        [AutoData]
+        public async void Update_OfficeExists_ShouldBeSuccess(UpdateDoctorModel updateDoctorModel)
         {
             // Arrange
-            var doctorId = "1231231-1231-123";
-            var officeId = "1231231-1231-124";
-
-            var updateDoctorModel = _fixture.Build<UpdateDoctorModel>()
-                .With(d => d.Id, doctorId)
-                .With(d => d.OfficeId, officeId)
-                .Create();
-
             var existingDoctor = CreateDoctor(Id: updateDoctorModel.Id, OfficeId: updateDoctorModel.OfficeId);
 
             var activeOffice = CreateOffice(updateDoctorModel.OfficeId, IsActive: true);
@@ -134,18 +113,11 @@ namespace Offices.Tests
             });
         }
 
-        [Fact]
-        public async void Update_RelatedOfficeNotFound_ShouldBeException()
+        [Theory]
+        [AutoData]
+        public async void Update_RelatedOfficeNotFound_ShouldBeException(UpdateDoctorModel updateDoctorModel)
         {
             // Arrange
-            var doctorId = "1231231-1231-123";
-            var officeId = "1231231-1231-124";
-
-            var updateDoctorModel = _fixture.Build<UpdateDoctorModel>()
-                .With(d => d.Id, doctorId)
-                .With(d => d.OfficeId, officeId)
-                .Create();
-
             var existingDoctor = CreateDoctor(Id: updateDoctorModel.Id, OfficeId: updateDoctorModel.OfficeId);
 
             _doctorRepositoryMock
@@ -163,18 +135,11 @@ namespace Offices.Tests
             });
         }
 
-        [Fact]
-        public async void Update_RelatedOfficeNotActive_ShouldBeException()
+        [Theory]
+        [AutoData]
+        public async void Update_RelatedOfficeNotActive_ShouldBeException(UpdateDoctorModel updateDoctorModel)
         {
             // Arrange
-            var doctorId = "1231231-1231-123";
-            var officeId = "1231231-1231-124";
-
-            var updateDoctorModel = _fixture.Build<UpdateDoctorModel>()
-                .With(d => d.Id, doctorId)
-                .With(d => d.OfficeId, officeId)
-                .Create();
-
             var existingDoctor = CreateDoctor(Id: updateDoctorModel.Id, OfficeId: updateDoctorModel.OfficeId);
 
             var inactiveOffice = CreateOffice(updateDoctorModel.OfficeId, IsActive: false);
@@ -194,26 +159,19 @@ namespace Offices.Tests
             });
         }
 
-        private Office CreateOffice(string? Id = null, string? Address = null, string? PhotoURL = null, string? RegistryPhoneNumber = null, bool? IsActive = null)
+        private Office CreateOffice(string? Id = null, bool IsActive = true)
         {
             return _fixture.Build<Office>()
                 .With(x => x.Id, Id ?? _fixture.Create<string>())
-                .With(x => x.Address, Address ?? _fixture.Create<string>())
-                .With(x => x.PhotoURL, PhotoURL ?? _fixture.Create<string>())
-                .With(x => x.RegistryPhoneNumber, RegistryPhoneNumber ?? _fixture.Create<string>())
-                .With(x => x.IsActive, IsActive ?? _fixture.Create<bool>())
+                .With(x => x.IsActive, IsActive)
                 .Create();
         }
 
-        private Doctor CreateDoctor(string? Id = null, string? FirstName = null, string? LastName = null, string? MiddleName = null, string? OfficeId = null, string? Status = null)
+        private Doctor CreateDoctor(string? Id = null, string? OfficeId = null)
         {
             return _fixture.Build<Doctor>()
                 .With(x => x.Id, Id ?? _fixture.Create<string>())
-                .With(x => x.FirstName, FirstName ?? _fixture.Create<string>())
-                .With(x => x.LastName, LastName ?? _fixture.Create<string>())
-                .With(x => x.MiddleName, MiddleName ?? _fixture.Create<string>())
                 .With(x => x.OfficeId, OfficeId ?? _fixture.Create<string>())
-                .With(x => x.Status, Status ?? _fixture.Create<string>())
                 .Create();
         }
     }
