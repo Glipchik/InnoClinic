@@ -34,17 +34,13 @@ namespace Offices.Tests
 
         [Theory]
         [AutoData]
-        public async void Create_RelatedOfficeExists_ShouldBeSuccess(CreateDoctorModel createDoctorModel)
+        public async void Create_RelatedOfficeExists_ShouldBeSuccess(CreateDoctorModel createDoctorModel, Doctor doctor)
         {
             // Arrange
             var office = CreateOffice(createDoctorModel.OfficeId, IsActive: true);
 
             _officeRepositoryMock.Setup(repo => repo.GetAsync(createDoctorModel.OfficeId, CancellationToken.None))
                 .ReturnsAsync(office);
-
-            var doctorEntity = _fixture.Create<Doctor>();
-            _mapperMock.Setup(mapper => mapper.Map<Doctor>(createDoctorModel))
-                .Returns(doctorEntity);
 
             // Act and Assert
             await Should.NotThrowAsync(async () =>
@@ -102,9 +98,6 @@ namespace Offices.Tests
             _officeRepositoryMock
                 .Setup(repo => repo.GetAsync(updateDoctorModel.OfficeId, CancellationToken.None))
                 .ReturnsAsync(activeOffice);
-
-            _mapperMock.Setup(mapper => mapper.Map<Doctor>(updateDoctorModel))
-                .Returns(existingDoctor);
 
             // Act and Assert
             await Should.NotThrowAsync(async () =>
