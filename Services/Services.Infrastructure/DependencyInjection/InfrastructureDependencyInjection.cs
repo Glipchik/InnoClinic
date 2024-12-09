@@ -18,8 +18,7 @@ namespace Services.Infrastructure.Extensions
         public static IServiceCollection AddInfrastructureDependencyInjection(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
-                       .EnableSensitiveDataLogging());
+                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
             services.AddScoped<IDoctorRepository, DoctorRepository>();
             services.AddScoped<IServiceCategoryRepository, ServiceCategoryRepository>();

@@ -82,18 +82,7 @@ namespace Services.API.Controllers
         [HttpPost]
         public async Task Post([FromBody] CreateSpecializationDto createSpecializationDto, CancellationToken cancellationToken)
         {
-            var specializationValidation = await _createSpecializationDtoValidator.ValidateAsync(createSpecializationDto, cancellationToken);
-            if (!specializationValidation.IsValid)
-            {
-                var validationErrors = specializationValidation.Errors
-                    .GroupBy(e => e.PropertyName)
-                    .ToDictionary(
-                        g => g.Key,
-                        g => g.Select(e => e.ErrorMessage).ToArray()
-                    );
-
-                throw new Application.Exceptions.ValidationException(validationErrors);
-            }
+            await _createSpecializationDtoValidator.ValidateAndThrowAsync(createSpecializationDto, cancellationToken);
 
             var specializationCreateModel = _mapper.Map<CreateSpecializationModel>(createSpecializationDto);
             await _specializationService.Create(specializationCreateModel, cancellationToken);
@@ -111,18 +100,7 @@ namespace Services.API.Controllers
         [HttpPut]
         public async Task Put([FromBody] UpdateSpecializationDto updateSpecializationDto, CancellationToken cancellationToken)
         {
-            var specializationValidation = await _updateSpecializationDtoValidator.ValidateAsync(updateSpecializationDto, cancellationToken);
-            if (!specializationValidation.IsValid)
-            {
-                var validationErrors = specializationValidation.Errors
-                    .GroupBy(e => e.PropertyName)
-                    .ToDictionary(
-                        g => g.Key,
-                        g => g.Select(e => e.ErrorMessage).ToArray()
-                    );
-
-                throw new Application.Exceptions.ValidationException(validationErrors);
-            }
+            await _updateSpecializationDtoValidator.ValidateAndThrowAsync(updateSpecializationDto, cancellationToken);
 
             var updateSpecializationModel = _mapper.Map<UpdateSpecializationModel>(updateSpecializationDto);
             await _specializationService.Update(updateSpecializationModel, cancellationToken);

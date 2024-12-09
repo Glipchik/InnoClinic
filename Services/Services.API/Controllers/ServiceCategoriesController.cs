@@ -82,18 +82,7 @@ namespace Services.API.Controllers
         [HttpPost]
         public async Task Post([FromBody] CreateServiceCategoryDto createServiceCategoryDto, CancellationToken cancellationToken)
         {
-            var serviceCategoryValidation = await _createServiceCategoryDtoValidator.ValidateAsync(createServiceCategoryDto, cancellationToken);
-            if (!serviceCategoryValidation.IsValid)
-            {
-                var validationErrors = serviceCategoryValidation.Errors
-                    .GroupBy(e => e.PropertyName)
-                    .ToDictionary(
-                        g => g.Key,
-                        g => g.Select(e => e.ErrorMessage).ToArray()
-                    );
-
-                throw new Application.Exceptions.ValidationException(validationErrors);
-            }
+            await _createServiceCategoryDtoValidator.ValidateAndThrowAsync(createServiceCategoryDto, cancellationToken);
 
             var serviceCategoryCreateModel = _mapper.Map<CreateServiceCategoryModel>(createServiceCategoryDto);
             await _serviceCategoryManager.Create(serviceCategoryCreateModel, cancellationToken);
@@ -111,18 +100,7 @@ namespace Services.API.Controllers
         [HttpPut]
         public async Task Put([FromBody] UpdateServiceCategoryDto updateServiceCategoryDto, CancellationToken cancellationToken)
         {
-            var serviceCategoryValidation = await _updateServiceCategoryDtoValidator.ValidateAsync(updateServiceCategoryDto, cancellationToken);
-            if (!serviceCategoryValidation.IsValid)
-            {
-                var validationErrors = serviceCategoryValidation.Errors
-                    .GroupBy(e => e.PropertyName)
-                    .ToDictionary(
-                        g => g.Key,
-                        g => g.Select(e => e.ErrorMessage).ToArray()
-                    );
-
-                throw new Application.Exceptions.ValidationException(validationErrors);
-            }
+            await _updateServiceCategoryDtoValidator.ValidateAndThrowAsync(updateServiceCategoryDto, cancellationToken);
 
             var updateServiceCategoryModel = _mapper.Map<UpdateServiceCategoryModel>(updateServiceCategoryDto);
             await _serviceCategoryManager.Update(updateServiceCategoryModel, cancellationToken);

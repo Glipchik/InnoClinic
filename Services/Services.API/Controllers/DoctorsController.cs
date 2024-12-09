@@ -82,18 +82,7 @@ namespace Services.API.Controllers
         [HttpPost]
         public async Task Post([FromBody] CreateDoctorDto createDoctorDto, CancellationToken cancellationToken)
         {
-            var doctorValidation = await _createDoctorDtoValidator.ValidateAsync(createDoctorDto, cancellationToken);
-            if (!doctorValidation.IsValid)
-            {
-                var validationErrors = doctorValidation.Errors
-                    .GroupBy(e => e.PropertyName)
-                    .ToDictionary(
-                        g => g.Key,
-                        g => g.Select(e => e.ErrorMessage).ToArray()
-                    );
-
-                throw new Application.Exceptions.ValidationException(validationErrors);
-            }
+            await _createDoctorDtoValidator.ValidateAndThrowAsync(createDoctorDto, cancellationToken);
 
             var doctorCreateModel = _mapper.Map<CreateDoctorModel>(createDoctorDto);
             await _doctorService.Create(doctorCreateModel, cancellationToken);
@@ -111,18 +100,7 @@ namespace Services.API.Controllers
         [HttpPut]
         public async Task Put([FromBody] UpdateDoctorDto updateDoctorDto, CancellationToken cancellationToken)
         {
-            var doctorValidation = await _updateDoctorDtoValidator.ValidateAsync(updateDoctorDto, cancellationToken);
-            if (!doctorValidation.IsValid)
-            {
-                var validationErrors = doctorValidation.Errors
-                    .GroupBy(e => e.PropertyName)
-                    .ToDictionary(
-                        g => g.Key,
-                        g => g.Select(e => e.ErrorMessage).ToArray()
-                    );
-
-                throw new Application.Exceptions.ValidationException(validationErrors);
-            }
+            await _updateDoctorDtoValidator.ValidateAndThrowAsync(updateDoctorDto, cancellationToken);
 
             var updateDoctorModel = _mapper.Map<UpdateDoctorModel>(updateDoctorDto);
             await _doctorService.Update(updateDoctorModel, cancellationToken);

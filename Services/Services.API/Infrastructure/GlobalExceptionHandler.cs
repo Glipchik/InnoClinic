@@ -23,21 +23,24 @@ namespace Services.API.Infrastructure
 
             ProblemDetails problemDetails;
 
-            if (exception is BadRequestException badRequestException)
+            if (exception is FluentValidation.ValidationException ex)
             {
-                if (exception is Application.Exceptions.ValidationException validationException)
+                var errorMessages = ex.Errors
+                    .Select(error => $"{error.PropertyName}: {error.ErrorMessage}")
+                    .ToList();
+
+                problemDetails = new ValidationProblemDetails(
+                    ex.Errors.GroupBy(e => e.PropertyName)
+                             .ToDictionary(g => g.Key, g => g.Select(e => e.ErrorMessage).ToArray()))
                 {
-                    var errorMessages = validationException.Errors
-                        .SelectMany(kvp => kvp.Value.Select(err => $"{kvp.Key}: {err}"))
-                        .ToList();
-                    problemDetails = new ValidationProblemDetails(validationException.Errors)
-                    {
-                        Status = StatusCodes.Status400BadRequest,
-                        Title = "Validation Error",
-                        Detail = string.Join(", ", errorMessages)
-                    };
-                }
-                else if (exception is NotFoundException notFoundException)
+                    Status = StatusCodes.Status400BadRequest,
+                    Title = "Validation Error",
+                    Detail = string.Join(", ", errorMessages)
+                };
+            }
+            else if (exception is BadRequestException badRequestException)
+            {   
+                if (exception is NotFoundException notFoundException)
                 {
                     problemDetails = new ProblemDetails
                     {

@@ -83,18 +83,7 @@ namespace Services.API.Controllers
         [HttpPost]
         public async Task Post([FromBody] CreateServiceDto createServiceDto, CancellationToken cancellationToken)
         {
-            var serviceValidation = await _createServiceDtoValidator.ValidateAsync(createServiceDto, cancellationToken);
-            if (!serviceValidation.IsValid)
-            {
-                var validationErrors = serviceValidation.Errors
-                    .GroupBy(e => e.PropertyName)
-                    .ToDictionary(
-                        g => g.Key,
-                        g => g.Select(e => e.ErrorMessage).ToArray()
-                    );
-
-                throw new Application.Exceptions.ValidationException(validationErrors);
-            }
+            await _createServiceDtoValidator.ValidateAndThrowAsync(createServiceDto, cancellationToken);
 
             var serviceCreateModel = _mapper.Map<CreateServiceModel>(createServiceDto);
             await _serviceManager.Create(serviceCreateModel, cancellationToken);
@@ -112,18 +101,7 @@ namespace Services.API.Controllers
         [HttpPut]
         public async Task Put([FromBody] UpdateServiceDto updateServiceDto, CancellationToken cancellationToken)
         {
-            var serviceValidation = await _updateServiceDtoValidator.ValidateAsync(updateServiceDto, cancellationToken);
-            if (!serviceValidation.IsValid)
-            {
-                var validationErrors = serviceValidation.Errors
-                    .GroupBy(e => e.PropertyName)
-                    .ToDictionary(
-                        g => g.Key,
-                        g => g.Select(e => e.ErrorMessage).ToArray()
-                    );
-
-                throw new Application.Exceptions.ValidationException(validationErrors);
-            }
+            await _updateServiceDtoValidator.ValidateAndThrowAsync(updateServiceDto, cancellationToken);
 
             var updateServiceModel = _mapper.Map<UpdateServiceModel>(updateServiceDto);
             await _serviceManager.Update(updateServiceModel, cancellationToken);
