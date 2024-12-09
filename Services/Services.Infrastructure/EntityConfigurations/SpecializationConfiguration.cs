@@ -16,6 +16,10 @@ namespace Services.Infrastructure.EntityConfigurations
             builder.HasMany(s => s.Doctors)
                 .WithOne(d => d.Specialization)
                 .HasForeignKey(d => d.SpecializationId);
+
+            builder.HasMany(s => s.Services)
+                .WithOne(s => s.Specialization)
+                .HasForeignKey(s => s.SpecializationId);
         }
     }
 }
