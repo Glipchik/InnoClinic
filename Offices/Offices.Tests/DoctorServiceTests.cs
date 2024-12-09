@@ -1,4 +1,6 @@
+using System.Net;
 using AutoFixture;
+using AutoFixture.AutoMoq;
 using AutoMapper;
 using MongoDB.Driver.Core.Misc;
 using Moq;
@@ -7,308 +9,212 @@ using Offices.Application.Models;
 using Offices.Application.Services;
 using Offices.Data.Entities;
 using Offices.Data.Repositories.Abstractions;
+using Offices.Domain.Exceptions;
+using Shouldly;
 
 namespace Offices.Tests
 {
     public class DoctorServiceTests
     {
-        private readonly IMapper _mapper;
+        private readonly IFixture _fixture;
+        private readonly Mock<IDoctorRepository> _doctorRepositoryMock;
+        private readonly Mock<IOfficeRepository> _officeRepositoryMock;
+        private readonly Mock<IMapper> _mapperMock;
+        private readonly DoctorService _doctorService;
 
         public DoctorServiceTests()
         {
-            var configuration = new MapperConfiguration(cfg =>
+            _fixture = new Fixture().Customize(new AutoMoqCustomization());
+            _mapperMock = _fixture.Freeze<Mock<IMapper>>();
+            _doctorRepositoryMock = _fixture.Freeze<Mock<IDoctorRepository>>();
+            _officeRepositoryMock = _fixture.Freeze<Mock<IOfficeRepository>>();
+            _doctorService = new DoctorService(_doctorRepositoryMock.Object, _officeRepositoryMock.Object, _mapperMock.Object);
+        }
+
+        [Fact]
+        public async void Create_RelatedOfficeExists_ShouldBeSuccess()
+        {
+            // Arrange
+            var officeId = "1231231-1231-123";
+
+            var createDoctorModel = _fixture.Build<CreateDoctorModel>()
+                .With(d => d.OfficeId, officeId)
+                .Create();
+
+            var office = CreateOffice(createDoctorModel.OfficeId, IsActive: true);
+
+            _officeRepositoryMock.Setup(repo => repo.GetAsync(createDoctorModel.OfficeId, CancellationToken.None))
+                .ReturnsAsync(office);
+
+            var doctorEntity = _fixture.Create<Doctor>();
+            _mapperMock.Setup(mapper => mapper.Map<Doctor>(createDoctorModel))
+                .Returns(doctorEntity);
+
+            // Act and Assert
+            await Should.NotThrowAsync(async () =>
             {
-                cfg.AddProfile<ApplicationMappingProfile>();
+                await _doctorService.Create(createDoctorModel, CancellationToken.None);
             });
-
-            _mapper = configuration.CreateMapper();
         }
 
         [Fact]
-        public async void GetDoctorById_Returns_Doctor()
+        public async void Create_RelatedOfficeNotActive_ShouldBeException()
         {
             // Arrange
-            var fixture = new Fixture();
-            var doctorRepositoryMock = new Mock<IDoctorRepository>();
-            doctorRepositoryMock.Setup(repo => repo.GetAsync(It.IsAny<string>(), CancellationToken.None))
-                              .ReturnsAsync(new Doctor
-                              {
-                                  Id = "1231231-1231-123",
-                                  FirstName = "John",
-                                  LastName = fixture.Create<string>(),
-                                  MiddleName = fixture.Create<string>(),
-                                  OfficeId = fixture.Create<string>(),
-                                  Status = fixture.Create<string>()
-                              });
+            var officeId = "1231231-1231-123";
 
-            var officeRepositoryMock = new Mock<IOfficeRepository>();
+            var createDoctorModel = _fixture.Build<CreateDoctorModel>()
+                .With(d => d.OfficeId, officeId)
+                .Create();
 
-            var doctorService = new DoctorService(doctorRepositoryMock.Object, officeRepositoryMock.Object, _mapper);
+            var inactiveOffice = CreateOffice(createDoctorModel.OfficeId, IsActive: false);
 
-            // Act
-            var doctorModel = await doctorService.Get("1231231-1231-123", CancellationToken.None);
+            _officeRepositoryMock.Setup(repo => repo.GetAsync(createDoctorModel.OfficeId, CancellationToken.None))
+                .ReturnsAsync(inactiveOffice);
 
-            // Assert
-            Assert.NotNull(doctorModel);
-            Assert.Equal("John", doctorModel.FirstName);
-        }
-
-        [Fact]
-        public async void CreateDoctor_ShouldBe_Success()
-        {
-            // Arrange
-            var fixture = new Fixture();
-            var officeRepositoryMock = new Mock<IOfficeRepository>();
-            officeRepositoryMock.Setup(repo => repo.GetAsync(It.IsAny<string>(), CancellationToken.None))
-                              .ReturnsAsync(new Office
-                              {
-                                  Id = "1231231-1231-123",
-                                  Address = fixture.Create<string>(),
-                                  PhotoURL = fixture.Create<string>(),
-                                  RegistryPhoneNumber = fixture.Create<string>(),
-                                  IsActive = true
-                              });
-
-            var doctorRepositoryMock = new Mock<IDoctorRepository>();
-
-            var doctorService = new DoctorService(doctorRepositoryMock.Object, officeRepositoryMock.Object, _mapper);
-
-            var createDoctorModel = new CreateDoctorModel
-            (
-                FirstName: fixture.Create<string>(),
-                LastName: fixture.Create<string>(),
-                MiddleName: fixture.Create<string>(),
-                OfficeId: "1231231-1231-123",
-                Status: fixture.Create<string>()
-            );
-
-            // Act
-            var exception = await Record.ExceptionAsync(async () =>
+            // Act and Assert
+            await Should.ThrowAsync<RelatedObjectNotFoundException>(async () =>
             {
-                await doctorService.Create(createDoctorModel, CancellationToken.None);
+                await _doctorService.Create(createDoctorModel, CancellationToken.None);
             });
-
-            // Assert
-            Assert.Null(exception);
         }
 
         [Fact]
-        public async void CreateDoctor_WhenRelatedOfficeNotActive_ShouldBe_Exception()
+        public async void Create_RelatedOfficeNotFound_ShouldBeException()
         {
             // Arrange
-            var fixture = new Fixture();
-            var officeRepositoryMock = new Mock<IOfficeRepository>();
-            officeRepositoryMock.Setup(repo => repo.GetAsync("1231231-1231-123", CancellationToken.None))
-                              .ReturnsAsync(new Office
-                              {
-                                  Id = "1231231-1231-123",
-                                  Address = fixture.Create<string>(),
-                                  PhotoURL = fixture.Create<string>(),
-                                  RegistryPhoneNumber = fixture.Create<string>(),
-                                  IsActive = false
-                              });
+            var officeId = "1231231-1231-123";
 
-            var doctorRepositoryMock = new Mock<IDoctorRepository>();
+            var createDoctorModel = _fixture.Build<CreateDoctorModel>()
+                .With(d => d.OfficeId, officeId)
+                .Create();
 
-            var doctorService = new DoctorService(doctorRepositoryMock.Object, officeRepositoryMock.Object, _mapper);
-
-            var createDoctorModel = new CreateDoctorModel
-            (
-                FirstName: "John",
-                LastName: fixture.Create<string>(),
-                MiddleName: fixture.Create<string>(),
-                OfficeId: "1231231-1231-123",
-                Status: fixture.Create<string>()
-            );
-
-            // Act
-            var exception = await Record.ExceptionAsync(async () =>
-            {
-                await doctorService.Create(createDoctorModel, CancellationToken.None);
-            });
-
-            // Assert
-            Assert.NotNull(exception);
-        }
-
-        [Fact]
-        public async void CreateDoctor_WhenRelatedOfficeNotFound_ShouldBe_Exception()
-        {
-            // Arrange
-            var fixture = new Fixture();
-            var officeRepositoryMock = new Mock<IOfficeRepository>();
-            officeRepositoryMock
-                .Setup(repo => repo.GetAsync(It.Is<string>(id => id == "1231231-1231-123"), CancellationToken.None))
+            _officeRepositoryMock
+                .Setup(repo => repo.GetAsync(createDoctorModel.OfficeId, CancellationToken.None))
                 .ReturnsAsync((Office?)null);
 
-
-            var doctorRepositoryMock = new Mock<IDoctorRepository>();
-
-            var doctorService = new DoctorService(doctorRepositoryMock.Object, officeRepositoryMock.Object, _mapper);
-
-            var createDoctorModel = new CreateDoctorModel
-            (
-                FirstName: "John",
-                LastName: fixture.Create<string>(),
-                MiddleName: fixture.Create<string>(),
-                OfficeId: "1231231-1231-123",
-                Status: fixture.Create<string>()
-            );
-
-            // Act
-            var exception = await Record.ExceptionAsync(async () =>
+            // Act and Assert
+            await Should.ThrowAsync<RelatedObjectNotFoundException>(async () =>
             {
-                await doctorService.Create(createDoctorModel, CancellationToken.None);
+                await _doctorService.Create(createDoctorModel, CancellationToken.None);
             });
-
-            // Assert
-            Assert.NotNull(exception);
         }
 
         [Fact]
-        public async void UpdateDoctor_ShouldBe_Success()
+        public async void Update_OfficeExists_ShouldBeSuccess()
         {
             // Arrange
-            var fixture = new Fixture();
-            var officeRepositoryMock = new Mock<IOfficeRepository>();
-            officeRepositoryMock
-                .Setup(repo => repo.GetAsync(It.Is<string>(id => id == "1231231-1231-124"), CancellationToken.None))
-                .ReturnsAsync(new Office
-                {
-                    Id = "1231231-1231-124",
-                    Address = fixture.Create<string>(),
-                    PhotoURL = fixture.Create<string>(),
-                    RegistryPhoneNumber = fixture.Create<string>(),
-                    IsActive = true
-                });
+            var doctorId = "1231231-1231-123";
+            var officeId = "1231231-1231-124";
 
-            var doctorRepositoryMock = new Mock<IDoctorRepository>();
-            doctorRepositoryMock.Setup(repo => repo.GetAsync(It.Is<string>(id => id == "1231231-1231-123"), CancellationToken.None))
-                              .ReturnsAsync(new Doctor
-                              {
-                                  Id = "1231231-1231-123",
-                                  FirstName = "John",
-                                  LastName = fixture.Create<string>(),
-                                  MiddleName = fixture.Create<string>(),
-                                  OfficeId = "1231231-1231-124",
-                                  Status = fixture.Create<string>()
-                              });
+            var updateDoctorModel = _fixture.Build<UpdateDoctorModel>()
+                .With(d => d.Id, doctorId)
+                .With(d => d.OfficeId, officeId)
+                .Create();
 
-            var doctorService = new DoctorService(doctorRepositoryMock.Object, officeRepositoryMock.Object, _mapper);
+            var existingDoctor = CreateDoctor(Id: updateDoctorModel.Id, OfficeId: updateDoctorModel.OfficeId);
 
-            var updateDoctorModel = new UpdateDoctorModel
-            (
-                Id: "1231231-1231-123",
-                FirstName: "New Joe",
-                LastName: fixture.Create<string>(),
-                MiddleName: fixture.Create<string>(),
-                OfficeId: "1231231-1231-124",
-                Status: fixture.Create<string>()
-            );
+            var activeOffice = CreateOffice(updateDoctorModel.OfficeId, IsActive: true);
 
-            // Act
-            var exception = await Record.ExceptionAsync(async () =>
+            _doctorRepositoryMock
+                .Setup(repo => repo.GetAsync(updateDoctorModel.Id, CancellationToken.None))
+                .ReturnsAsync(existingDoctor);
+
+            _officeRepositoryMock
+                .Setup(repo => repo.GetAsync(updateDoctorModel.OfficeId, CancellationToken.None))
+                .ReturnsAsync(activeOffice);
+
+            _mapperMock.Setup(mapper => mapper.Map<Doctor>(updateDoctorModel))
+                .Returns(existingDoctor);
+
+            // Act and Assert
+            await Should.NotThrowAsync(async () =>
             {
-                await doctorService.Update(updateDoctorModel, CancellationToken.None);
+                await _doctorService.Update(updateDoctorModel, CancellationToken.None);
             });
-
-            // Assert
-            Assert.Null(exception);
         }
 
         [Fact]
-        public async void UpdateDoctor_WhenRelatedOfficeNotFound_ShouldBe_Exception()
+        public async void Update_RelatedOfficeNotFound_ShouldBeException()
         {
             // Arrange
-            var fixture = new Fixture();
-            var officeRepositoryMock = new Mock<IOfficeRepository>();
-            officeRepositoryMock
-                .Setup(repo => repo.GetAsync(It.Is<string>(id => id == "1231231-1231-124"), CancellationToken.None))
+            var doctorId = "1231231-1231-123";
+            var officeId = "1231231-1231-124";
+
+            var updateDoctorModel = _fixture.Build<UpdateDoctorModel>()
+                .With(d => d.Id, doctorId)
+                .With(d => d.OfficeId, officeId)
+                .Create();
+
+            var existingDoctor = CreateDoctor(Id: updateDoctorModel.Id, OfficeId: updateDoctorModel.OfficeId);
+
+            _doctorRepositoryMock
+                .Setup(repo => repo.GetAsync(updateDoctorModel.Id, CancellationToken.None))
+                .ReturnsAsync(existingDoctor);
+
+            _officeRepositoryMock
+                .Setup(repo => repo.GetAsync(updateDoctorModel.OfficeId, CancellationToken.None))
                 .ReturnsAsync((Office?)null);
 
-            var doctorRepositoryMock = new Mock<IDoctorRepository>();
-            doctorRepositoryMock.Setup(repo => repo.GetAsync(It.Is<string>(id => id == "1231231-1231-123"), CancellationToken.None))
-                              .ReturnsAsync(new Doctor
-                              {
-                                  Id = "1231231-1231-123",
-                                  FirstName = "John",
-                                  LastName = fixture.Create<string>(),
-                                  MiddleName = fixture.Create<string>(),
-                                  OfficeId = "1231231-1231-124",
-                                  Status = fixture.Create<string>()
-                              });
-
-            var doctorService = new DoctorService(doctorRepositoryMock.Object, officeRepositoryMock.Object, _mapper);
-
-            var updateDoctorModel = new UpdateDoctorModel
-            (
-                Id: "1231231-1231-123",
-                FirstName: "New Joe",
-                LastName: fixture.Create<string>(),
-                MiddleName: fixture.Create<string>(),
-                OfficeId: "1231231-1231-124",
-                Status: fixture.Create<string>()
-            );
-
-            // Act
-            var exception = await Record.ExceptionAsync(async () =>
+            // Act and Assert
+            await Should.ThrowAsync<RelatedObjectNotFoundException>(async () =>
             {
-                await doctorService.Update(updateDoctorModel, CancellationToken.None);
+                await _doctorService.Update(updateDoctorModel, CancellationToken.None);
             });
-
-            // Assert
-            Assert.NotNull(exception);
         }
 
         [Fact]
-        public async void UpdateDoctor_WhenRelatedOfficeIsNotActive_ShouldBe_Exception()
+        public async void Update_RelatedOfficeNotActive_ShouldBeException()
         {
             // Arrange
-            var fixture = new Fixture();
-            var officeRepositoryMock = new Mock<IOfficeRepository>();
-            officeRepositoryMock
-                .Setup(repo => repo.GetAsync(It.Is<string>(id => id == "1231231-1231-124"), CancellationToken.None))
-                .ReturnsAsync(new Office
-                {
-                    Id = "1231231-1231-124",
-                    Address = fixture.Create<string>(),
-                    PhotoURL = fixture.Create<string>(),
-                    RegistryPhoneNumber = fixture.Create<string>(),
-                    IsActive = false
-                });
+            var doctorId = "1231231-1231-123";
+            var officeId = "1231231-1231-124";
 
-            var doctorRepositoryMock = new Mock<IDoctorRepository>();
-            doctorRepositoryMock.Setup(repo => repo.GetAsync(It.Is<string>(id => id == "1231231-1231-123"), CancellationToken.None))
-                              .ReturnsAsync(new Doctor
-                              {
-                                  Id = "1231231-1231-123",
-                                  FirstName = "John",
-                                  LastName = fixture.Create<string>(),
-                                  MiddleName = fixture.Create<string>(),
-                                  OfficeId = "1231231-1231-124",
-                                  Status = fixture.Create<string>()
-                              });
+            var updateDoctorModel = _fixture.Build<UpdateDoctorModel>()
+                .With(d => d.Id, doctorId)
+                .With(d => d.OfficeId, officeId)
+                .Create();
 
-            var doctorService = new DoctorService(doctorRepositoryMock.Object, officeRepositoryMock.Object, _mapper);
+            var existingDoctor = CreateDoctor(Id: updateDoctorModel.Id, OfficeId: updateDoctorModel.OfficeId);
 
-            var updateDoctorModel = new UpdateDoctorModel
-            (
-                Id: "1231231-1231-123",
-                FirstName: "New Joe",
-                LastName: fixture.Create<string>(),
-                MiddleName: fixture.Create<string>(),
-                OfficeId: "1231231-1231-124",
-                Status: fixture.Create<string>()
-            );
+            var inactiveOffice = CreateOffice(updateDoctorModel.OfficeId, IsActive: false);
 
-            // Act
-            var exception = await Record.ExceptionAsync(async () =>
+            _doctorRepositoryMock
+                .Setup(repo => repo.GetAsync(updateDoctorModel.Id, CancellationToken.None))
+                .ReturnsAsync(existingDoctor);
+
+            _officeRepositoryMock
+                .Setup(repo => repo.GetAsync(updateDoctorModel.OfficeId, CancellationToken.None))
+                .ReturnsAsync(inactiveOffice);
+
+            // Act and Assert
+            await Should.ThrowAsync<RelatedObjectNotFoundException>(async () =>
             {
-                await doctorService.Update(updateDoctorModel, CancellationToken.None);
+                await _doctorService.Update(updateDoctorModel, CancellationToken.None);
             });
+        }
 
-            // Assert
-            Assert.NotNull(exception);
+        private Office CreateOffice(string? Id = null, string? Address = null, string? PhotoURL = null, string? RegistryPhoneNumber = null, bool? IsActive = null)
+        {
+            return _fixture.Build<Office>()
+                .With(x => x.Id, Id ?? _fixture.Create<string>())
+                .With(x => x.Address, Address ?? _fixture.Create<string>())
+                .With(x => x.PhotoURL, PhotoURL ?? _fixture.Create<string>())
+                .With(x => x.RegistryPhoneNumber, RegistryPhoneNumber ?? _fixture.Create<string>())
+                .With(x => x.IsActive, IsActive ?? _fixture.Create<bool>())
+                .Create();
+        }
+
+        private Doctor CreateDoctor(string? Id = null, string? FirstName = null, string? LastName = null, string? MiddleName = null, string? OfficeId = null, string? Status = null)
+        {
+            return _fixture.Build<Doctor>()
+                .With(x => x.Id, Id ?? _fixture.Create<string>())
+                .With(x => x.FirstName, FirstName ?? _fixture.Create<string>())
+                .With(x => x.LastName, LastName ?? _fixture.Create<string>())
+                .With(x => x.MiddleName, MiddleName ?? _fixture.Create<string>())
+                .With(x => x.OfficeId, OfficeId ?? _fixture.Create<string>())
+                .With(x => x.Status, Status ?? _fixture.Create<string>())
+                .Create();
         }
     }
 }
