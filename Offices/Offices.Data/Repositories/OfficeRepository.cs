@@ -29,7 +29,7 @@ namespace Offices.Data.Repositories
             var officeToDelete = await (await _collection.FindAsync(d => d.Id == id, cancellationToken: cancellationToken)).FirstOrDefaultAsync(cancellationToken);
             if (officeToDelete == null)
             {
-                throw new NotFoundException($"Office with id {id} not found!");
+                throw new NotFoundException($"Doctor with id {id} not found!");
             }
             await _collection.UpdateOneAsync(Builders<Office>.Filter.Eq(e => e.Id, id), Builders<Office>.Update.Set(e => e.IsActive, false), cancellationToken: cancellationToken);
         }
