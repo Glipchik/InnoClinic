@@ -1,6 +1,6 @@
 name: ReSharper CLI CleanupCode Services
 
-on: [ push, pull_request ]
+on: [ push ]
 
 jobs:
   cleanup:
