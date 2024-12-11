@@ -2,12 +2,11 @@ name: CI Pipeline
 
 on:
   push:
-    branches:
-      - main
-      - feat/*
+    paths: 
+      - Services/**
   pull_request:
-    branches:
-      - main
+    paths: 
+      - Services/**
 
 jobs:
   build:
@@ -29,13 +28,6 @@ jobs:
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
           restore-keys: |
             ${{ runner.os }}-nuget-
-
-      # Offices API
-      - name: Restore, Build and Run Tests Offices API project
-        run: |
-          dotnet restore Offices/Offices.API/Offices.API.csproj
-          dotnet build Offices/Offices.API/Offices.API.csproj --no-restore --configuration Release
-          dotnet test Offices/Offices.Tests/Offices.Tests.csproj
 
       # Services API
       - name: Restore, Build and Run Tests Services API project
