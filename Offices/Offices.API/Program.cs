@@ -3,7 +3,7 @@ using Offices.API.Extensions;
 using Offices.API.Infrastructure;
 using Offices.Application.Extensions;
 using Offices.Application.Services;
-// 1
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Logging.ClearProviders();
