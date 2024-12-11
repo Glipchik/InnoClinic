@@ -1,12 +1,12 @@
 name: ReSharper CLI CleanupCode Offices
 
-on: [ push, pull_request ]
+on: [push, pull_request]
 
 jobs:
   cleanup:
     runs-on: ubuntu-latest
     name: Cleanup Code Offices
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -27,27 +27,27 @@ jobs:
           fail_on_reformat_needed: 'yes'
           jb_cleanup_code_arg: '--verbosity=INFO'
 
-    inspection:
-      runs-on: ubuntu-latest
-      name: Inspect Code Offices
-      needs: cleanup
+  inspection:
+    runs-on: ubuntu-latest
+    name: Inspect Code Offices
+    needs: cleanup
 
-      steps:
-        - name: Checkout
-          uses: actions/checkout@v3
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
 
-        - name: Setup .NET
-          uses: actions/setup-dotnet@v3
-          with:
-            dotnet-version: 8.x
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8.x
 
-        - name: Restore Dependencies
-          run: dotnet restore Offices/Offices.sln
+      - name: Restore Dependencies
+        run: dotnet restore Offices/Offices.sln
 
-        - name: Inspect code
-          uses: muno92/resharper_inspectcode@1.11.8
-          with:
-            solutionPath: ./Offices/Offices.sln
-            failOnIssue: 1
-            minimumSeverity: notice
-            solutionWideAnalysis: true
+      - name: Inspect code
+        uses: muno92/resharper_inspectcode@1.11.8
+        with:
+          solutionPath: ./Offices/Offices.sln
+          failOnIssue: 1
+          minimumSeverity: notice
+          solutionWideAnalysis: true
