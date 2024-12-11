@@ -32,12 +32,14 @@ jobs:
 
       # Offices API
       - name: Restore, Build and Run Tests Offices API project
-        run: dotnet restore Offices/Offices.API/Offices.API.csproj
-        run: dotnet build Offices/Offices.API/Offices.API.csproj --no-restore --configuration Release
-        run: dotnet test Offices/Offices.API/Offices.API.csproj --no-build --configuration Release
+        run: |
+          dotnet restore Offices/Offices.API/Offices.API.csproj
+          dotnet build Offices/Offices.API/Offices.API.csproj --no-restore --configuration Release
+          dotnet test Offices/Offices.API/Offices.API.csproj --no-build --configuration Release
 
       # Services API
       - name: Restore, Build and Run Tests Services API project
-        run: dotnet restore Services/Services.API/Services.API.csproj
-        run: dotnet build Services/Services.API/Services.API.csproj --no-restore --configuration Release
-        run: dotnet test Services/Services.API/Services.API.csproj --no-build --configuration Release
+        run: |
+          dotnet restore Services/Services.API/Services.API.csproj
+          dotnet build Services/Services.API/Services.API.csproj --no-restore --configuration Release
+          dotnet test Services/Services.API/Services.API.csproj --no-build --configuration Release
