@@ -1,0 +1,43 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - feat/*
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.x'
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      # Offices API
+      - name: Restore, Build and Run Tests Offices API project
+        run: dotnet restore Offices/Offices.API/Offices.API.csproj
+        run: dotnet build Offices/Offices.API/Offices.API.csproj --no-restore --configuration Release
+        run: dotnet test Offices/Offices.API/Offices.API.csproj --no-build --configuration Release
+
+      # Services API
+      - name: Restore, Build and Run Tests Services API project
+        run: dotnet restore Services/Services.API/Services.API.csproj
+        run: dotnet build Services/Services.API/Services.API.csproj --no-restore --configuration Release
+        run: dotnet test Services/Services.API/Services.API.csproj --no-build --configuration Release
