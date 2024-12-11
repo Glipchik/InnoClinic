@@ -1,3 +1,7 @@
+name: ReSharper CLI CleanupCode Offices
+
+on: [ push, pull_request ]
+
 jobs:
   cleanup:
     runs-on: ubuntu-latest
