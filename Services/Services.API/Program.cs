@@ -2,7 +2,7 @@ using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Services.API.DependencyInjection;
 using Services.Infrastructure.Contexts;
-
+// 1
 var builder = WebApplication.CreateBuilder(args);
 
 var configuration = builder.Configuration;
