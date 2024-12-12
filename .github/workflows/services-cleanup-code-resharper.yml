@@ -1,6 +1,9 @@
 name: ReSharper CLI CleanupCode Services
 
-on: [ push ]
+on: 
+  push:
+    paths: 
+      - Services/**
 
 jobs:
   cleanup:
