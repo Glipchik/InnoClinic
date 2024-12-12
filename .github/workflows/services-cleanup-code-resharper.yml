@@ -5,7 +5,7 @@ on: [ push ]
 jobs:
   cleanup:
     runs-on: ubuntu-latest
-    name: Cleanup Code Services
+    name: Cleanup And Inspect Code Services
 
     steps:
       - name: Checkout
