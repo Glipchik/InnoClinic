@@ -1,0 +1,37 @@
+name: CI Pipeline
+
+on:
+  push:
+    paths: 
+      - Authorization/**
+  pull_request:
+    paths: 
+      - Authorization/**
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.x'
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      # Authorization API
+      - name: Restore, Build and Run Tests Authorization API project
+        run: |
+          dotnet restore Authorization/Authorization.API/Authorization.API.csproj
+          dotnet build Authorization/Authorization.API/Authorization.API.csproj --no-restore --configuration Release
+        # dotnet test Authorization/Authorization.Tests/Authorization.Tests.csproj
