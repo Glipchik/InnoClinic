@@ -25,3 +25,4 @@ runs:
               dotnet restore ${{ inputs.project }}/${{ inputs.project }}.API/${{ inputs.project }}.API.csproj
               dotnet build ${{ inputs.project }}/${{ inputs.project }}.API/${{ inputs.project }}.API.csproj --no-restore --configuration Release
               dotnet test ${{ inputs.project }}/${{ inputs.project }}.Tests/${{ inputs.project }}.Tests.csproj
+          shell: bash
