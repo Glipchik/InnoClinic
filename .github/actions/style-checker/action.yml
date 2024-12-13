@@ -1,34 +1,31 @@
-name: Style Checker
+name: Style Checker Action
+description: Cleanup and Inspect code for the project
+inputs:
+    project:
+        description: 'Project name'
+        required: true
+runs:
+    using: "composite"
+    steps:
+        - name: Setup .NET
+          uses: actions/setup-dotnet@v3
+          with:
+              dotnet-version: '8.x'
 
-on:
-    workflow_call:
-        inputs:
-            project:
-                description: 'Project name'
-                required: true
-                type: string
+        - name: Restore Dependencies
+          run: dotnet restore ${{ inputs.project }}/${{ inputs.project }}.sln
 
-jobs:
-    cleanup:
-        runs-on: ubuntu-latest
-        name: Cleanup And Inspect Code ${{ inputs.project }}
+        - name: Cleanup Code
+          uses: ArturWincenciak/ReSharper_CleanupCode@v3.0
+          with:
+              solution: '${{ inputs.project }}/${{ inputs.project }}.sln'
+              fail_on_reformat_needed: 'yes'
+              jb_cleanup_code_arg: '--verbosity=INFO --editorconfig=./.editorconfig'
 
-        steps:
-            - name: Restore Dependencies
-              run: dotnet restore ${{ inputs.project }}/${{ inputs.project }}.sln
-          
-            - name: Cleanup Code
-              id: cleanup
-              uses: ArturWincenciak/ReSharper_CleanupCode@v3.0
-              with:
-                  solution: '${{ inputs.project }}/${{ inputs.project }}.sln'
-                  fail_on_reformat_needed: 'yes'
-                  jb_cleanup_code_arg: '--verbosity=INFO --editorconfig=./.editorconfig'
-
-            - name: Inspect code
-              uses: muno92/resharper_inspectcode@1.11.8
-              with:
-                  solutionPath: ./${{ inputs.project }}/${{ inputs.project }}.sln
-                  failOnIssue: 1
-                  minimumSeverity: notice
-                  solutionWideAnalysis: true
+        - name: Inspect Code
+          uses: muno92/resharper_inspectcode@1.11.8
+          with:
+              solutionPath: ./${{ inputs.project }}/${{ inputs.project }}.sln
+              failOnIssue: 1
+              minimumSeverity: notice
+              solutionWideAnalysis: true
