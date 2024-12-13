@@ -7,13 +7,9 @@ inputs:
 runs:
     using: "composite"
     steps:
-        - name: Setup .NET
-          uses: actions/setup-dotnet@v3
-          with:
-              dotnet-version: '8.x'
-
         - name: Restore Dependencies
           run: dotnet restore ${{ inputs.project }}/${{ inputs.project }}.sln
+		  shell: bash
 
         - name: Cleanup Code
           uses: ArturWincenciak/ReSharper_CleanupCode@v3.0
