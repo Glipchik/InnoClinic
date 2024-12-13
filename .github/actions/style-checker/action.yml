@@ -14,14 +14,6 @@ jobs:
         name: Cleanup And Inspect Code ${{ inputs.project }}
 
         steps:
-            - name: Checkout
-              uses: actions/checkout@v3
-
-            - name: Setup .NET
-              uses: actions/setup-dotnet@v3
-              with:
-                  dotnet-version: 8.0.x
-
             - name: Restore Dependencies
               run: dotnet restore ${{ inputs.project }}/${{ inputs.project }}.sln
           
