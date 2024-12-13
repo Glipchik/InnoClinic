@@ -4,7 +4,7 @@ using Services.API.DependencyInjection;
 using Services.Infrastructure.Contexts;
 
 var builder = WebApplication.CreateBuilder(args);
-// 1
+
 var configuration = builder.Configuration;
 
 builder.Logging.ClearProviders();
