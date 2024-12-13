@@ -5,7 +5,7 @@ using Offices.Application.Extensions;
 using Offices.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-// 1
+
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
