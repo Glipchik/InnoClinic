@@ -11,5 +11,17 @@ namespace Authorization.Domain.Entities
     {
         [Key]
         public Guid Id { get; set; }
+
+        [Required]
+        public Guid CreatedBy { get; set; }
+
+        [Required]
+        public Guid UpdatedBy { get; set; }
+
+        [Required]
+        public DateTime CreatedAt { get; set; }
+
+        [Required]
+        public DateTime UpdatedAt { get; set; }
     }
 }
