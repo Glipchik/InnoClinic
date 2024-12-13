@@ -1,0 +1,23 @@
+name: CI for Offices
+
+on:
+    push:
+        paths:
+        - "Offices/**"
+
+jobs:
+    trigger-ci-pipeline:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Trigger CI Pipeline
+              uses: ./.github/workflows/ci-pipeline.yml
+              with:
+                  project: 'Offices'
+
+    trigger-style-checker:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Trigger Style Checker
+              uses: ./.github/workflows/style-checker.yml
+              with:
+                  project: 'Offices'

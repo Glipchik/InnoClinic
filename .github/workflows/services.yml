@@ -1,0 +1,17 @@
+name: CI for Services
+
+on:
+    push:
+        paths:
+        - "Services/**"
+
+jobs:
+    trigger-ci-pipeline:
+        uses: ./.github/workflows/ci-pipeline.yml
+        with:
+            project: 'Services'
+
+    trigger-style-checker:
+        uses: ./.github/workflows/style-checker.yml
+        with:
+            project: 'Services'
