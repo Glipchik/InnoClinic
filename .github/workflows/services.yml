@@ -7,11 +7,17 @@ on:
 
 jobs:
     trigger-ci-pipeline:
-        uses: ./.github/workflows/ci-pipeline.yml
-        with:
-            project: 'Services'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Trigger CI Pipeline
+              uses: ./.github/actions/ci-pipeline
+              with:
+                  project: 'Services'
 
     trigger-style-checker:
-        uses: ./.github/workflows/style-checker.yml
-        with:
-            project: 'Services'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Trigger Style Checker
+              uses: ./.github/actions/style-checker
+              with:
+                  project: 'Services'

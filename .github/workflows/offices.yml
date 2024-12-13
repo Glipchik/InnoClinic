@@ -10,7 +10,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Trigger CI Pipeline
-              uses: ./.github/workflows/ci-pipeline.yml
+              uses: ./.github/actions/ci-pipeline
               with:
                   project: 'Offices'
 
@@ -18,6 +18,6 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Trigger Style Checker
-              uses: ./.github/workflows/style-checker.yml
+              uses: ./.github/actions/style-checker
               with:
                   project: 'Offices'
