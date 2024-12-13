@@ -1,27 +1,27 @@
 name: Style Checker Action
 description: Cleanup and Inspect code for the project
 inputs:
-    project:
-        description: 'Project name'
-        required: true
+  project:
+    description: 'Project name'
+    required: true
 runs:
-    using: "composite"
-    steps:
-        - name: Restore Dependencies
-          run: dotnet restore ${{ inputs.project }}/${{ inputs.project }}.sln
-		  shell: bash
+  using: "composite"
+  steps:
+    - name: Restore Dependencies
+      run: dotnet restore ${{ inputs.project }}/${{ inputs.project }}.sln
+      shell: bash
 
-        - name: Cleanup Code
-          uses: ArturWincenciak/ReSharper_CleanupCode@v3.0
-          with:
-              solution: '${{ inputs.project }}/${{ inputs.project }}.sln'
-              fail_on_reformat_needed: 'yes'
-              jb_cleanup_code_arg: '--verbosity=INFO --editorconfig=./.editorconfig'
+    - name: Cleanup Code
+      uses: ArturWincenciak/ReSharper_CleanupCode@v3.0
+      with:
+        solution: '${{ inputs.project }}/${{ inputs.project }}.sln'
+        fail_on_reformat_needed: 'yes'
+        jb_cleanup_code_arg: '--verbosity=INFO --editorconfig=./.editorconfig'
 
-        - name: Inspect Code
-          uses: muno92/resharper_inspectcode@1.11.8
-          with:
-              solutionPath: ./${{ inputs.project }}/${{ inputs.project }}.sln
-              failOnIssue: 1
-              minimumSeverity: notice
-              solutionWideAnalysis: true
+    - name: Inspect Code
+      uses: muno92/resharper_inspectcode@1.11.8
+      with:
+        solutionPath: ./${{ inputs.project }}/${{ inputs.project }}.sln
+        failOnIssue: 1
+        minimumSeverity: notice
+        solutionWideAnalysis: true
