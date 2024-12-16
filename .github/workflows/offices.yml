@@ -32,4 +32,6 @@ jobs:
       - name: Trigger Style Checker
         uses: ./.github/actions/style-checker
         with:
-          project: 'Offices'
+          solution: 'Offices'
+          project: 'Offices.API'
+          tests_project: 'Offices.Tests'
