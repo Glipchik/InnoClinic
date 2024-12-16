@@ -27,11 +27,11 @@ jobs:
       - name: Trigger CI Pipeline
         uses: ./.github/actions/ci-pipeline
         with:
-          project: 'Services'
+          project: 'Services.API'
+          solution: 'Services'
+          tests_project: 'Services.Tests'
 
       - name: Trigger Style Checker
         uses: ./.github/actions/style-checker
         with:
-          project: 'Services.API'
-          solution: 'Services'
-          tests_project: 'Services.Tests'
+          project: 'Services'
