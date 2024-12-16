@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35527.113 d17.12
+VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authorization.Domain", "Authorization.Domain\Authorization.Domain.csproj", "{F3D8EDCA-0A83-4E93-BC43-E6AEB1A47A42}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authorization.Data", "Authorization.Data\Authorization.Data.csproj", "{596E8C13-9DDF-4084-8F3F-C69679F61EE4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{F3D8EDCA-0A83-4E93-BC43-E6AEB1A47A42}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3D8EDCA-0A83-4E93-BC43-E6AEB1A47A42}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F3D8EDCA-0A83-4E93-BC43-E6AEB1A47A42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{596E8C13-9DDF-4084-8F3F-C69679F61EE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{596E8C13-9DDF-4084-8F3F-C69679F61EE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{596E8C13-9DDF-4084-8F3F-C69679F61EE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{596E8C13-9DDF-4084-8F3F-C69679F61EE4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
