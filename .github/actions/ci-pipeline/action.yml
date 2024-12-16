@@ -11,7 +11,7 @@ inputs:
         description: 'Project tests folder name'
         required: false
     tests_project:
-        description: 'Project tests folder name'
+        description: 'Project tests name'
         required: false
 runs:
     using: "composite"
