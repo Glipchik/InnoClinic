@@ -2,8 +2,14 @@ name: CI Pipeline Action
 description: Build, restore, and test project
 inputs:
     project:
-        description: 'Project name'
+        description: 'Project folder name'
         required: true
+    solution:
+        description: 'Solution folder name'
+        required: true
+    tests_project:
+        description: 'Project tests folder name'
+        required: false
 runs:
     using: "composite"
     steps:
@@ -15,9 +21,14 @@ runs:
               restore-keys: |
                   ${{ github.os }}-nuget-
 
-        - name: Restore, Build, and Run Tests
+        - name: Restore and Build Project
           run: |
-              dotnet restore ${{ inputs.project }}/${{ inputs.project }}.API/${{ inputs.project }}.API.csproj
-              dotnet build ${{ inputs.project }}/${{ inputs.project }}.API/${{ inputs.project }}.API.csproj --no-restore --configuration Release
-              dotnet test ${{ inputs.project }}/${{ inputs.project }}.Tests/${{ inputs.project }}.Tests.csproj
+              dotnet restore ${{ inputs.solution }}/${{ inputs.project }}/${{ inputs.project }}.csproj
+              dotnet build ${{ inputs.solution }}/${{ inputs.project }}/${{ inputs.project }}.csproj --no-restore --configuration Release
+          shell: bash
+
+        - name: Run Tests (if tests_project is set)
+          if: ${{ inputs.tests_project != '' }}
+          run: |
+              dotnet test ${{ inputs.solution }}/${{ inputs.tests_project }}/${{ inputs.tests_project }}.csproj
           shell: bash
