@@ -9,35 +9,14 @@ using System.Threading.Tasks;
 
 namespace Authorization.Application.Models
 {
-    public record CreateAccountModel(
+    public record RegisterAccountModel(
         string Email,
         string PhoneNumber,
-        bool IsEmailVerified,
-        RolesModel Role,
-        Guid CreatedBy,
-        Guid UpdatedBy,
-        DateTime CreatedAt,
-        DateTime UpdatedAt);
+        string Password
+    );
 
-    public record AccountModel(
-        Guid Id,
+    public record LoginAccountModel(
         string Email,
-        string PhoneNumber,
-        bool IsEmailVerified,
-        RolesModel Role,
-        Guid CreatedBy,
-        Guid UpdatedBy,
-        DateTime CreatedAt,
-        DateTime UpdatedAt);
-
-    public record UpdateAccountModel(
-        Guid Id,
-        string Email,
-        string PhoneNumber,
-        bool IsEmailVerified,
-        RolesModel Role,
-        Guid CreatedBy,
-        Guid UpdatedBy,
-        DateTime CreatedAt,
-        DateTime UpdatedAt);
+        string Password
+    );
 }
