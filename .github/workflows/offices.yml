@@ -1,0 +1,35 @@
+name: CI for Offices
+
+on:
+    push:
+        paths:
+        - "Offices/**"
+
+jobs:
+  build:
+    name: Build and Run CI Pipeline
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+            dotnet-version: '8.x'
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Trigger CI Pipeline
+        uses: ./.github/actions/ci-pipeline
+        with:
+          project: 'Offices'
+
+      - name: Trigger Style Checker
+        uses: ./.github/actions/style-checker
+        with:
+          project: 'Offices'
