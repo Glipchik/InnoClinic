@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Authorization.Domain.Enums
 {
-    public enum Roles
+    public enum Role
     {
         None = 0,
         Patient,

@@ -12,7 +12,7 @@ namespace Authorization.Domain.Entities
     {
         [Required]
         public string Email { get; set; }
-        
+
         [Required]
         public string PhoneNumber { get; set; }
 
@@ -20,18 +20,6 @@ namespace Authorization.Domain.Entities
         public bool IsEmailVerified { get; set; } = false;
 
         [Required]
-        public Roles Role { get; set; }
-
-        [Required]
-        public Guid CreatedBy { get; set; }
-
-        [Required]
-        public Guid UpdatedBy { get; set; }
-
-        [Required]
-        public DateTime CreatedAt { get; set; }
-
-        [Required]
-        public DateTime UpdatedAt { get; set; }
+        public Role Role { get; set; }
     }
 }
