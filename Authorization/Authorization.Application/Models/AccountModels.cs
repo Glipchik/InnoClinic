@@ -24,25 +24,25 @@ namespace Authorization.Application.Models
 
     public record ExternalProviderFindModel(
         string Provider,
-        Guid Id
+        Guid AccountId
     );
 
     public record AutoProvisionModel(
         string Provider,
-        Guid Id,
+        Guid AccountId,
         List<Claim> Claims
     );
 
     public record AccountModel(
-        string Guid,
+        Guid Id,
         string Email,
         bool IsEmailVerified,
-        string PhoneNumber,
-        string Password,
+        string? PhoneNumber,
+        string? Password,
         RoleModel Role,
-        string ProviderName,
-        string ProviderSubjectId,
-        bool IsActive,
+        string? ProviderName,
+        Guid? ProviderSubjectId,
+        bool? IsActive,
         ICollection<Claim> Claims
     );
 }
