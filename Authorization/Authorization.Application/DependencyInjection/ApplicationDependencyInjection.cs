@@ -1,4 +1,6 @@
-﻿using Authorization.Application.Services.Abstractions;
+﻿using Authorization.Application.Mapper;
+using Authorization.Application.Services;
+using Authorization.Application.Services.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -12,9 +14,9 @@ namespace Authorization.Application.DependencyInjection
     {
         public static IServiceCollection AddApplicationDependencyInjection(this IServiceCollection services)
         {
+            services.AddAutoMapper(typeof(ApplicationMapping));
 
-
-            services.AddScoped<IAccountService, ServiceCategoryManager>();
+            services.AddScoped<IAccountService, AccountService>();
 
             return services;
         }
