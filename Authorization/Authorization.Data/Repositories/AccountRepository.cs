@@ -22,8 +22,17 @@ namespace Authorization.Data.Repositories
         {
             return await _context.Accounts
                 .AsNoTracking()
-                .Where(x => x.Email == email)
+                .Where(account => account.Email == email)
                 .SingleOrDefaultAsync();
+        }
+
+        public async Task<Account> GetByExternalProviderAsync(string provider, Guid accountId, CancellationToken cancellationToken)
+        {
+            return await _context.Accounts
+               .AsNoTracking()
+               .Where(account => account.ProviderName == provider &&
+                                 account.Id == accountId)
+               .SingleOrDefaultAsync();
         }
     }
 }
