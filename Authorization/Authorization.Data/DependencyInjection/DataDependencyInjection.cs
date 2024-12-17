@@ -12,9 +12,9 @@ using System.Threading.Tasks;
 
 namespace Authorization.Data.DependencyInjection
 {
-    public static class InfrastructureDependencyInjection
+    public static class DataDependencyInjection
     {
-        public static IServiceCollection AddInfrastructureDependencyInjection(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddDataDependencyInjection(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
