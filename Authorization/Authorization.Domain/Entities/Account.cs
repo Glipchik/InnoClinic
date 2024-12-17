@@ -26,7 +26,7 @@ namespace Authorization.Domain.Entities
 
         public string ProviderName { get; set; }
 
-        public string ProviderSubjectId { get; set; }
+        public Guid ProviderSubjectId { get; set; }
 
         public bool IsActive { get; set; } = true;
 
