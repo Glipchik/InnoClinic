@@ -43,6 +43,10 @@ namespace Authorization.Application.Models
         string? ProviderName,
         Guid? ProviderSubjectId,
         bool? IsActive,
-        ICollection<Claim> Claims
+        ICollection<Claim> Claims,
+        Guid CreatedBy,
+        Guid UpdatedBy,
+        DateTime CreatedAt,
+        DateTime UpdatedAt
     );
 }

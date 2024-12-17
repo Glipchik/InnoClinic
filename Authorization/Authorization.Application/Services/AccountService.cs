@@ -51,11 +51,12 @@ namespace Authorization.Application.Services
 
             // check if a email is available, otherwise exception
             var email = filtered.FirstOrDefault(c => c.Type == JwtClaimTypes.Email)?.Value ?? throw new BadRequestException("No Email found in claims!");
+            var id = Guid.NewGuid();
 
             // create new user
             var user = new AccountModel
             (
-                Id: Guid.NewGuid(),
+                Id: id,
                 Email: email,
                 PhoneNumber: null,
                 Role: Models.Enums.RoleModel.Patient,
@@ -64,7 +65,11 @@ namespace Authorization.Application.Services
                 Claims: filtered,
                 ProviderName: autoProvisionModel.Provider,
                 ProviderSubjectId: autoProvisionModel.AccountId,
-                IsActive: null
+                IsActive: null,
+                CreatedAt: DateTime.UtcNow,
+                UpdatedAt: DateTime.UtcNow,
+                CreatedBy: id,
+                UpdatedBy: id
             );
 
             await _repository.CreateAsync(_mapper.Map<Account>(user), cancellationToken);
@@ -85,10 +90,12 @@ namespace Authorization.Application.Services
                 claims.Add(new Claim(ClaimTypes.Email, createAccountModel.Email));
             }
 
+            var id = Guid.NewGuid();
+
             // create new user
             var user = new AccountModel
             (
-                Id: Guid.NewGuid(),
+                Id: id,
                 Email: createAccountModel.Email,
                 PhoneNumber: createAccountModel.PhoneNumber,
                 Role: Models.Enums.RoleModel.Patient,
@@ -97,7 +104,11 @@ namespace Authorization.Application.Services
                 Claims: claims,
                 ProviderSubjectId: null,
                 ProviderName: null,
-                IsActive: null
+                IsActive: null,
+                CreatedAt: DateTime.UtcNow,
+                UpdatedAt: DateTime.UtcNow,
+                CreatedBy: id,
+                UpdatedBy: id
             );
 
             await _repository.CreateAsync(_mapper.Map<Account>(user), cancellationToken);
