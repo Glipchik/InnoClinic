@@ -2,11 +2,6 @@
 using Authorization.Data.Repositories.Abstractions;
 using Authorization.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Authorization.Data.Repositories
 {

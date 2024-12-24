@@ -2,11 +2,6 @@
 using Authorization.Data.Repositories.Abstractions;
 using Authorization.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Authorization.Data.Repositories
 {
@@ -24,15 +19,6 @@ namespace Authorization.Data.Repositories
                 .AsNoTracking()
                 .Where(account => account.Email == email)
                 .SingleOrDefaultAsync();
-        }
-
-        public async Task<Account> GetByExternalProviderAsync(string provider, Guid accountId, CancellationToken cancellationToken)
-        {
-            return await _context.Accounts
-               .AsNoTracking()
-               .Where(account => account.ProviderName == provider &&
-                                 account.Id == accountId)
-               .SingleOrDefaultAsync();
         }
     }
 }
