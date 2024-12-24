@@ -36,22 +36,6 @@ namespace Authorization.Application.Services.Abstractions
         Task<AccountModel> FindByEmail(string email, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Finds the account by external provider.
-        /// </summary>
-        /// <param name="externalProviderFindModel">The account identifier and provider.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        Task<AccountModel> FindByExternalProvider(ExternalProviderFindModel externalProviderFindModel, CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Automatically provisions a account.
-        /// </summary>
-        /// <param name="autoProvisionModel">The provider and the account identifier and the claims.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        Task<AccountModel> AutoProvisionUser(AutoProvisionModel autoProvisionModel, CancellationToken cancellationToken);
-
-        /// <summary>
         /// Adds a new a accunt.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>

@@ -22,28 +22,13 @@ namespace Authorization.Application.Models
         string Password
     );
 
-    public record ExternalProviderFindModel(
-        string Provider,
-        Guid AccountId
-    );
-
-    public record AutoProvisionModel(
-        string Provider,
-        Guid AccountId,
-        List<Claim> Claims
-    );
-
     public record AccountModel(
         Guid Id,
         string Email,
         bool IsEmailVerified,
-        string? PhoneNumber,
-        string? Password,
+        string PhoneNumber,
+        string PasswordHash,
         RoleModel Role,
-        string? ProviderName,
-        Guid? ProviderSubjectId,
-        bool? IsActive,
-        ICollection<Claim> Claims,
         Guid CreatedBy,
         Guid UpdatedBy,
         DateTime CreatedAt,

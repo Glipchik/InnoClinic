@@ -13,6 +13,7 @@ namespace Authorization.Application.Mapper
         partial void AddAccountMapping()
         {
             CreateMap<Account, AccountModel>();
+            CreateMap<AccountModel, Account>();
         }
     }
 }

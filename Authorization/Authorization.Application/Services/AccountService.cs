@@ -5,6 +5,7 @@ using Authorization.Data.Repositories.Abstractions;
 using Authorization.Domain.Entities;
 using AutoMapper;
 using IdentityModel;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -20,61 +21,13 @@ namespace Authorization.Application.Services
     {
         private readonly IAccountRepository _repository;
         private readonly IMapper _mapper;
+        private readonly IHashService _hashService;
 
-        public AccountService(IAccountRepository repository, IMapper mapper) 
+        public AccountService(IAccountRepository repository, IMapper mapper, IHashService hashService) 
         {
             _repository = repository;
             _mapper = mapper;
-        }
-
-        public async Task<AccountModel> AutoProvisionUser(AutoProvisionModel autoProvisionModel, CancellationToken cancellationToken)
-        {
-            // create a list of claims that we want to transfer into our store
-            var filtered = new List<Claim>();
-
-            foreach (var claim in autoProvisionModel.Claims)
-            {
-                if (claim.Type == ClaimTypes.Email)
-                {
-                    filtered.Add(new Claim(JwtClaimTypes.Name, claim.Value));
-                    filtered.Add(new Claim(JwtClaimTypes.Email, claim.Value));
-                }
-                else if (JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap.ContainsKey(claim.Type))
-                {
-                    filtered.Add(new Claim(JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap[claim.Type], claim.Value));
-                }
-                else
-                {
-                    filtered.Add(claim);
-                }
-            }
-
-            // check if a email is available, otherwise exception
-            var email = filtered.FirstOrDefault(c => c.Type == JwtClaimTypes.Email)?.Value ?? throw new BadRequestException("No Email found in claims!");
-            var id = Guid.NewGuid();
-
-            // create new user
-            var user = new AccountModel
-            (
-                Id: id,
-                Email: email,
-                PhoneNumber: null,
-                Role: Models.Enums.RoleModel.Patient,
-                IsEmailVerified: false,
-                Password: null,
-                Claims: filtered,
-                ProviderName: autoProvisionModel.Provider,
-                ProviderSubjectId: autoProvisionModel.AccountId,
-                IsActive: null,
-                CreatedAt: DateTime.UtcNow,
-                UpdatedAt: DateTime.UtcNow,
-                CreatedBy: id,
-                UpdatedBy: id
-            );
-
-            await _repository.CreateAsync(_mapper.Map<Account>(user), cancellationToken);
-
-            return user;
+            _hashService = hashService;
         }
 
         public async Task<AccountModel> CreateAccount(CreateAccountModel createAccountModel, CancellationToken cancellationToken)
@@ -84,15 +37,8 @@ namespace Authorization.Application.Services
                 throw new Exception("That username already exists.");
             }
 
-            var claims = new List<Claim>();
-            if (!String.IsNullOrEmpty(createAccountModel.Email))
-            {
-                claims.Add(new Claim(ClaimTypes.Email, createAccountModel.Email));
-            }
-
             var id = Guid.NewGuid();
 
-            // create new user
             var user = new AccountModel
             (
                 Id: id,
@@ -100,11 +46,7 @@ namespace Authorization.Application.Services
                 PhoneNumber: createAccountModel.PhoneNumber,
                 Role: Models.Enums.RoleModel.Patient,
                 IsEmailVerified: false,
-                Password: createAccountModel.Password,
-                Claims: claims,
-                ProviderSubjectId: null,
-                ProviderName: null,
-                IsActive: null,
+                PasswordHash: _hashService.HashString(createAccountModel.Password),
                 CreatedAt: DateTime.UtcNow,
                 UpdatedAt: DateTime.UtcNow,
                 CreatedBy: id,
@@ -113,19 +55,12 @@ namespace Authorization.Application.Services
 
             await _repository.CreateAsync(_mapper.Map<Account>(user), cancellationToken);
 
-            // success
             return user;
         }
 
         public async Task<AccountModel> FindByEmail(string email, CancellationToken cancellationToken)
         {
             var account = await _repository.GetByEmailAsync(email, cancellationToken);
-            return _mapper.Map<AccountModel>(account);
-        }
-
-        public async Task<AccountModel> FindByExternalProvider(ExternalProviderFindModel externalProviderFindModel, CancellationToken cancellationToken)
-        {
-            var account = await _repository.GetByExternalProviderAsync(externalProviderFindModel.Provider, externalProviderFindModel.AccountId, cancellationToken);
             return _mapper.Map<AccountModel>(account);
         }
 
@@ -141,12 +76,12 @@ namespace Authorization.Application.Services
 
             if (account != null)
             {
-                if (string.IsNullOrWhiteSpace(account.Password) && string.IsNullOrWhiteSpace(credentialsModel.Password))
+                if (string.IsNullOrWhiteSpace(account.PasswordHash) && string.IsNullOrWhiteSpace(credentialsModel.Password))
                 {
                     return true;
                 }
 
-                return account.Password.Equals(credentialsModel.Password);
+                return account.PasswordHash.Equals(_hashService.HashString(credentialsModel.Password));
             }
 
             return false;
