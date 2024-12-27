@@ -46,7 +46,7 @@ namespace Authorization.Presentation.DependencyInjection
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
                 dbContext.Database.Migrate();
-                AddClient(dbContext);
+                AddClient(dbContext, configuration);
                 AddScopes(dbContext);
                 var operationalDbContext = scope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>();
                 operationalDbContext.Database.Migrate();
@@ -55,68 +55,48 @@ namespace Authorization.Presentation.DependencyInjection
             return services;
         }
 
-        private static void AddClient(ConfigurationDbContext context)
+        private static void AddClient(ConfigurationDbContext context, IConfiguration configuration)
         {
-            var client = new Client
+            var servicesApiClient = new Client
             {
-                ClientId = "your-client-id",
-                ClientName = "Your Client Name",
-                ClientSecrets = { new Secret("your-client-secret".Sha256()) },
+                ClientId = configuration.GetSection("AuthorizationClients").GetSection("ServicesApi")["ClientId"]!,
+                ClientName = configuration.GetSection("AuthorizationClients").GetSection("ServicesApi")["ClientName"],
+                ClientSecrets = { new Secret(configuration.GetSection("AuthorizationClients").GetSection("ServicesApi")["ClientSecret"].Sha256()) },
                 AllowedGrantTypes = GrantTypes.Code,
-                RedirectUris = { "http://localhost:5201/signin-oidc", "http://localhost:13378/signin-oidc" },
-                PostLogoutRedirectUris = { "http://localhost:5201/signout-callback-oidc", "http://localhost:13378/signout-callback-oidc" },
-                AllowedScopes = { "openid", "profile", "api1", "email" }
+                RedirectUris = { $"{configuration.GetSection("AuthorizationClients").GetSection("ServicesApi")["ClientBaseUrl"]}signin-oidc" },
+                PostLogoutRedirectUris = { $"{configuration.GetSection("AuthorizationClients").GetSection("ServicesApi")["ClientBaseUrl"]}signout-callback-oidc" },
+                AllowedScopes = { "api.read", "api.write", "profile", "openid", "email" }
             };
 
-            if (!context.Clients.Any(c => c.ClientId == client.ClientId))
+            if (!context.Clients.Any(c => c.ClientId == servicesApiClient.ClientId))
             {
-                context.Clients.Add(client.ToEntity());
+                context.Clients.Add(servicesApiClient.ToEntity());
                 context.SaveChanges();
             }
         }
 
         private static void AddScopes(ConfigurationDbContext context)
         {
-            if (!context.IdentityResources.Any(r => r.Name == "openid"))
+            var scopes = new List<ApiScope>
             {
-                context.IdentityResources.Add(new IdentityResource
-                {
-                    Name = "openid",
-                    DisplayName = "OpenID Connect",
-                    UserClaims = { "sub" }
-                }.ToEntity());
-            }
+                new ApiScope("openid", "OpenID Connect"),
+                new ApiScope("profile", "User Profile"),
+                new ApiScope("email", "User Email"),
+                new ApiScope("api.read", "Read access to API"),
+                new ApiScope("api.write", "Write access to API")
+            };
 
-            if (!context.IdentityResources.Any(r => r.Name == "profile"))
+            foreach (var scope in scopes)
             {
-                context.IdentityResources.Add(new IdentityResource
+                if (!context.ApiScopes.Any(s => s.Name == scope.Name))
                 {
-                    Name = "profile",
-                    DisplayName = "Profile",
-                    UserClaims = { "name", "given_name", "family_name" }
-                }.ToEntity());
-            }
-
-            if (!context.IdentityResources.Any(r => r.Name == "email"))
-            {
-                context.IdentityResources.Add(new IdentityResource
-                {
-                    Name = "email",
-                    DisplayName = "Email",
-                    UserClaims = { "email" }
-                }.ToEntity());
-            }
-
-            if (!context.ApiScopes.Any(s => s.Name == "api1"))
-            {
-                context.ApiScopes.Add(new ApiScope
-                {
-                    Name = "api1",
-                    DisplayName = "My API"
-                }.ToEntity());
+                    context.ApiScopes.Add(scope.ToEntity());
+                    Console.WriteLine($"Added API scope: {scope.Name}");
+                }
             }
 
             context.SaveChanges();
         }
+
     }
 }

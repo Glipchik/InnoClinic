@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.API.DTOs;
 using Services.Application.Models;
@@ -46,6 +47,7 @@ namespace Services.API.Controllers
         /// <response code="200">Returns the list of doctors</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpGet]
+        [Authorize(Roles = "3")]
         public async Task<IEnumerable<DoctorDto>> Get(CancellationToken cancellationToken)
         {
             var doctors = await _doctorService.GetAll(cancellationToken);
@@ -65,6 +67,7 @@ namespace Services.API.Controllers
         /// <response code="404">If the doctor is not found</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<DoctorDto> Get(string id, CancellationToken cancellationToken)
         {
             var doctor = await _doctorService.Get(Guid.Parse(id), cancellationToken);
@@ -80,6 +83,7 @@ namespace Services.API.Controllers
         /// <response code="400">If validation errors occured</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpPost]
+        [Authorize(Roles = "3")]
         public async Task Post([FromBody] CreateDoctorDto createDoctorDto, CancellationToken cancellationToken)
         {
             await _createDoctorDtoValidator.ValidateAndThrowAsync(createDoctorDto, cancellationToken);
@@ -98,6 +102,7 @@ namespace Services.API.Controllers
         /// <response code="400">If validation errors occured</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpPut]
+        [Authorize(Roles = "3")]
         public async Task Put([FromBody] UpdateDoctorDto updateDoctorDto, CancellationToken cancellationToken)
         {
             await _updateDoctorDtoValidator.ValidateAndThrowAsync(updateDoctorDto, cancellationToken);
@@ -116,6 +121,7 @@ namespace Services.API.Controllers
         /// <response code="400">If validation errors occured</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpDelete("{id}")]
+        [Authorize(Roles = "3")]
         public async Task Delete(string id, CancellationToken cancellationToken)
         {
             await _doctorService.Delete(Guid.Parse(id), cancellationToken);
