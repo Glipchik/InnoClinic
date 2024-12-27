@@ -47,7 +47,7 @@ namespace Services.API.Controllers
         /// <response code="200">Returns the list of doctors</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpGet]
-        [Authorize(Roles = "3")]
+        [AllowAnonymous]
         public async Task<IEnumerable<DoctorDto>> Get(CancellationToken cancellationToken)
         {
             var doctors = await _doctorService.GetAll(cancellationToken);
