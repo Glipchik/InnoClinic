@@ -81,7 +81,7 @@ namespace Authorization.Presentation.DependencyInjection
             {
                 ClientId = configuration.GetSection("AuthorizationClients").GetSection(clientName)["ClientId"]!,
                 ClientName = configuration.GetSection("AuthorizationClients").GetSection(clientName)["ClientName"],
-                ClientSecrets = { new Secret(configuration.GetSection("AuthorizationClients").GetSection(clientName)["ClientSecret"].Sha256()) },
+                ClientSecrets = { new Secret(configuration.GetSection("AuthorizationClientSecrets").GetSection(clientName)["ClientSecret"].Sha256()) },
                 AllowedGrantTypes = GrantTypes.Code,
                 RedirectUris = { $"{configuration.GetSection("AuthorizationClients").GetSection(clientName)["ClientBaseUrl"]}signin-oidc" },
                 PostLogoutRedirectUris = { $"{configuration.GetSection("AuthorizationClients").GetSection(clientName)["ClientBaseUrl"]}signout-callback-oidc" },

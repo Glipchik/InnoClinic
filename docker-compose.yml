@@ -9,14 +9,30 @@ services:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: admin123
 
-  mssql:
+  mssql-db-services-api:
     image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: mssql_container
+    container_name: mssql_services_container
     ports:
       - "1433:1433"
     environment:
-      SA_PASSWORD: "mypassword"
+      SA_PASSWORD: "mypassword123!"
       ACCEPT_EULA: "Y"
       MSSQL_PID: "Express"
     volumes:
-      - mssql_data:/var/opt/mssql
+      - mssql_data_services:/var/opt/mssql
+
+  mssql-db-authorization-api:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql_authorization_container
+    ports:
+      - "1434:1433"
+    environment:
+      SA_PASSWORD: "mypassword123!"
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Express"
+    volumes:
+      - mssql_data_authorization:/var/opt/mssql
+
+volumes:
+  mssql_data_services:
+  mssql_data_authorization:
