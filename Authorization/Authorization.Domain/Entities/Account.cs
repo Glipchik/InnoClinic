@@ -1,10 +1,5 @@
 ﻿using Authorization.Domain.Enums;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Authorization.Domain.Entities
 {
@@ -12,6 +7,9 @@ namespace Authorization.Domain.Entities
     {
         [Required]
         public string Email { get; set; }
+
+        [Required]
+        public string PasswordHash { get; set; }
 
         [Required]
         public string PhoneNumber { get; set; }
