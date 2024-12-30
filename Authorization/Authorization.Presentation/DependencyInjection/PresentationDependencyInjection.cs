@@ -4,6 +4,7 @@ using Duende.IdentityServer;
 using Microsoft.EntityFrameworkCore;
 using Duende.IdentityServer.Models;
 using Duende.IdentityServer.EntityFramework.Mappers;
+using IdentityModel;
 
 namespace Authorization.Presentation.DependencyInjection
 {
@@ -48,42 +49,88 @@ namespace Authorization.Presentation.DependencyInjection
                 dbContext.Database.Migrate();
                 AddClient(dbContext, configuration);
                 AddScopes(dbContext);
+                AddIdentityResources(dbContext);
                 var operationalDbContext = scope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>();
                 operationalDbContext.Database.Migrate();
             }
-            
+
             return services;
         }
 
         private static void AddClient(ConfigurationDbContext context, IConfiguration configuration)
         {
-            var servicesApiClient = new Client
+            var clients = new List<Client>()
             {
-                ClientId = configuration.GetSection("AuthorizationClients").GetSection("ServicesApi")["ClientId"]!,
-                ClientName = configuration.GetSection("AuthorizationClients").GetSection("ServicesApi")["ClientName"],
-                ClientSecrets = { new Secret(configuration.GetSection("AuthorizationClients").GetSection("ServicesApi")["ClientSecret"].Sha256()) },
-                AllowedGrantTypes = GrantTypes.Code,
-                RedirectUris = { $"{configuration.GetSection("AuthorizationClients").GetSection("ServicesApi")["ClientBaseUrl"]}signin-oidc" },
-                PostLogoutRedirectUris = { $"{configuration.GetSection("AuthorizationClients").GetSection("ServicesApi")["ClientBaseUrl"]}signout-callback-oidc" },
-                AllowedScopes = { "api.read", "api.write", "profile", "openid", "email" }
+                GetClient(configuration, "ServicesApi"),
+                GetClient(configuration, "OfficesApi")
             };
 
-            if (!context.Clients.Any(c => c.ClientId == servicesApiClient.ClientId))
+            foreach (var client in clients)
             {
-                context.Clients.Add(servicesApiClient.ToEntity());
-                context.SaveChanges();
+                if (!context.Clients.Any(c => c.ClientId == client.ClientId))
+                {
+                    context.Clients.Add(client.ToEntity());
+                    Console.WriteLine($"Added Client: {client.ClientName}");
+                }
             }
         }
+
+        private static Client GetClient(IConfiguration configuration, string clientName)
+        {
+            return new Client
+            {
+                ClientId = configuration.GetSection("AuthorizationClients").GetSection(clientName)["ClientId"]!,
+                ClientName = configuration.GetSection("AuthorizationClients").GetSection(clientName)["ClientName"],
+                ClientSecrets = { new Secret(configuration.GetSection("AuthorizationClients").GetSection(clientName)["ClientSecret"].Sha256()) },
+                AllowedGrantTypes = GrantTypes.Code,
+                RedirectUris = { $"{configuration.GetSection("AuthorizationClients").GetSection(clientName)["ClientBaseUrl"]}signin-oidc" },
+                PostLogoutRedirectUris = { $"{configuration.GetSection("AuthorizationClients").GetSection(clientName)["ClientBaseUrl"]}signout-callback-oidc" },
+                AllowedScopes =
+                {
+                    "openid",
+                    "profile",
+                    "email",
+                    "roles",
+                    "api_profile",
+                    "api_email",
+                    "api_roles"
+                },
+                AlwaysIncludeUserClaimsInIdToken = true,
+                AlwaysSendClientClaims = true
+            };
+        }
+
+
+        private static void AddIdentityResources(ConfigurationDbContext context)
+        {
+            var identityResources = new List<IdentityResource>
+            {
+                new IdentityResources.OpenId(),
+                new IdentityResources.Profile(),
+                new IdentityResource("email", new[] { JwtClaimTypes.Email }),
+                new IdentityResource("roles", new[] { JwtClaimTypes.Role })
+            };
+
+            foreach (var resource in identityResources)
+            {
+                if (!context.IdentityResources.Any(ir => ir.Name == resource.Name))
+                {
+                    context.IdentityResources.Add(resource.ToEntity());
+                    Console.WriteLine($"Added Identity Resource: {resource.Name}");
+                }
+            }
+
+            context.SaveChanges();
+        }
+
 
         private static void AddScopes(ConfigurationDbContext context)
         {
             var scopes = new List<ApiScope>
             {
-                new ApiScope("openid", "OpenID Connect"),
-                new ApiScope("profile", "User Profile"),
-                new ApiScope("email", "User Email"),
-                new ApiScope("api.read", "Read access to API"),
-                new ApiScope("api.write", "Write access to API")
+                new ApiScope("api_profile", "User Profile", new[] { JwtClaimTypes.Email, JwtClaimTypes.Role }),
+                new ApiScope("api_email", "Access to email", new[] { JwtClaimTypes.Email }),
+                new ApiScope("api_roles", "Access to roles", new[] { JwtClaimTypes.Role })
             };
 
             foreach (var scope in scopes)
@@ -97,6 +144,8 @@ namespace Authorization.Presentation.DependencyInjection
 
             context.SaveChanges();
         }
+
+
 
     }
 }

@@ -3,15 +3,18 @@
 
 using Authorization.Application.Models;
 using Authorization.Application.Services.Abstractions;
+using Authorization.Domain.Entities;
 using Duende.IdentityServer;
 using Duende.IdentityServer.Models;
 using Duende.IdentityServer.Services;
 using Duende.IdentityServer.Test;
+using IdentityModel;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Security.Claims;
 using System.Text;
 
 namespace Authorization.Presentation.Pages.Create
@@ -75,7 +78,12 @@ namespace Authorization.Presentation.Pages.Create
 
                 var isuser = new IdentityServerUser(user.Id.ToString())
                 {
-                    DisplayName = user.Email
+                    DisplayName = user.Email,
+                    AdditionalClaims = new List<Claim>()
+                    {
+                        new Claim(JwtClaimTypes.Role, user.Role.ToString()),
+                        new Claim(JwtClaimTypes.Email, user.Email)
+                    }
                 };
 
                 await HttpContext.SignInAsync(isuser);

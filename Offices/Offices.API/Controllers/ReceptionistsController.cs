@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Offices.API.DTOs;
 using Offices.API.Extensions;
@@ -51,6 +52,7 @@ namespace Offices.API.Controllers
         /// <response code="200">Returns the list of receptionists</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IEnumerable<ReceptionistDto>> Get(CancellationToken cancellationToken)
         {
             var receptionists = await _receptionistService.GetAll(cancellationToken);
@@ -70,6 +72,7 @@ namespace Offices.API.Controllers
         /// <response code="404">If the receptionist is not found</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<ReceptionistDto> Get(string id, CancellationToken cancellationToken)
         {
             // Validation
@@ -99,6 +102,7 @@ namespace Offices.API.Controllers
         /// <response code="400">If validation errors occured</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpPost]
+        [Authorize(Roles = "3")]
         public async Task Post([FromBody] CreateReceptionistDto createReceptionistDto, CancellationToken cancellationToken)
         {
             // Validation
@@ -129,6 +133,7 @@ namespace Offices.API.Controllers
         /// <response code="400">If validation errors occured</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpPut]
+        [Authorize(Roles = "3")]
         public async Task Put([FromBody] UpdateReceptionistDto updateReceptionistDto, CancellationToken cancellationToken)
         {
             // Validation
@@ -159,6 +164,7 @@ namespace Offices.API.Controllers
         /// <response code="400">If validation errors occured</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpDelete("{id}")]
+        [Authorize(Roles = "3")]
         public async Task Delete(string id, CancellationToken cancellationToken)
         {
             // Validation
