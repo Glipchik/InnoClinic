@@ -28,7 +28,7 @@ jobs:
         uses: ./.github/actions/ci-pipeline
         with:
           solution: 'Authorization'
-          project: 'Authorization.Domain'
+          project: 'Authorization.Presentation'
           
       - name: Trigger Style Checker
         uses: ./.github/actions/style-checker
