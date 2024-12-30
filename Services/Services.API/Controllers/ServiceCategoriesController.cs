@@ -47,7 +47,7 @@ namespace Services.API.Controllers
         /// <response code="200">Returns the list of service categories</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpGet]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IEnumerable<ServiceCategoryDto>> Get(CancellationToken cancellationToken)
         {
             var serviceCategories = await _serviceCategoryManager.GetAll(cancellationToken);
@@ -67,7 +67,7 @@ namespace Services.API.Controllers
         /// <response code="404">If the service category is not found</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpGet("{id}")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<ServiceCategoryDto> Get(string id, CancellationToken cancellationToken)
         {
             var serviceCategory = await _serviceCategoryManager.Get(Guid.Parse(id), cancellationToken);
@@ -83,7 +83,7 @@ namespace Services.API.Controllers
         /// <response code="400">If validation errors occured</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpPost]
-        [Authorize(Roles = "3")]
+        [Authorize(Roles="Receptionist")]
         public async Task Post([FromBody] CreateServiceCategoryDto createServiceCategoryDto, CancellationToken cancellationToken)
         {
             await _createServiceCategoryDtoValidator.ValidateAndThrowAsync(createServiceCategoryDto, cancellationToken);
@@ -102,7 +102,7 @@ namespace Services.API.Controllers
         /// <response code="400">If validation errors occured</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpPut]
-        [Authorize(Roles = "3")]
+        [Authorize(Roles="Receptionist")]
         public async Task Put([FromBody] UpdateServiceCategoryDto updateServiceCategoryDto, CancellationToken cancellationToken)
         {
             await _updateServiceCategoryDtoValidator.ValidateAndThrowAsync(updateServiceCategoryDto, cancellationToken);
@@ -121,7 +121,7 @@ namespace Services.API.Controllers
         /// <response code="400">If validation errors occured</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpDelete("{id}")]
-        [Authorize(Roles = "3")]
+        [Authorize(Roles="Receptionist")]
         public async Task Delete(string id, CancellationToken cancellationToken)
         {
             await _serviceCategoryManager.Delete(Guid.Parse(id), cancellationToken);

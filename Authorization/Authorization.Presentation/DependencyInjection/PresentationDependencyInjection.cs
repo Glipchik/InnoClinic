@@ -19,7 +19,7 @@ namespace Authorization.Presentation.DependencyInjection
             services.AddRazorPages();
 
             var connectionString = configuration.GetConnectionString("DefaultConnection");
-            var isBuilder = services
+            services
                 .AddIdentityServer(options =>
                 {
                     options.Events.RaiseErrorEvents = true;
@@ -70,7 +70,6 @@ namespace Authorization.Presentation.DependencyInjection
                 if (!context.Clients.Any(c => c.ClientId == client.ClientId))
                 {
                     context.Clients.Add(client.ToEntity());
-                    Console.WriteLine($"Added Client: {client.ClientName}");
                 }
             }
         }
@@ -81,7 +80,7 @@ namespace Authorization.Presentation.DependencyInjection
             {
                 ClientId = configuration.GetSection("AuthorizationClients").GetSection(clientName)["ClientId"]!,
                 ClientName = configuration.GetSection("AuthorizationClients").GetSection(clientName)["ClientName"],
-                ClientSecrets = { new Secret(configuration.GetSection("AuthorizationClients").GetSection(clientName)["ClientSecret"].Sha256()) },
+                ClientSecrets = { new Secret(configuration.GetSection("AuthorizationClientSecrets").GetSection(clientName)["ClientSecret"].Sha256()) },
                 AllowedGrantTypes = GrantTypes.Code,
                 RedirectUris = { $"{configuration.GetSection("AuthorizationClients").GetSection(clientName)["ClientBaseUrl"]}signin-oidc" },
                 PostLogoutRedirectUris = { $"{configuration.GetSection("AuthorizationClients").GetSection(clientName)["ClientBaseUrl"]}signout-callback-oidc" },
@@ -116,7 +115,6 @@ namespace Authorization.Presentation.DependencyInjection
                 if (!context.IdentityResources.Any(ir => ir.Name == resource.Name))
                 {
                     context.IdentityResources.Add(resource.ToEntity());
-                    Console.WriteLine($"Added Identity Resource: {resource.Name}");
                 }
             }
 
@@ -138,7 +136,6 @@ namespace Authorization.Presentation.DependencyInjection
                 if (!context.ApiScopes.Any(s => s.Name == scope.Name))
                 {
                     context.ApiScopes.Add(scope.ToEntity());
-                    Console.WriteLine($"Added API scope: {scope.Name}");
                 }
             }
 

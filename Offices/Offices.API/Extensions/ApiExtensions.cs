@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using FluentValidation;
 using FluentValidation.Results;
-using IdentityModel;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver.Core.Servers;
 using Offices.API.DTOs;
 using Offices.API.Infrastructure;
@@ -30,7 +26,7 @@ namespace Offices.API.Extensions
 {
     public static class ApiExtensions
     {
-        public static IServiceCollection AddApiExtensions(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddApiExtensions(this IServiceCollection services)
         {
             // Adding mapping profile
             services.AddAutoMapper(typeof(ApiMappingProfile));
@@ -46,30 +42,6 @@ namespace Offices.API.Extensions
 
             // Adding validators (it will register all the validators in the same assembly in which CreateOfficeDtoValidator is defined)
             services.AddValidatorsFromAssemblyContaining<CreateOfficeDtoValidator>();
-
-            services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = "Cookies";
-                options.DefaultChallengeScheme = "oidc";
-            })
-            .AddCookie("Cookies")
-            .AddOpenIdConnect("oidc", options =>
-            {
-                options.Authority = configuration.GetSection("Authorization")["ServerUrl"];
-                options.ClientId = configuration.GetSection("Authorization")["ClientId"];
-                options.ClientSecret = configuration.GetSection("Authorization")["ClientSecret"];
-                options.ResponseType = "code";
-                options.Scope.Add("profile");
-                options.Scope.Add("openid");
-                options.Scope.Add("email");
-                options.Scope.Add("roles");
-                options.CallbackPath = "/signin-oidc";
-                options.GetClaimsFromUserInfoEndpoint = true;
-                options.ClaimActions.MapJsonKey(JwtClaimTypes.Role, JwtClaimTypes.Role);
-                options.ClaimActions.MapJsonKey(JwtClaimTypes.Email, JwtClaimTypes.Email);
-            });
-
-            services.AddAuthorization();
 
             return services;
         }

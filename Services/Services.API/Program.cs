@@ -6,6 +6,7 @@ using Services.Infrastructure.Contexts;
 var builder = WebApplication.CreateBuilder(args);
 
 var configuration = builder.Configuration;
+configuration.AddUserSecrets<Program>();
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
