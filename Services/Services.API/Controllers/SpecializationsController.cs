@@ -47,7 +47,7 @@ namespace Services.API.Controllers
         /// <response code="200">Returns the list of specializations</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpGet]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IEnumerable<SpecializationDto>> Get(CancellationToken cancellationToken)
         {
             var specializations = await _specializationService.GetAll(cancellationToken);
@@ -67,7 +67,7 @@ namespace Services.API.Controllers
         /// <response code="404">If the specialization is not found</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpGet("{id}")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<SpecializationDto> Get(string id, CancellationToken cancellationToken)
         {
             var specialization = await _specializationService.Get(Guid.Parse(id), cancellationToken);

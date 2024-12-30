@@ -47,7 +47,7 @@ namespace Services.API.Controllers
         /// <response code="200">Returns the list of doctors</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpGet]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IEnumerable<DoctorDto>> Get(CancellationToken cancellationToken)
         {
             var doctors = await _doctorService.GetAll(cancellationToken);
@@ -67,7 +67,7 @@ namespace Services.API.Controllers
         /// <response code="404">If the doctor is not found</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpGet("{id}")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<DoctorDto> Get(string id, CancellationToken cancellationToken)
         {
             var doctor = await _doctorService.Get(Guid.Parse(id), cancellationToken);
