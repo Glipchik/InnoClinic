@@ -38,7 +38,7 @@ namespace Services.API.DependencyInjection
             {
                 options.Authority = configuration.GetSection("Authorization")["ServerUrl"];
                 options.ClientId = configuration.GetSection("Authorization")["ClientId"];
-                options.ClientSecret = configuration.GetSection("Authorization")["ClientSecret"];
+                options.ClientSecret = configuration.GetSection("AuthorizationSecrets")["ClientSecret"];
                 options.ResponseType = "code";
                 options.Scope.Add("profile");
                 options.Scope.Add("openid");
