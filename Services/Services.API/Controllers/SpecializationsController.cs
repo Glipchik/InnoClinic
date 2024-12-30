@@ -83,7 +83,7 @@ namespace Services.API.Controllers
         /// <response code="400">If validation errors occured</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpPost]
-        [Authorize(Roles = "3")]
+        [Authorize(Roles="Receptionist")]
         public async Task Post([FromBody] CreateSpecializationDto createSpecializationDto, CancellationToken cancellationToken)
         {
             await _createSpecializationDtoValidator.ValidateAndThrowAsync(createSpecializationDto, cancellationToken);
@@ -102,7 +102,7 @@ namespace Services.API.Controllers
         /// <response code="400">If validation errors occured</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpPut]
-        [Authorize(Roles = "3")]
+        [Authorize(Roles="Receptionist")]
         public async Task Put([FromBody] UpdateSpecializationDto updateSpecializationDto, CancellationToken cancellationToken)
         {
             await _updateSpecializationDtoValidator.ValidateAndThrowAsync(updateSpecializationDto, cancellationToken);
@@ -121,7 +121,7 @@ namespace Services.API.Controllers
         /// <response code="400">If validation errors occured</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpDelete("{id}")]
-        [Authorize(Roles = "3")]
+        [Authorize(Roles="Receptionist")]
         public async Task Delete(string id, CancellationToken cancellationToken)
         {
             await _specializationService.Delete(Guid.Parse(id), cancellationToken);

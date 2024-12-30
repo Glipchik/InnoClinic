@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication;
 using Services.API.Infrastructure;
 using Services.API.Validators;
 using FluentValidation;
+using IdentityModel;
 
 namespace Services.API.DependencyInjection
 {
@@ -39,15 +40,14 @@ namespace Services.API.DependencyInjection
                 options.ClientId = configuration.GetSection("Authorization")["ClientId"];
                 options.ClientSecret = configuration.GetSection("Authorization")["ClientSecret"];
                 options.ResponseType = "code";
-                options.Scope.Add("api.read");
-                options.Scope.Add("api.write");
                 options.Scope.Add("profile");
                 options.Scope.Add("openid");
                 options.Scope.Add("email");
+                options.Scope.Add("roles");
                 options.CallbackPath = "/signin-oidc";
-                options.SaveTokens = true;
                 options.GetClaimsFromUserInfoEndpoint = true;
-                options.ClaimActions.MapJsonKey("role", "role", "string");
+                options.ClaimActions.MapJsonKey(JwtClaimTypes.Role, JwtClaimTypes.Role);
+                options.ClaimActions.MapJsonKey(JwtClaimTypes.Email, JwtClaimTypes.Email);
             });
 
             services.AddAuthorization();

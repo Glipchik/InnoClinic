@@ -84,7 +84,7 @@ namespace Services.API.Controllers
         /// <response code="400">If validation errors occured</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpPost]
-        [Authorize(Roles = "3")]
+        [Authorize(Roles="Receptionist")]
         public async Task Post([FromBody] CreateServiceDto createServiceDto, CancellationToken cancellationToken)
         {
             await _createServiceDtoValidator.ValidateAndThrowAsync(createServiceDto, cancellationToken);
@@ -103,7 +103,7 @@ namespace Services.API.Controllers
         /// <response code="400">If validation errors occured</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpPut]
-        [Authorize(Roles = "3")]
+        [Authorize(Roles="Receptionist")]
         public async Task Put([FromBody] UpdateServiceDto updateServiceDto, CancellationToken cancellationToken)
         {
             await _updateServiceDtoValidator.ValidateAndThrowAsync(updateServiceDto, cancellationToken);
@@ -122,7 +122,7 @@ namespace Services.API.Controllers
         /// <response code="400">If validation errors occured</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpDelete("{id}")]
-        [Authorize(Roles = "3")]
+        [Authorize(Roles="Receptionist")]
         public async Task Delete(string id, CancellationToken cancellationToken)
         {
             await _serviceManager.Delete(Guid.Parse(id), cancellationToken);
