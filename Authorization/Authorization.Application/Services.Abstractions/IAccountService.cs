@@ -17,7 +17,7 @@ namespace Authorization.Application.Services.Abstractions
         /// <param name="credentialsModel">The credentials model containing the accountname and password.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Returns <c>true</c> if the credentials are valid; otherwise, <c>false</c>.</returns>
-        Task<bool> ValidateCredentials(CredentialsModel credentialsModel, CancellationToken cancellationToken);
+        Task<bool> AreCredentialsValid(CredentialsModel credentialsModel, CancellationToken cancellationToken);
 
         /// <summary>
         /// Finds the account by identifier.
