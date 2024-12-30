@@ -70,7 +70,7 @@ namespace Authorization.Application.Services
             return _mapper.Map<AccountModel>(account); 
         }
 
-        public async Task<bool> ValidateCredentials(CredentialsModel credentialsModel, CancellationToken cancellationToken)
+        public async Task<bool> AreCredentialsValid(CredentialsModel credentialsModel, CancellationToken cancellationToken)
         {
             var account = await FindByEmail(credentialsModel.Email, cancellationToken);
 
