@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Offices.API.DTOs;
 using Offices.API.Extensions;
 using Offices.API.Validators;
 using Offices.Application.Models;
 using Offices.Application.Services.Abstractions;
+using System.Security.Claims;
 
 namespace Offices.API.Controllers
 {
@@ -51,7 +53,7 @@ namespace Offices.API.Controllers
         /// <response code="200">Returns the list of doctors</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpGet]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IEnumerable<DoctorDto>> Get(CancellationToken cancellationToken)
         {
             var doctors = await _doctorService.GetAll(cancellationToken);
@@ -71,6 +73,7 @@ namespace Offices.API.Controllers
         /// <response code="404">If the doctor is not found</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<DoctorDto> Get(string id, CancellationToken cancellationToken)
         {
             // Validation
@@ -100,6 +103,7 @@ namespace Offices.API.Controllers
         /// <response code="400">If validation errors occured</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpPost]
+        [Authorize(Roles = "Receptionist")]
         public async Task Post([FromBody] CreateDoctorDto createDoctorDto, CancellationToken cancellationToken)
         {
             // Validation
@@ -130,6 +134,7 @@ namespace Offices.API.Controllers
         /// <response code="400">If validation errors occured</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpPut]
+        [Authorize(Roles = "Receptionist")]
         public async Task Put([FromBody] UpdateDoctorDto updateDoctorDto, CancellationToken cancellationToken)
         {
             // Validation
@@ -160,6 +165,7 @@ namespace Offices.API.Controllers
         /// <response code="400">If validation errors occured</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Receptionist")]
         public async Task Delete(string id, CancellationToken cancellationToken)
         {
             // Validation
