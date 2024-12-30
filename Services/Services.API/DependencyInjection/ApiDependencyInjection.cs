@@ -4,9 +4,11 @@ using Services.Application.Services;
 using Services.API.Mapper;
 using Services.Application.Extensions;
 using Services.Infrastructure.Extensions;
+using Microsoft.AspNetCore.Authentication;
 using Services.API.Infrastructure;
 using Services.API.Validators;
 using FluentValidation;
+using IdentityModel;
 
 namespace Services.API.DependencyInjection
 {
@@ -14,6 +16,8 @@ namespace Services.API.DependencyInjection
     {
         public static IServiceCollection AddApiDependencyInjection(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddInfrastructureDependencyInjection(configuration);
+
             services.AddProblemDetails();
 
             services.AddAutoMapper(typeof(ApiMapping));
@@ -24,7 +28,29 @@ namespace Services.API.DependencyInjection
 
             services.AddApplicationDependencyInjection();
 
-            services.AddInfrastructureDependencyInjection(configuration);
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = "Cookies";
+                options.DefaultChallengeScheme = "oidc";
+            })
+            .AddCookie("Cookies")
+            .AddOpenIdConnect("oidc", options =>
+            {
+                options.Authority = configuration.GetSection("Authorization")["ServerUrl"];
+                options.ClientId = configuration.GetSection("Authorization")["ClientId"];
+                options.ClientSecret = configuration.GetSection("AuthorizationSecrets")["ClientSecret"];
+                options.ResponseType = "code";
+                options.Scope.Add("profile");
+                options.Scope.Add("openid");
+                options.Scope.Add("email");
+                options.Scope.Add("roles");
+                options.CallbackPath = "/signin-oidc";
+                options.GetClaimsFromUserInfoEndpoint = true;
+                options.ClaimActions.MapJsonKey(JwtClaimTypes.Role, JwtClaimTypes.Role);
+                options.ClaimActions.MapJsonKey(JwtClaimTypes.Email, JwtClaimTypes.Email);
+            });
+
+            services.AddAuthorization();
 
             return services;
         }

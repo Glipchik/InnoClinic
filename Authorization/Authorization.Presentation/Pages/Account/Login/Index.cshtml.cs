@@ -104,9 +104,10 @@ namespace Authorization.Presentation.Pages.Login
                     var isuser = new IdentityServerUser(account.Id.ToString())
                     {
                         DisplayName = account.Email,
-                        AdditionalClaims = new List<Claim>
+                        AdditionalClaims = new List<Claim>()
                         {
-                            new Claim(JwtClaimTypes.Role, account.Role.ToString())
+                            new Claim(JwtClaimTypes.Role, account.Role.ToString()),
+                            new Claim(JwtClaimTypes.Email, account.Email)
                         }
                     };
 
