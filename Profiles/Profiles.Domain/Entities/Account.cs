@@ -9,7 +9,6 @@ namespace Profiles.Domain.Entities
     public class Account : BaseEntity
     {
         public string Email { get; set; }
-        public string PasswordHash { get; set; }
         public string PhoneNumber { get; set; }
         public bool IsEmailVerified { get; set; }
         public string PhotoFileName { get; set; }
