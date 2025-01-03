@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 using Offices.API.Extensions;
 using Offices.API.Infrastructure;
@@ -5,6 +6,8 @@ using Offices.Application.Extensions;
 using Offices.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
+configuration.AddUserSecrets<Program>();
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
@@ -22,7 +25,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 // Configuring container
-builder.Services.AddApiExtensions();
+builder.Services.AddApiExtensions(configuration);
 
 var app = builder.Build();
 
@@ -32,6 +35,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseExceptionHandler();
 
