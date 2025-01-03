@@ -4,7 +4,10 @@ using Duende.IdentityServer;
 using Microsoft.EntityFrameworkCore;
 using Duende.IdentityServer.Models;
 using Duende.IdentityServer.EntityFramework.Mappers;
+using FluentValidation;
 using IdentityModel;
+using Authorization.Presentation.Validators;
+using FluentValidation.AspNetCore;
 
 namespace Authorization.Presentation.DependencyInjection
 {
@@ -17,6 +20,9 @@ namespace Authorization.Presentation.DependencyInjection
             services.AddApplicationDependencyInjection(configuration);
 
             services.AddRazorPages();
+
+            services.AddFluentValidationAutoValidation()
+                    .AddValidatorsFromAssemblyContaining<Program>();
 
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             services
