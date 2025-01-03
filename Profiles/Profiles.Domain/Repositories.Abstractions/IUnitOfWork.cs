@@ -14,6 +14,7 @@ namespace Profiles.Domain.Repositories.Abstractions
         IPatientRepository PatientRepository { get; }
         IReceptionistRepository ReceptionistRepository { get; }
         IOfficeRepository OfficeRepository { get; }
+        IAccountRepository AccountRepository { get; }
         ISpecializationRepository SpecializationRepository { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
