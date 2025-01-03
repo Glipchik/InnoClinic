@@ -16,6 +16,9 @@ namespace Profiles.Domain.Entities
         public DateTime DateOfBirth { get; set; }
         public DoctorStatus Status { get; set; }
 
+        public Guid SpecializationId { get; set; }
+        public Specialization Specialization { get; set; }
+
         public Guid AccountId { get; set; }
         public Account Account { get; set; }
 
