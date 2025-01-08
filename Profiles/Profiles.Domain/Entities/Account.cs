@@ -12,6 +12,7 @@ namespace Profiles.Domain.Entities
         public string PhoneNumber { get; set; }
         public bool IsEmailVerified { get; set; }
         public string PhotoFileName { get; set; }
+        public string PasswordHash { get; set; }
         public DateTime CreatedAt { get; set; }
         public Guid CreatedBy { get; set; }
         public DateTime UpdatedAt { get; set; }

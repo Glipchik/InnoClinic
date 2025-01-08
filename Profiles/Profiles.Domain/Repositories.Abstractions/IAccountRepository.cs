@@ -9,5 +9,6 @@ namespace Profiles.Domain.Repositories.Abstractions
 {
     public interface IAccountRepository : IGenericRepository<Account>
     {
+        Task<Account> FindByEmailAsync(string email, CancellationToken cancellationToken);
     }
 }
