@@ -25,6 +25,7 @@ namespace Profiles.Infrastructure.DependencyInjection
             services.AddScoped<IPatientRepository, PatientRepository>();
             services.AddScoped<IReceptionistRepository, ReceptionistRepository>();
             services.AddScoped<ISpecializationRepository, SpecializationRepository>();
+            services.AddScoped<IFileRepository, FileRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
