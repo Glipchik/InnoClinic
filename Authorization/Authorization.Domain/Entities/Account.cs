@@ -12,6 +12,9 @@ namespace Authorization.Domain.Entities
         public string PasswordHash { get; set; }
 
         [Required]
+        public string PasswordSalt { get; set; }
+
+        [Required]
         public string PhoneNumber { get; set; }
 
         [Required]
