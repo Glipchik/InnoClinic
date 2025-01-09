@@ -22,6 +22,7 @@ namespace Profiles.Infrastructure.Contexts
             modelBuilder.ApplyConfiguration(new DoctorConfiguration());
             modelBuilder.ApplyConfiguration(new OfficeConfiguration());
             modelBuilder.ApplyConfiguration(new PatientConfiguration());
+            modelBuilder.ApplyConfiguration(new ReceptionistConfiguration());
             modelBuilder.ApplyConfiguration(new SpecializationConfiguration());
             base.OnModelCreating(modelBuilder);
         }
