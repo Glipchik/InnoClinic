@@ -11,7 +11,8 @@ namespace Profiles.Application.Models
         string Email,
         string PhoneNumber,
         string PhotoFileName,
-        bool IsEmailVerified);
+        bool IsEmailVerified,
+        RoleModel Role);
 
     public record CreateAccountAuthorizationServerModel(
         string Email,
