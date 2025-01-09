@@ -21,7 +21,7 @@ namespace Authorization.Application.DependencyInjection
             services.AddAutoMapper(typeof(ApplicationMapping));
 
             services.AddScoped<IAccountService, AccountService>();
-            services.AddScoped<IHashService, HashService>();
+            services.AddScoped<IPasswordService, PasswordService>();
 
             return services;
         }

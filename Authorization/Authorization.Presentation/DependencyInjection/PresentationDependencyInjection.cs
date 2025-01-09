@@ -19,6 +19,7 @@ namespace Authorization.Presentation.DependencyInjection
 
             services.AddApplicationDependencyInjection(configuration);
 
+            services.AddControllersWithViews();
             services.AddRazorPages();
 
             services.AddFluentValidationAutoValidation()
@@ -49,6 +50,15 @@ namespace Authorization.Presentation.DependencyInjection
                         b.UseSqlServer(connectionString, dbOpts => dbOpts.MigrationsAssembly(typeof(Program).Assembly.FullName));
                 });
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("CreateAccountScope", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("scope", "create_account");
+                });
+            });
+
             using (var scope = services.BuildServiceProvider().CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
@@ -68,7 +78,15 @@ namespace Authorization.Presentation.DependencyInjection
             var clients = new List<Client>()
             {
                 GetClient(configuration, "ServicesApi"),
-                GetClient(configuration, "OfficesApi")
+                GetClient(configuration, "OfficesApi"),
+                new Client
+                {
+                    ClientId = configuration.GetSection("AuthorizationClients").GetSection("ProfilesApi")["ClientId"]!,
+                    ClientName = configuration.GetSection("AuthorizationClients").GetSection("ProfilesApi")["ClientName"],
+                    ClientSecrets = { new Secret(configuration.GetSection("AuthorizationClientSecrets").GetSection("ProfilesApi")["ClientSecret"].Sha256()) },
+                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    AllowedScopes = { "create_account" }
+                }
             };
 
             foreach (var client in clients)
