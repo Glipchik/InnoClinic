@@ -21,10 +21,6 @@ namespace Profiles.Infrastructure.EntityConfigurations
                 .IsRequired()
                 .HasMaxLength(255);
 
-            builder.Property(a => a.PasswordHash)
-                .IsRequired()
-                .HasMaxLength(255);
-
             builder.Property(a => a.PhotoFileName)
                 .IsRequired()
                 .HasMaxLength(255);
