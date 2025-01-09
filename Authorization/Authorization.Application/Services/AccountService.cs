@@ -21,13 +21,13 @@ namespace Authorization.Application.Services
     {
         private readonly IAccountRepository _repository;
         private readonly IMapper _mapper;
-        private readonly IHashService _hashService;
+        private readonly IPasswordService _passwordService;
 
-        public AccountService(IAccountRepository repository, IMapper mapper, IHashService hashService) 
+        public AccountService(IAccountRepository repository, IMapper mapper, IPasswordService passwordService) 
         {
             _repository = repository;
             _mapper = mapper;
-            _hashService = hashService;
+            _passwordService = passwordService;
         }
 
         public async Task<AccountModel> CreateAccount(CreateAccountModel createAccountModel, CancellationToken cancellationToken)
@@ -39,6 +39,14 @@ namespace Authorization.Application.Services
 
             var id = Guid.NewGuid();
 
+            var password = createAccountModel.Password;
+
+            if (password == null)
+            {
+                password = _passwordService.GeneratePassword();
+            }
+            var salt = _passwordService.GenerateSalt();
+
             var user = new AccountModel
             (
                 Id: id,
@@ -46,14 +54,17 @@ namespace Authorization.Application.Services
                 PhoneNumber: createAccountModel.PhoneNumber,
                 Role: Models.Enums.RoleModel.Patient,
                 IsEmailVerified: false,
-                PasswordHash: _hashService.HashString(createAccountModel.Password),
                 CreatedAt: DateTime.UtcNow,
                 UpdatedAt: DateTime.UtcNow,
                 CreatedBy: id,
                 UpdatedBy: id
             );
 
-            await _repository.CreateAsync(_mapper.Map<Account>(user), cancellationToken);
+            var account = _mapper.Map<Account>(user);
+            account.PasswordHash = _passwordService.HashPassword(password, salt);
+            account.PasswordSalt = salt;
+
+            await _repository.CreateAsync(account, cancellationToken);
 
             return user;
         }
@@ -72,8 +83,7 @@ namespace Authorization.Application.Services
 
         public async Task<bool> AreCredentialsValid(CredentialsModel credentialsModel, CancellationToken cancellationToken)
         {
-            var account = await FindByEmail(credentialsModel.Email, cancellationToken);
-
+            var account = await _repository.GetByEmailAsync(credentialsModel.Email, cancellationToken);
             if (account != null)
             {
                 if (string.IsNullOrWhiteSpace(account.PasswordHash) && string.IsNullOrWhiteSpace(credentialsModel.Password))
@@ -81,7 +91,7 @@ namespace Authorization.Application.Services
                     return true;
                 }
 
-                return account.PasswordHash.Equals(_hashService.HashString(credentialsModel.Password));
+                return account.PasswordHash.Equals(_passwordService.HashPassword(credentialsModel.Password, account.PasswordSalt));
             }
 
             return false;
