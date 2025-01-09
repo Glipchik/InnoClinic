@@ -19,6 +19,15 @@ namespace Profiles.Infrastructure.Repositories
             _context = context;
         }
 
+        public async override Task DeleteAsync(Guid id, CancellationToken cancellationToken)
+        {
+            var patient = await _context.Set<Patient>().FirstOrDefaultAsync(p => p.Id == id, cancellationToken: cancellationToken);
+            _context.Set<Patient>().Remove(patient);
+            
+            var relatedAccount = await _context.Set<Account>().FirstOrDefaultAsync(a => a.Id == patient.AccountId, cancellationToken: cancellationToken);
+            _context.Set<Account>().Remove(relatedAccount);
+        }
+
         public async override Task<IEnumerable<Patient>> GetAllAsync(CancellationToken cancellationToken)
         {
             return await _context.Set<Patient>().AsNoTracking()
