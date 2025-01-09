@@ -19,6 +19,7 @@ namespace Authorization.Application.Models
     public record CreateAccountModel(
         string Email,
         string PhoneNumber,
+        RoleModel Role,
         string? Password
     );
 
