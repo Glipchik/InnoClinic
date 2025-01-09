@@ -73,7 +73,7 @@ namespace Authorization.Presentation.Pages.Create
 
             if (ModelState.IsValid)
             {
-                var createAccountModel = new CreateAccountModel(Input.Email, Input.PhoneNumber, Input.Password);
+                var createAccountModel = new CreateAccountModel(Input.Email, Input.PhoneNumber, Application.Models.Enums.RoleModel.Patient, Input.Password);
                 var user = await _accountService.CreateAccount(createAccountModel, cancellation);
 
                 var isuser = new IdentityServerUser(user.Id.ToString())

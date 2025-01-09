@@ -11,14 +11,12 @@ namespace Profiles.Application.Models
         string Email,
         string PhoneNumber,
         string PhotoFileName,
-        bool IsEmailVerified,
-        string Password);
+        bool IsEmailVerified);
 
     public record CreateAccountAuthorizationServerModel(
         string Email,
         string PhoneNumber,
         bool IsEmailVerified,
-        string Password,
         RoleModel Role);
 
     public record AccountModel(
@@ -26,6 +24,7 @@ namespace Profiles.Application.Models
         string Email,
         string PhoneNumber,
         bool IsEmailVerified,
+        RoleModel Role,
         DateTime CreatedAt,
         Guid CreatedBy,
         DateTime UpdatedAt,

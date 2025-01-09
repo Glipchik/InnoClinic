@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace Authorization.Application.Services.Abstractions
 {
-    public interface IHashService
+    public interface IPasswordService
     {
-        public string HashString(string message);
+        string HashPassword(string password, string salt);
+        string GenerateSalt();
+        string GeneratePassword();
     }
 }
