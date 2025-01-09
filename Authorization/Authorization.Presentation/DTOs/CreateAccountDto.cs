@@ -1,3 +1,4 @@
+using Authorization.Presentation.DTO.Enums;
 using System;
 using System.ComponentModel.DataAnnotations;
 
@@ -10,4 +11,7 @@ public class CreateAccountDto
 
         [Required]
         public string? PhoneNumber { get; set; }
+
+        [Required]
+        public RoleDto Role { get; set; }
 }

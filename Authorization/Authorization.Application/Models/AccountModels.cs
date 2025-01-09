@@ -19,7 +19,8 @@ namespace Authorization.Application.Models
     public record CreateAccountModel(
         string Email,
         string PhoneNumber,
-        string Password
+        RoleModel Role,
+        string? Password
     );
 
     public record AccountModel(
@@ -27,7 +28,6 @@ namespace Authorization.Application.Models
         string Email,
         bool IsEmailVerified,
         string PhoneNumber,
-        string PasswordHash,
         RoleModel Role,
         Guid CreatedBy,
         Guid UpdatedBy,
