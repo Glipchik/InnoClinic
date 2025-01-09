@@ -28,21 +28,12 @@ namespace Profiles.Application.Services
         public async Task Create(CreatePatientModel createPatientModel, CreateAccountModel createAccountModel, Guid authorId, CancellationToken cancellationToken)
         {
             _unitOfWork.BeginTransaction(cancellationToken: cancellationToken);
-            await _accountService.Create(createAccountModel, authorId, cancellationToken);
-
-            //TODO: Send new account to message broker
+            var createdAccount = await _accountService.Create(createAccountModel, authorId, cancellationToken);
 
             var patient = _mapper.Map<Patient>(createPatientModel);
 
             patient.IsLinkedToAccount = true;
-            var relatedAccount = await _accountService.FindByEmail(createAccountModel.Email, cancellationToken);
-
-            if (relatedAccount == null)
-            {
-                throw new NotFoundException($"Related account with email: {createAccountModel.Email} is not found. Can't create.");
-            }
-
-            patient.AccountId = relatedAccount.Id;
+            patient.AccountId = createdAccount.Id;
 
             await _unitOfWork.PatientRepository.CreateAsync(patient, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);

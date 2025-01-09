@@ -52,7 +52,7 @@ namespace Authorization.Application.Services
                 Id: id,
                 Email: createAccountModel.Email,
                 PhoneNumber: createAccountModel.PhoneNumber,
-                Role: Models.Enums.RoleModel.Patient,
+                Role: createAccountModel.Role,
                 IsEmailVerified: false,
                 CreatedAt: DateTime.UtcNow,
                 UpdatedAt: DateTime.UtcNow,
