@@ -35,6 +35,8 @@ try
     app.MapRazorPages()
         .RequireAuthorization();
         
+    app.UseExceptionHandler();
+
     app.MapControllers();
 
     using (var scope = app.Services.CreateScope())

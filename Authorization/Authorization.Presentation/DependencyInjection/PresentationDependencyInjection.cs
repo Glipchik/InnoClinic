@@ -8,6 +8,7 @@ using FluentValidation;
 using IdentityModel;
 using Authorization.Presentation.Validators;
 using FluentValidation.AspNetCore;
+using Authorization.Presentation.Infrastructure;
 
 namespace Authorization.Presentation.DependencyInjection
 {
@@ -24,6 +25,9 @@ namespace Authorization.Presentation.DependencyInjection
 
             services.AddFluentValidationAutoValidation()
                     .AddValidatorsFromAssemblyContaining<Program>();
+
+            services.AddProblemDetails();
+            services.AddExceptionHandler<GlobalExceptionHandler>();
 
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             services
