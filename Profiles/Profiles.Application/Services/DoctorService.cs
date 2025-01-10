@@ -56,6 +56,11 @@ namespace Profiles.Application.Services
             return _mapper.Map<DoctorModel>(await _unitOfWork.DoctorRepository.GetAsync(id, cancellationToken));
         }
 
+        public async Task<IEnumerable<DoctorModel>> GetAll(CancellationToken cancellationToken)
+        {
+            return _mapper.Map<IEnumerable<DoctorModel>>(await _unitOfWork.DoctorRepository.GetAllAsync(cancellationToken));
+        }
+
         public async Task Update(UpdateDoctorModel updateDoctorModel, CancellationToken cancellationToken)
         {
 

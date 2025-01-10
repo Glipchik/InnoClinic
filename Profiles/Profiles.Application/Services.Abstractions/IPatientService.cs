@@ -11,6 +11,7 @@ namespace Profiles.Application.Services.Abstractions
     {
         Task Create(CreatePatientModel createPatientModel, CreateAccountModel createAccountModel, Guid authorId, CancellationToken cancellationToken);
         Task<PatientModel> Get(Guid id, CancellationToken cancellationToken);
+        Task<IEnumerable<PatientModel>> GetAll(CancellationToken cancellationToken);
         Task Update(UpdatePatientModel updatePatientModel,CancellationToken cancellationToken);
         Task Delete(Guid id, CancellationToken cancellationToken);
     }

@@ -55,6 +55,11 @@ namespace Profiles.Application.Services
             return _mapper.Map<ReceptionistModel>(await _unitOfWork.ReceptionistRepository.GetAsync(id, cancellationToken));
         }
 
+        public async Task<IEnumerable<ReceptionistModel>> GetAll(CancellationToken cancellationToken)
+        {
+            return _mapper.Map<IEnumerable<ReceptionistModel>>(await _unitOfWork.ReceptionistRepository.GetAllAsync(cancellationToken));
+        }
+
         public async Task Update(UpdateReceptionistModel updateReceptionistModel, CancellationToken cancellationToken)
         {
             var receptionistToUpdate = await _unitOfWork.ReceptionistRepository.GetAsync(updateReceptionistModel.Id, cancellationToken);

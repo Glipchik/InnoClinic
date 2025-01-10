@@ -62,5 +62,11 @@ namespace Profiles.Application.Services
             var account = await _unitOfWork.AccountRepository.FindByEmailAsync(email, cancellationToken);
             return _mapper.Map<AccountModel>(account);
         }
+
+        public async Task<AccountModel> Get(Guid id, CancellationToken cancellationToken)
+        {
+            var account = await _unitOfWork.AccountRepository.GetAsync(id, cancellationToken);
+            return _mapper.Map<AccountModel>(account);
+        }
     }
 }

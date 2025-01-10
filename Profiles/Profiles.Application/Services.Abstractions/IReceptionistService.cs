@@ -11,6 +11,7 @@ namespace Profiles.Application.Services.Abstractions
     {
         Task Create(CreateReceptionistModel createReceptionistModel, CreateAccountModel createAccountModel, Guid authorId, CancellationToken cancellationToken);
         Task<ReceptionistModel> Get(Guid id, CancellationToken cancellationToken);
+        Task<IEnumerable<ReceptionistModel>> GetAll(CancellationToken cancellationToken);
         Task Update(UpdateReceptionistModel updateReceptionistModel, CancellationToken cancellationToken);
         Task Delete(Guid id, CancellationToken cancellationToken);
     }
