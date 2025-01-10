@@ -20,7 +20,6 @@ namespace Profiles.Application.DependencyInjection
             services.AddScoped<IDoctorService, DoctorService>();
             services.AddScoped<IPatientService, PatientService>();
             services.AddScoped<IReceptionistService, ReceptionistService>();
-            services.AddScoped<IHashService, HashService>();
             services.AddScoped<IFileService, FileService>();
 
             return services;
