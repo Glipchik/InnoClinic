@@ -69,9 +69,6 @@ namespace Profiles.Application.Services
             }
 
             _mapper.Map(updateReceptionistModel, receptionistToUpdate);
-            
-            receptionistToUpdate.Account.UpdatedAt = DateTime.UtcNow;
-            receptionistToUpdate.Account.UpdatedBy = updateReceptionistModel.AuthorId;
 
             await _unitOfWork.ReceptionistRepository.UpdateAsync(receptionistToUpdate, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);

@@ -70,9 +70,6 @@ namespace Profiles.Application.Services
             }
 
             _mapper.Map(updatePatientModel, patientToUpdate);
-            
-            patientToUpdate.Account.UpdatedAt = DateTime.UtcNow;
-            patientToUpdate.Account.UpdatedBy = updatePatientModel.AuthorId;
 
             await _unitOfWork.PatientRepository.UpdateAsync(patientToUpdate, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);

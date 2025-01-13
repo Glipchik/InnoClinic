@@ -31,10 +31,6 @@ namespace Profiles.Application.Services
             var response = await SendCreateRequest(createAccountAuthorizationServerModel, cancellationToken);
 
             var account = _mapper.Map<Account>(response);
-            account.CreatedBy = createAccountModel.AuthorId;
-            account.UpdatedBy = createAccountModel.AuthorId;
-            account.CreatedAt = DateTime.UtcNow;
-            account.UpdatedAt = DateTime.UtcNow;
 
             await _unitOfWork.AccountRepository.CreateAsync(account, cancellationToken);
 

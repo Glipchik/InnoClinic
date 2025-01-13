@@ -72,9 +72,6 @@ namespace Profiles.Application.Services
 
             _mapper.Map(updateDoctorModel, doctorToUpdate);
 
-            doctorToUpdate.Account.UpdatedAt = DateTime.UtcNow;
-            doctorToUpdate.Account.UpdatedBy = updateDoctorModel.AuthorId;
-
             await _unitOfWork.DoctorRepository.UpdateAsync(doctorToUpdate, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
