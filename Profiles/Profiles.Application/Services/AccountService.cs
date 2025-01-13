@@ -32,7 +32,7 @@ namespace Profiles.Application.Services
 
             var account = _mapper.Map<Account>(response);
 
-            await _unitOfWork.AccountRepository.CreateAsync(account, cancellationToken);
+            await _unitOfWork.AccountRepository.CreateAsync(account, createAccountModel.AuthorId, cancellationToken);
 
             return _mapper.Map<AccountModel>(account);
         }
