@@ -11,12 +11,15 @@ namespace Profiles.Application.Services.Abstractions
     {
         Task Create(
             CreateDoctorModel createDoctorModel, 
-            FileModel fileModel, 
+            FileModel? fileModel, 
             CreateAccountModel createAccountModel, 
             CancellationToken cancellationToken);
         Task<DoctorModel> Get(Guid id, CancellationToken cancellationToken);
         Task<IEnumerable<DoctorModel>> GetAll(CancellationToken cancellationToken);
-        Task Update(UpdateDoctorModel updateDoctorModel, CancellationToken cancellationToken);
+        Task Update(
+            UpdateDoctorModel updateDoctorModel, 
+            FileModel? fileModel,
+            CancellationToken cancellationToken);
         Task Delete(Guid id, CancellationToken cancellationToken);
     }
 }

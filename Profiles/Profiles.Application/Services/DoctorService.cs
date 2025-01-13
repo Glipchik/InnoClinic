@@ -30,7 +30,7 @@ namespace Profiles.Application.Services
 
         public async Task Create(
             CreateDoctorModel createDoctorModel,
-            FileModel fileModel, 
+            FileModel? fileModel, 
             CreateAccountModel createAccountModel,
             CancellationToken cancellationToken)
         {
@@ -45,13 +45,22 @@ namespace Profiles.Application.Services
 
                 await _unitOfWork.DoctorRepository.CreateAsync(doctor, cancellationToken);
 
-                await _fileService.Upload(fileModel.FileName, fileModel.FileStream, fileModel.ContentType);
+                if (fileModel != null)
+                {
+                    await _fileService.Upload(fileModel.FileName, fileModel.FileStream, fileModel.ContentType);
+                
+                    doctor.Account.PhotoFileName = fileModel.FileName;
+                }
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
             }
             catch
             {
-                await _fileService.Remove(fileModel.FileName);
+                if (fileModel != null)
+                {                
+                    await _fileService.Remove(fileModel.FileName);
+                }
+
                 throw;
             }
         }
@@ -65,6 +74,9 @@ namespace Profiles.Application.Services
             }
 
             await _unitOfWork.DoctorRepository.DeleteAsync(id, cancellationToken);
+
+            await _fileService.Remove(doctorToDelete.Account.PhotoFileName);
+
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
@@ -78,13 +90,20 @@ namespace Profiles.Application.Services
             return _mapper.Map<IEnumerable<DoctorModel>>(await _unitOfWork.DoctorRepository.GetAllAsync(cancellationToken));
         }
 
-        public async Task Update(UpdateDoctorModel updateDoctorModel, CancellationToken cancellationToken)
+        public async Task Update(
+            UpdateDoctorModel updateDoctorModel, 
+            FileModel? fileModel, 
+            CancellationToken cancellationToken)
         {
+            var doctorToUpdate = await _unitOfWork.DoctorRepository.GetAsync(updateDoctorModel.Id, cancellationToken)
+                ?? throw new NotFoundException($"Doctor with id: {updateDoctorModel.Id} is not found. Can't update.");
 
-            var doctorToUpdate = await _unitOfWork.DoctorRepository.GetAsync(updateDoctorModel.Id, cancellationToken);
-            if (doctorToUpdate == null)
+            if (fileModel != null)
             {
-                throw new NotFoundException($"Doctor with id: {updateDoctorModel.Id} is not found. Can't update.");
+                await _fileService.Remove(doctorToUpdate.Account.PhotoFileName);
+                await _fileService.Upload(fileModel.FileName, fileModel.FileStream, fileModel.ContentType);
+                
+                doctorToUpdate.Account.PhotoFileName = fileModel.FileName;
             }
 
             _mapper.Map(updateDoctorModel, doctorToUpdate);
