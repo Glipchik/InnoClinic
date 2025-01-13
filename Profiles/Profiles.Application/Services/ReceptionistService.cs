@@ -17,25 +17,47 @@ namespace Profiles.Application.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IAccountService _accountService;
+        private readonly IFileService _fileService;
 
-        public ReceptionistService(IUnitOfWork unitOfWork, IMapper mapper, IAccountService accountService)
+        public ReceptionistService(IUnitOfWork unitOfWork, IMapper mapper, IAccountService accountService, IFileService fileService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _accountService = accountService;
+            _fileService = fileService;
         }
 
-        public async Task Create(CreateReceptionistModel createReceptionistModel, CreateAccountModel createAccountModel, CancellationToken cancellationToken)
+        public async Task Create(
+            CreateReceptionistModel createReceptionistModel, 
+            CreateAccountModel createAccountModel, 
+            FileModel? fileModel,
+            CancellationToken cancellationToken)
         {
-            _unitOfWork.BeginTransaction(cancellationToken: cancellationToken);
-            var createdAccount = await _accountService.Create(createAccountModel, cancellationToken);
+            try
+            {
+                _unitOfWork.BeginTransaction(cancellationToken: cancellationToken);
+                var createdAccount = await _accountService.Create(createAccountModel, cancellationToken);
 
-            var receptionist = _mapper.Map<Receptionist>(createReceptionistModel);
+                var receptionist = _mapper.Map<Receptionist>(createReceptionistModel);
 
-            receptionist.AccountId = createdAccount.Id;
+                receptionist.AccountId = createdAccount.Id;
 
-            await _unitOfWork.ReceptionistRepository.CreateAsync(receptionist, cancellationToken);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+                await _unitOfWork.ReceptionistRepository.CreateAsync(receptionist, cancellationToken);
+
+                if (fileModel != null)
+                {
+                    await _fileService.Upload(fileModel.FileName, fileModel.FileStream, fileModel.ContentType);
+                
+                    receptionist.Account.PhotoFileName = fileModel.FileName;
+                }
+
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+            }
+            catch
+            {
+                
+                throw;
+            }
         }
 
         public async Task Delete(Guid id, CancellationToken cancellationToken)
@@ -60,12 +82,20 @@ namespace Profiles.Application.Services
             return _mapper.Map<IEnumerable<ReceptionistModel>>(await _unitOfWork.ReceptionistRepository.GetAllAsync(cancellationToken));
         }
 
-        public async Task Update(UpdateReceptionistModel updateReceptionistModel, CancellationToken cancellationToken)
+        public async Task Update(
+            UpdateReceptionistModel updateReceptionistModel, 
+            FileModel? fileModel,
+            CancellationToken cancellationToken)
         {
-            var receptionistToUpdate = await _unitOfWork.ReceptionistRepository.GetAsync(updateReceptionistModel.Id, cancellationToken);
-            if (receptionistToUpdate == null)
+            var receptionistToUpdate = await _unitOfWork.ReceptionistRepository.GetAsync(updateReceptionistModel.Id, cancellationToken)
+                ?? throw new NotFoundException($"Receptionist with id: {updateReceptionistModel.Id} is not found. Can't update.");
+            
+            if (fileModel != null)
             {
-                throw new NotFoundException($"Receptionist with id: {updateReceptionistModel.Id} is not found. Can't update.");
+                await _fileService.Remove(receptionistToUpdate.Account.PhotoFileName);
+                await _fileService.Upload(fileModel.FileName, fileModel.FileStream, fileModel.ContentType);
+                
+                receptionistToUpdate.Account.PhotoFileName = fileModel.FileName;
             }
 
             _mapper.Map(updateReceptionistModel, receptionistToUpdate);

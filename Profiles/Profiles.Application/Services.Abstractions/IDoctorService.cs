@@ -9,10 +9,17 @@ namespace Profiles.Application.Services.Abstractions
 {
     public interface IDoctorService
     {
-        Task Create(CreateDoctorModel createDoctorModel, CreateAccountModel createAccountModel, Guid authorId, CancellationToken cancellationToken);
+        Task Create(
+            CreateDoctorModel createDoctorModel, 
+            FileModel? fileModel, 
+            CreateAccountModel createAccountModel, 
+            CancellationToken cancellationToken);
         Task<DoctorModel> Get(Guid id, CancellationToken cancellationToken);
         Task<IEnumerable<DoctorModel>> GetAll(CancellationToken cancellationToken);
-        Task Update(UpdateDoctorModel updateDoctorModel, CancellationToken cancellationToken);
+        Task Update(
+            UpdateDoctorModel updateDoctorModel, 
+            FileModel? fileModel,
+            CancellationToken cancellationToken);
         Task Delete(Guid id, CancellationToken cancellationToken);
     }
 }
