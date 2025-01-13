@@ -25,10 +25,10 @@ namespace Profiles.Application.Services
             _accountService = accountService;
         }
 
-        public async Task Create(CreatePatientModel createPatientModel, CreateAccountModel createAccountModel, Guid authorId, CancellationToken cancellationToken)
+        public async Task Create(CreatePatientModel createPatientModel, CreateAccountModel createAccountModel, CancellationToken cancellationToken)
         {
             _unitOfWork.BeginTransaction(cancellationToken: cancellationToken);
-            var createdAccount = await _accountService.Create(createAccountModel, authorId, cancellationToken);
+            var createdAccount = await _accountService.Create(createAccountModel, cancellationToken);
 
             var patient = _mapper.Map<Patient>(createPatientModel);
 
@@ -70,6 +70,9 @@ namespace Profiles.Application.Services
             }
 
             _mapper.Map(updatePatientModel, patientToUpdate);
+            
+            patientToUpdate.Account.UpdatedAt = DateTime.UtcNow;
+            patientToUpdate.Account.UpdatedBy = updatePatientModel.AuthorId;
 
             await _unitOfWork.PatientRepository.UpdateAsync(patientToUpdate, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);

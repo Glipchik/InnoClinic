@@ -25,5 +25,7 @@ namespace Profiles.Application.Models
         string FirstName,
         string LastName,
         string MiddleName,
-        Guid OfficeId);
+        Guid OfficeId,
+        
+        Guid AuthorId);
 }

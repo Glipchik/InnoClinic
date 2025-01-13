@@ -38,5 +38,7 @@ namespace Profiles.Application.Models
         DateTime CareerStartYear,
         Guid OfficeId,
         DateTime DateOfBirth,
-        DoctorStatusModel Status);
+        DoctorStatusModel Status,
+        
+        Guid AuthorId);
 }

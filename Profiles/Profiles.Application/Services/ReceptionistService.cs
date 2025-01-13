@@ -25,10 +25,10 @@ namespace Profiles.Application.Services
             _accountService = accountService;
         }
 
-        public async Task Create(CreateReceptionistModel createReceptionistModel, CreateAccountModel createAccountModel, Guid authorId, CancellationToken cancellationToken)
+        public async Task Create(CreateReceptionistModel createReceptionistModel, CreateAccountModel createAccountModel, CancellationToken cancellationToken)
         {
             _unitOfWork.BeginTransaction(cancellationToken: cancellationToken);
-            var createdAccount = await _accountService.Create(createAccountModel, authorId, cancellationToken);
+            var createdAccount = await _accountService.Create(createAccountModel, cancellationToken);
 
             var receptionist = _mapper.Map<Receptionist>(createReceptionistModel);
 
@@ -69,6 +69,9 @@ namespace Profiles.Application.Services
             }
 
             _mapper.Map(updateReceptionistModel, receptionistToUpdate);
+            
+            receptionistToUpdate.Account.UpdatedAt = DateTime.UtcNow;
+            receptionistToUpdate.Account.UpdatedBy = updateReceptionistModel.AuthorId;
 
             await _unitOfWork.ReceptionistRepository.UpdateAsync(receptionistToUpdate, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
