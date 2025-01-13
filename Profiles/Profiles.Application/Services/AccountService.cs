@@ -25,18 +25,14 @@ namespace Profiles.Application.Services
             _authorizationServerUrl = configuration["Authorization:ServerUrl"];
         }
 
-        public async Task<AccountModel> Create(CreateAccountModel createAccountModel, Guid authorId, CancellationToken cancellationToken)
+        public async Task<AccountModel> Create(CreateAccountModel createAccountModel, CancellationToken cancellationToken)
         {
             var createAccountAuthorizationServerModel = _mapper.Map<CreateAccountAuthorizationServerModel>(createAccountModel);
             var response = await SendCreateRequest(createAccountAuthorizationServerModel, cancellationToken);
 
             var account = _mapper.Map<Account>(response);
-            account.CreatedBy = authorId;
-            account.UpdatedBy = authorId;
-            account.CreatedAt = DateTime.UtcNow;
-            account.UpdatedAt = DateTime.UtcNow;
 
-            await _unitOfWork.AccountRepository.CreateAsync(account, cancellationToken);
+            await _unitOfWork.AccountRepository.CreateAsync(account, createAccountModel.AuthorId, cancellationToken);
 
             return _mapper.Map<AccountModel>(account);
         }
@@ -60,6 +56,12 @@ namespace Profiles.Application.Services
         public async Task<AccountModel> FindByEmail(string email, CancellationToken cancellationToken)
         {
             var account = await _unitOfWork.AccountRepository.FindByEmailAsync(email, cancellationToken);
+            return _mapper.Map<AccountModel>(account);
+        }
+
+        public async Task<AccountModel> Get(Guid id, CancellationToken cancellationToken)
+        {
+            var account = await _unitOfWork.AccountRepository.GetAsync(id, cancellationToken);
             return _mapper.Map<AccountModel>(account);
         }
     }

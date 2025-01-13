@@ -29,7 +29,7 @@ namespace Profiles.Application.Services
         public async Task Create(CreateDoctorModel createDoctorModel, CreateAccountModel createAccountModel, Guid authorId, CancellationToken cancellationToken)
         {
             _unitOfWork.BeginTransaction(cancellationToken: cancellationToken);
-            var createdAccount = await _accountService.Create(createAccountModel, authorId, cancellationToken);
+            var createdAccount = await _accountService.Create(createAccountModel, cancellationToken);
 
             var doctor = _mapper.Map<Doctor>(createDoctorModel);
 
@@ -54,6 +54,11 @@ namespace Profiles.Application.Services
         public async Task<DoctorModel> Get(Guid id, CancellationToken cancellationToken)
         {
             return _mapper.Map<DoctorModel>(await _unitOfWork.DoctorRepository.GetAsync(id, cancellationToken));
+        }
+
+        public async Task<IEnumerable<DoctorModel>> GetAll(CancellationToken cancellationToken)
+        {
+            return _mapper.Map<IEnumerable<DoctorModel>>(await _unitOfWork.DoctorRepository.GetAllAsync(cancellationToken));
         }
 
         public async Task Update(UpdateDoctorModel updateDoctorModel, CancellationToken cancellationToken)

@@ -25,10 +25,10 @@ namespace Profiles.Application.Services
             _accountService = accountService;
         }
 
-        public async Task Create(CreatePatientModel createPatientModel, CreateAccountModel createAccountModel, Guid authorId, CancellationToken cancellationToken)
+        public async Task Create(CreatePatientModel createPatientModel, CreateAccountModel createAccountModel, CancellationToken cancellationToken)
         {
             _unitOfWork.BeginTransaction(cancellationToken: cancellationToken);
-            var createdAccount = await _accountService.Create(createAccountModel, authorId, cancellationToken);
+            var createdAccount = await _accountService.Create(createAccountModel, cancellationToken);
 
             var patient = _mapper.Map<Patient>(createPatientModel);
 
@@ -54,6 +54,11 @@ namespace Profiles.Application.Services
         public async Task<PatientModel> Get(Guid id, CancellationToken cancellationToken)
         {
             return _mapper.Map<PatientModel>(await _unitOfWork.PatientRepository.GetAsync(id, cancellationToken));
+        }
+
+        public async Task<IEnumerable<PatientModel>> GetAll(CancellationToken cancellationToken)
+        {
+            return _mapper.Map<IEnumerable<PatientModel>>(await _unitOfWork.PatientRepository.GetAllAsync(cancellationToken));
         }
 
         public async Task Update(UpdatePatientModel updatePatientModel, CancellationToken cancellationToken)

@@ -12,7 +12,9 @@ namespace Profiles.Application.Models
         string PhoneNumber,
         string PhotoFileName,
         bool IsEmailVerified,
-        RoleModel Role);
+        RoleModel Role,
+        
+        Guid AuthorId);
 
     public record CreateAccountAuthorizationServerModel(
         string Email,

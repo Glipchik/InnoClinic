@@ -9,7 +9,8 @@ namespace Profiles.Application.Services.Abstractions
 {
     public interface IAccountService
     {
-        Task<AccountModel> Create(CreateAccountModel createAccountModel, Guid authorId, CancellationToken cancellationToken);
+        Task<AccountModel> Get(Guid id, CancellationToken cancellationToken);
+        Task<AccountModel> Create(CreateAccountModel createAccountModel, CancellationToken cancellationToken);
         Task<AccountModel> FindByEmail(string email, CancellationToken cancellationToken);
     }
 }

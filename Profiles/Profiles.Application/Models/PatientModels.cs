@@ -26,5 +26,7 @@ namespace Profiles.Application.Models
         string FirstName,
         string LastName,
         string MiddleName,
-        DateTime DateOfBirth);
+        DateTime DateOfBirth,
+        
+        Guid AuthorId);
 }

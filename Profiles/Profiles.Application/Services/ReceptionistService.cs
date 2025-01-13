@@ -25,10 +25,10 @@ namespace Profiles.Application.Services
             _accountService = accountService;
         }
 
-        public async Task Create(CreateReceptionistModel createReceptionistModel, CreateAccountModel createAccountModel, Guid authorId, CancellationToken cancellationToken)
+        public async Task Create(CreateReceptionistModel createReceptionistModel, CreateAccountModel createAccountModel, CancellationToken cancellationToken)
         {
             _unitOfWork.BeginTransaction(cancellationToken: cancellationToken);
-            var createdAccount = await _accountService.Create(createAccountModel, authorId, cancellationToken);
+            var createdAccount = await _accountService.Create(createAccountModel, cancellationToken);
 
             var receptionist = _mapper.Map<Receptionist>(createReceptionistModel);
 
@@ -53,6 +53,11 @@ namespace Profiles.Application.Services
         public async Task<ReceptionistModel> Get(Guid id, CancellationToken cancellationToken)
         {
             return _mapper.Map<ReceptionistModel>(await _unitOfWork.ReceptionistRepository.GetAsync(id, cancellationToken));
+        }
+
+        public async Task<IEnumerable<ReceptionistModel>> GetAll(CancellationToken cancellationToken)
+        {
+            return _mapper.Map<IEnumerable<ReceptionistModel>>(await _unitOfWork.ReceptionistRepository.GetAllAsync(cancellationToken));
         }
 
         public async Task Update(UpdateReceptionistModel updateReceptionistModel, CancellationToken cancellationToken)
