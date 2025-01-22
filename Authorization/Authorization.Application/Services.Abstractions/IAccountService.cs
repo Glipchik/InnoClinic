@@ -41,6 +41,8 @@ namespace Authorization.Application.Services.Abstractions
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="createAccountModel">User information for creation.</param>
         /// <returns></returns>
-        Task<AccountModel> CreateAccount(CreateAccountModel createAccountModel, CancellationToken cancellationToken);
+        Task<AccountModel> CreateAccount(CreateAccountModel createAccountModel, CancellationToken cancellationToken,
+            CreatePatientModel? createPatientModel = null,
+            bool isCreatingPatientRequired = true);
     }
 }
