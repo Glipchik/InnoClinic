@@ -7,29 +7,57 @@ using System.Threading.Tasks;
 
 namespace Profiles.Application.Models
 {
-    public record CreateAccountModel(
-        string Email,
-        string PhoneNumber,
-        string PhotoFileName,
-        bool IsEmailVerified,
-        RoleModel Role,
-        
-        Guid AuthorId);
+    public class CreateAccountModel
+    {
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
+        public string PhotoFileName { get; set; }
+        public bool IsEmailVerified { get; set; }
+        public RoleModel Role { get; set; }
+        public Guid AuthorId { get; set; }
+    }
 
-    public record CreateAccountAuthorizationServerModel(
-        string Email,
-        string PhoneNumber,
-        bool IsEmailVerified,
-        RoleModel Role);
+    public class CreateAccountFromAuthServerModel
+    {
+        public Guid Id { get; set; }
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
+        public string PhotoFileName { get; set; }
+        public bool IsEmailVerified { get; set; }
+        public Guid AuthorId { get; set; }
+    }
 
-    public record AccountModel(
-        Guid Id,
-        string Email,
-        string PhoneNumber,
-        bool IsEmailVerified,
-        RoleModel Role,
-        DateTime CreatedAt,
-        Guid CreatedBy,
-        DateTime UpdatedAt,
-        Guid UpdatedBy);
+    public class CreateAccountAuthorizationServerModel
+    {
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
+        public int RoleId { get; set; }
+    }
+
+    public class AuthorizationAccountModel
+    {
+        public Guid Id { get; set; }
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
+        public string PhotoFileName { get; set; }
+        public bool IsEmailVerified { get; set; }
+        public RoleModel Role { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public Guid CreatedBy { get; set; }
+        public DateTime UpdatedAt { get; set; }
+        public Guid UpdatedBy { get; set; }
+    }
+
+    public class AccountModel
+    {
+        public Guid Id { get; set; }
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
+        public string PhotoFileName { get; set; }
+        public bool IsEmailVerified { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public Guid CreatedBy { get; set; }
+        public DateTime UpdatedAt { get; set; }
+        public Guid UpdatedBy { get; set; }
+    }
 }

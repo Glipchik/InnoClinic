@@ -8,10 +8,22 @@ namespace Authorization.Presentation.Pages.Create
     public class InputModel
     {
         [Required]
+        public string FirstName { get; set; }
+
+        [Required]
+        public string LastName { get; set; }
+        public string? MiddleName { get; set; }
+
+        [Required]
+        public DateTime DateOfBirth { get; set; } = DateTime.Today;
+
+        [Required]
         public string? Email { get; set; }
 
         [Required]
         public string? Password { get; set; }
+
+        public IFormFile? ProfilePicture { get; set; }
 
         [Required]
         public string? PhoneNumber { get; set; }

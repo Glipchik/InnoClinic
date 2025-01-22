@@ -2,9 +2,16 @@ using System;
 
 namespace Profiles.Application.Models;
 
-public record FileModel
-(
-    string FileName,
-    Stream FileStream,
-    string ContentType
-);
+public class FileModel
+{
+    public string FileName { get; }
+    public Stream FileStream { get; }
+    public string ContentType { get; }
+
+    public FileModel(string fileName, Stream fileStream, string contentType)
+    {
+        FileName = fileName;
+        FileStream = fileStream;
+        ContentType = contentType;
+    }
+}

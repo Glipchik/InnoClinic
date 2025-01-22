@@ -16,6 +16,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Claims;
 using System.Text;
+using static Duende.IdentityServer.Models.IdentityResources;
+using System.Threading;
 
 namespace Authorization.Presentation.Pages.Create
 {
@@ -74,7 +76,39 @@ namespace Authorization.Presentation.Pages.Create
             if (ModelState.IsValid)
             {
                 var createAccountModel = new CreateAccountModel(Input.Email, Input.PhoneNumber, Application.Models.Enums.RoleModel.Patient, Input.Password);
-                var user = await _accountService.CreateAccount(createAccountModel, cancellation);
+                AccountModel user;
+
+                if (Input.ProfilePicture != null)
+                {
+                    using var stream = Input.ProfilePicture.OpenReadStream();
+                    var fileModel = new FileModel(Guid.NewGuid().ToString(), stream, Input.ProfilePicture.ContentType);
+
+                    user = await _accountService.CreateAccount(createAccountModel, cancellation,
+                        new CreatePatientModel()
+                        {
+                            DateOfBirth = Input.DateOfBirth,
+                            FirstName = Input.FirstName,
+                            LastName = Input.LastName,
+                            MiddleName = Input.MiddleName,
+                            ProfilePicture = fileModel
+                        },
+                        isCreatingPatientRequired: true);
+                }
+                else
+                {
+
+                    user = await _accountService.CreateAccount(createAccountModel, cancellation,
+                        new CreatePatientModel()
+                        {
+                            DateOfBirth = Input.DateOfBirth,
+                            FirstName = Input.FirstName,
+                            LastName = Input.LastName,
+                            MiddleName = Input.MiddleName,
+                            ProfilePicture = null
+                        },
+                        isCreatingPatientRequired: true);
+                }
+
 
                 var isuser = new IdentityServerUser(user.Id.ToString())
                 {

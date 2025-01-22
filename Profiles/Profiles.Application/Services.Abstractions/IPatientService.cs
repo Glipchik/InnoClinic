@@ -14,6 +14,13 @@ namespace Profiles.Application.Services.Abstractions
             CreateAccountModel createAccountModel, 
             FileModel? fileModel, 
             CancellationToken cancellationToken);
+
+        Task CreateFromAuthServer(
+            CreatePatientModel createPatientModel,
+            CreateAccountFromAuthServerModel createAccountFromAuthServerModel,
+            FileModel? fileModel,
+            CancellationToken cancellationToken);
+
         Task<PatientModel> Get(Guid id, CancellationToken cancellationToken);
         Task<IEnumerable<PatientModel>> GetAll(CancellationToken cancellationToken);
         Task Update(

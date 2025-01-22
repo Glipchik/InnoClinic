@@ -7,38 +7,43 @@ using System.Threading.Tasks;
 
 namespace Profiles.Application.Models
 {
-    public record CreateDoctorModel(
-        string FirstName,
-        string LastName,
-        string MiddleName,
-        Guid SpecializationId,
-        DateTime CareerStartYear,
-        Guid OfficeId,
-        DateTime DateOfBirth,
-        DoctorStatusModel Status);
+    public class CreateDoctorModel
+    {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string MiddleName { get; set; }
+        public Guid SpecializationId { get; set; }
+        public DateTime CareerStartYear { get; set; }
+        public Guid OfficeId { get; set; }
+        public DateTime DateOfBirth { get; set; }
+        public DoctorStatusModel Status { get; set; }
+    }
 
-    public record DoctorModel(
-        Guid Id,
-        string FirstName,
-        string LastName,
-        string MiddleName,
-        Guid SpecializationId,
-        Guid AccountId,
-        DateTime CareerStartYear,
-        Guid OfficeId,
-        DateTime DateOfBirth,
-        DoctorStatusModel Status);
+    public class DoctorModel
+    {
+        public Guid Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string MiddleName { get; set; }
+        public Guid SpecializationId { get; set; }
+        public Guid AccountId { get; set; }
+        public DateTime CareerStartYear { get; set; }
+        public Guid OfficeId { get; set; }
+        public DateTime DateOfBirth { get; set; }
+        public DoctorStatusModel Status { get; set; }
+    }
 
-    public record UpdateDoctorModel(
-        Guid Id,
-        string FirstName,
-        string LastName,
-        string MiddleName,
-        Guid SpecializationId,
-        DateTime CareerStartYear,
-        Guid OfficeId,
-        DateTime DateOfBirth,
-        DoctorStatusModel Status,
-        
-        Guid AuthorId);
+    public class UpdateDoctorModel
+    {
+        public Guid Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string MiddleName { get; set; }
+        public Guid SpecializationId { get; set; }
+        public DateTime CareerStartYear { get; set; }
+        public Guid OfficeId { get; set; }
+        public DateTime DateOfBirth { get; set; }
+        public DoctorStatusModel Status { get; set; }
+        public Guid AuthorId { get; set; }
+    }
 }

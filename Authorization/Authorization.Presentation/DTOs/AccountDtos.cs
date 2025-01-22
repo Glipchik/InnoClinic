@@ -6,12 +6,14 @@ namespace Authorization.Presentation.DTOs;
 
 public class CreateAccountDto
 {
-        [Required]
         public string? Email { get; set; }
-
-        [Required]
         public string? PhoneNumber { get; set; }
+        public int RoleId { get; set; }
+}
 
-        [Required]
-        public RoleDto Role { get; set; }
+public class CreateAccountForProfilesDto
+{
+    Guid Id { get; set; }
+    string Email { get; set; }
+    string PhoneNumber { get; set; }
 }

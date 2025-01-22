@@ -35,34 +35,48 @@ namespace Profiles.Application.Services
         {
             try
             {
-                _unitOfWork.BeginTransaction(cancellationToken: cancellationToken);
-                var createdAccount = await _accountService.Create(createAccountModel, cancellationToken);
-
-                var receptionist = _mapper.Map<Receptionist>(createReceptionistModel);
-
-                receptionist.AccountId = createdAccount.Id;
-
-                await _unitOfWork.ReceptionistRepository.CreateAsync(receptionist, cancellationToken);
-
-                if (fileModel != null)
+                using (var transaction = _unitOfWork.BeginTransaction(cancellationToken: cancellationToken))
                 {
-                    await _fileService.Upload(fileModel.FileName, fileModel.FileStream, fileModel.ContentType);
-                
-                    receptionist.Account.PhotoFileName = fileModel.FileName;
-                }
 
-                await _unitOfWork.SaveChangesAsync(cancellationToken);
+                    var officeRelatedToDoctor = await _unitOfWork.OfficeRepository.GetAsync(createReceptionistModel.OfficeId, cancellationToken: cancellationToken);
+                    if (officeRelatedToDoctor == null || !officeRelatedToDoctor.IsActive)
+                    {
+                        throw new RelatedObjectNotFoundException($"Related office with id {createReceptionistModel.OfficeId} is not found or not active.");
+                    }
+
+                    var createdAccount = await _accountService.Create(createAccountModel, cancellationToken);
+
+                    var receptionist = _mapper.Map<Receptionist>(createReceptionistModel);
+
+                    receptionist.AccountId = createdAccount.Id;
+
+                    await _unitOfWork.ReceptionistRepository.CreateAsync(receptionist, cancellationToken);
+
+                    if (fileModel != null)
+                    {
+                        await _fileService.Upload(fileModel.FileName, fileModel.FileStream, fileModel.ContentType);
+
+                        receptionist.Account.PhotoFileName = fileModel.FileName;
+                    }
+
+                    await transaction.CommitAsync(cancellationToken);
+                    await _unitOfWork.SaveChangesAsync(cancellationToken);
+                }
             }
             catch
             {
-                
+                if (fileModel != null && await _fileService.DoesFileExist(fileModel.FileName))
+                {
+                    await _fileService.Remove(fileModel.FileName);
+                }
+
                 throw;
             }
         }
 
         public async Task Delete(Guid id, CancellationToken cancellationToken)
         {
-            var receptionistToDelete = await _unitOfWork.ReceptionistRepository.GetAsync(id, cancellationToken);
+            var receptionistToDelete = await _unitOfWork.ReceptionistRepository.GetAsync(id, cancellationToken: cancellationToken);
             if (receptionistToDelete == null)
             {
                 throw new NotFoundException($"Receptionist with id: {id} is not found. Can't delete.");
@@ -74,7 +88,7 @@ namespace Profiles.Application.Services
 
         public async Task<ReceptionistModel> Get(Guid id, CancellationToken cancellationToken)
         {
-            return _mapper.Map<ReceptionistModel>(await _unitOfWork.ReceptionistRepository.GetAsync(id, cancellationToken));
+            return _mapper.Map<ReceptionistModel>(await _unitOfWork.ReceptionistRepository.GetAsync(id, cancellationToken: cancellationToken));
         }
 
         public async Task<IEnumerable<ReceptionistModel>> GetAll(CancellationToken cancellationToken)
@@ -87,15 +101,31 @@ namespace Profiles.Application.Services
             FileModel? fileModel,
             CancellationToken cancellationToken)
         {
-            var receptionistToUpdate = await _unitOfWork.ReceptionistRepository.GetAsync(updateReceptionistModel.Id, cancellationToken)
+            var officeRelatedToDoctor = await _unitOfWork.OfficeRepository.GetAsync(updateReceptionistModel.OfficeId, cancellationToken: cancellationToken);
+            if (officeRelatedToDoctor == null || !officeRelatedToDoctor.IsActive)
+            {
+                throw new RelatedObjectNotFoundException($"Related office with id {updateReceptionistModel.OfficeId} is not found or not active.");
+            }
+
+
+            var receptionistToUpdate = await _unitOfWork.ReceptionistRepository.GetAsync(updateReceptionistModel.Id, isIncluded: false, cancellationToken: cancellationToken)
                 ?? throw new NotFoundException($"Receptionist with id: {updateReceptionistModel.Id} is not found. Can't update.");
-            
+
             if (fileModel != null)
             {
+                var accountToUpdate = await _unitOfWork.AccountRepository.GetAsync(receptionistToUpdate.AccountId, cancellationToken: cancellationToken);
+
+                if (accountToUpdate == null)
+                {
+                    throw new RelatedObjectNotFoundException($"Related account with id {receptionistToUpdate.AccountId} is not found.");
+                }
+
                 await _fileService.Remove(receptionistToUpdate.Account.PhotoFileName);
                 await _fileService.Upload(fileModel.FileName, fileModel.FileStream, fileModel.ContentType);
-                
-                receptionistToUpdate.Account.PhotoFileName = fileModel.FileName;
+
+                accountToUpdate.PhotoFileName = fileModel.FileName;
+
+                await _unitOfWork.AccountRepository.UpdateAsync(accountToUpdate, updateReceptionistModel.AuthorId, cancellationToken);
             }
 
             _mapper.Map(updateReceptionistModel, receptionistToUpdate);

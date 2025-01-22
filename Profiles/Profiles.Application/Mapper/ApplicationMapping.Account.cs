@@ -14,7 +14,10 @@ namespace Profiles.Application.Mapper
         partial void AddAccountMapping()
         {
             CreateMap<Account, AccountModel>();
+            CreateMap<AccountModel, Account>();
             CreateMap<CreateAccountModel, Account>();
+            CreateMap<CreateAccountModel, CreateAccountAuthorizationServerModel>();
+            CreateMap<CreateAccountFromAuthServerModel, Account>();
         }
     }
 }

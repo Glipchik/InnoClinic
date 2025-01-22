@@ -6,26 +6,31 @@ using System.Threading.Tasks;
 
 namespace Profiles.Application.Models
 {
-    public record CreateReceptionistModel(
-        string FirstName,
-        string LastName,
-        string MiddleName,
-        Guid OfficeId);
+    public class CreateReceptionistModel
+    {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string MiddleName { get; set; }
+        public Guid OfficeId { get; set; }
+    }
 
-    public record ReceptionistModel(
-        Guid Id,
-        string FirstName,
-        string LastName,
-        string MiddleName,
-        Guid AccountId,
-        Guid OfficeId);
+    public class ReceptionistModel
+    {
+        public Guid Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string MiddleName { get; set; }
+        public Guid AccountId { get; set; }
+        public Guid OfficeId { get; set; }
+    }
 
-    public record UpdateReceptionistModel(
-        Guid Id,
-        string FirstName,
-        string LastName,
-        string MiddleName,
-        Guid OfficeId,
-        
-        Guid AuthorId);
+    public class UpdateReceptionistModel
+    {
+        public Guid Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string MiddleName { get; set; }
+        public Guid OfficeId { get; set; }
+        public Guid AuthorId { get; set; }
+    }
 }
