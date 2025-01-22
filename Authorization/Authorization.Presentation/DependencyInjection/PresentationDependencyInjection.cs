@@ -8,6 +8,8 @@ using FluentValidation;
 using IdentityModel;
 using Authorization.Presentation.Validators;
 using FluentValidation.AspNetCore;
+using Microsoft.IdentityModel.Tokens;
+using Authorization.Presentation.Infrastructure;
 
 namespace Authorization.Presentation.DependencyInjection
 {
@@ -15,11 +17,15 @@ namespace Authorization.Presentation.DependencyInjection
     {
         public static IServiceCollection AddPresentationDependencyInjection(this IServiceCollection services, IConfiguration configuration)
         {
+
             services.AddProblemDetails();
+
+            services.AddExceptionHandler<GlobalExceptionHandler>();
 
             services.AddApplicationDependencyInjection(configuration);
 
             services.AddControllersWithViews();
+
             services.AddRazorPages();
 
             services.AddFluentValidationAutoValidation()
@@ -40,22 +46,49 @@ namespace Authorization.Presentation.DependencyInjection
                     options.ConfigureDbContext = b =>
                         b.UseSqlServer(connectionString, dbOpts => dbOpts.MigrationsAssembly(typeof(Program).Assembly.FullName));
                 })
-                // this is something you will want in production to reduce load on and requests to the DB
-                //.AddConfigurationStoreCache()
-                //
-                // this adds the operational data from DB (codes, tokens, consents)
                 .AddOperationalStore(options =>
                 {
                     options.ConfigureDbContext = b =>
                         b.UseSqlServer(connectionString, dbOpts => dbOpts.MigrationsAssembly(typeof(Program).Assembly.FullName));
                 });
 
+             services
+                .AddAuthentication(options =>
+                {
+                    options.DefaultScheme = "Cookies";
+                    options.DefaultChallengeScheme = "oidc";
+                })
+                .AddCookie("Cookies")
+                .AddJwtBearer("Bearer", options =>
+                {
+                    options.Authority = configuration["AuthorizationServerUrl"];
+                    options.RequireHttpsMetadata = false;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateAudience = false,
+                        ValidateIssuer = false
+                    };
+                })
+                .AddOpenIdConnect("oidc", options =>
+                {
+                    options.Authority = configuration["AuthorizationServerUrl"];
+                    options.ClientId = "client_id";
+                    options.ClientSecret = "client_secret";
+                    options.ResponseType = "code";
+                    options.SaveTokens = true;
+                    options.Scope.Add("openid");
+                    options.Scope.Add("profile");
+                    options.Scope.Add("email");
+                    options.Scope.Add("roles");
+                });
+
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("CreateAccountScope", policy =>
+                options.AddPolicy("RequireCreateAccountScope", policy =>
                 {
                     policy.RequireAuthenticatedUser();
                     policy.RequireClaim("scope", "create_account");
+                    policy.AuthenticationSchemes.Add("Bearer");
                 });
             });
 
@@ -66,6 +99,7 @@ namespace Authorization.Presentation.DependencyInjection
                 AddClient(dbContext, configuration);
                 AddScopes(dbContext);
                 AddIdentityResources(dbContext);
+                AddApiResources(dbContext);
                 var operationalDbContext = scope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>();
                 operationalDbContext.Database.Migrate();
             }
@@ -79,13 +113,21 @@ namespace Authorization.Presentation.DependencyInjection
             {
                 GetClient(configuration, "ServicesApi"),
                 GetClient(configuration, "OfficesApi"),
+                GetClient(configuration, "ProfilesApi"),
                 new Client
                 {
-                    ClientId = configuration.GetSection("AuthorizationClients").GetSection("ProfilesApi")["ClientId"]!,
-                    ClientName = configuration.GetSection("AuthorizationClients").GetSection("ProfilesApi")["ClientName"],
-                    ClientSecrets = { new Secret(configuration.GetSection("AuthorizationClientSecrets").GetSection("ProfilesApi")["ClientSecret"].Sha256()) },
+                    ClientId = configuration.GetSection("AuthorizationClients").GetSection("ProfilesAuthM2M")["ClientId"]!,
+                    ClientName = configuration.GetSection("AuthorizationClients").GetSection("ProfilesAuthM2M")["ClientName"],
+                    ClientSecrets = { new Secret(configuration.GetSection("AuthorizationClientSecrets").GetSection("ProfilesAuthM2M")["ClientSecret"].Sha256()) },
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
                     AllowedScopes = { "create_account" }
+                },
+                new Client
+                {
+                    ClientId = configuration["AuthorizationClients:AuthProfilesM2M:ClientId"] ?? throw new ArgumentNullException("AuthorizationClients:AuthProfilesM2M:ClientId is null"),
+                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    ClientSecrets = { new Secret(configuration["AuthorizationClientSecrets:AuthProfilesM2M:ClientSecret"].Sha256()) },
+                    AllowedScopes = { "create_patient_profile" }
                 }
             };
 
@@ -145,6 +187,23 @@ namespace Authorization.Presentation.DependencyInjection
             context.SaveChanges();
         }
 
+        private static void AddApiResources(ConfigurationDbContext context)
+        {
+            var apiResources = new List<ApiResource>
+            {
+                new ApiResource("create_patient_profile", "Create patient")
+            };
+
+            foreach (var resource in apiResources)
+            {
+                if (!context.ApiResources.Any(ir => ir.Name == resource.Name))
+                {
+                    context.ApiResources.Add(resource.ToEntity());
+                }
+            }
+
+            context.SaveChanges();
+        }
 
         private static void AddScopes(ConfigurationDbContext context)
         {
@@ -152,7 +211,9 @@ namespace Authorization.Presentation.DependencyInjection
             {
                 new ApiScope("api_profile", "User Profile", new[] { JwtClaimTypes.Email, JwtClaimTypes.Role }),
                 new ApiScope("api_email", "Access to email", new[] { JwtClaimTypes.Email }),
-                new ApiScope("api_roles", "Access to roles", new[] { JwtClaimTypes.Role })
+                new ApiScope("api_roles", "Access to roles", new[] { JwtClaimTypes.Role }),
+                new ApiScope("create_account", "Access to creating accounts"),
+                new ApiScope("create_patient_profile", "Create patient")
             };
 
             foreach (var scope in scopes)
