@@ -76,7 +76,6 @@ public class DoctorsController : ControllerBase
     /// <summary>
     /// Gets a doctor by ID.
     /// </summary>
-    /// <param name="id">The ID of the doctor to retrieve.</param>
     /// <returns>Returns the doctor object.</returns>
     /// <response code="200">If the doctor is found</response>
     /// <response code="400">If validation errors occured</response>
@@ -218,6 +217,8 @@ public class DoctorsController : ControllerBase
     /// Update a doctor by ID as Receptionist.
     /// </summary>
     /// <param name="updateDoctorByReceptionistDto">The doctor object fields containing details.</param>
+    /// <param name="photo">Photo file for the profile</param>
+    /// <param name="cancellationToken"></param>
     /// <response code="200">If the doctor is updated</response>
     /// <response code="404">If the doctor is not found</response>
     /// <response code="400">If validation errors occured</response>
@@ -226,7 +227,7 @@ public class DoctorsController : ControllerBase
     [Authorize(Roles = "Receptionist")]
     public async Task Put([FromForm] UpdateDoctorByReceptionistDto updateDoctorByReceptionistDto, IFormFile? photo, CancellationToken cancellationToken)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new ForbiddenException("User id is null");
 
         await _updateDoctorByReceptionistDtoValidator.ValidateAndThrowAsync(updateDoctorByReceptionistDto, cancellationToken: cancellationToken);
 
@@ -265,6 +266,7 @@ public class DoctorsController : ControllerBase
     /// Delete a doctor by ID.
     /// </summary>
     /// <param name="id">The doctor Id of object to delete.</param>
+    /// <param name="cancellationToken">Cancellation token</param>
     /// <response code="200">If the doctor is deleted</response>
     /// <response code="404">If the doctor is not found</response>
     /// <response code="400">If validation errors occured</response>
