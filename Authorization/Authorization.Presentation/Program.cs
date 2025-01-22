@@ -28,8 +28,13 @@ try
     }
 
     app.UseStaticFiles();
+
     app.UseRouting();
+
     app.UseIdentityServer();
+
+    app.UseExceptionHandler();
+
     app.UseAuthorization();
 
     app.MapRazorPages()
