@@ -40,5 +40,11 @@ namespace Profiles.Infrastructure.Repositories
             return await _context.Set<Receptionist>().AsNoTracking()
                 .FirstOrDefaultAsync(r => r.Id == id, cancellationToken: cancellationToken);
         }
+
+        public async Task<Receptionist> GetByAccountIdAsync(Guid accountId, CancellationToken cancellationToken)
+        {
+            return await _context.Set<Receptionist>().AsNoTracking()
+                .FirstOrDefaultAsync(r => r.AccountId == accountId, cancellationToken: cancellationToken);
+        }
     }
 }
