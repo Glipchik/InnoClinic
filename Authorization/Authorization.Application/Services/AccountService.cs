@@ -92,10 +92,10 @@ namespace Authorization.Application.Services
                     }, cancellationToken);
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 await _repository.DeleteAsync(account.Id, cancellationToken);
-                throw ex;
+                throw;
             }
 
             return user;

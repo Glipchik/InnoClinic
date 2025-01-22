@@ -48,7 +48,7 @@ namespace Authorization.Application.Services
                 throw new Exception("Failed to retrieve access token");
             }
 
-            return tokenResponse.AccessToken;
+            return tokenResponse.AccessToken ?? throw new Exception("Failed to retrieve access token");
         }
 
         private class TokenResponse
