@@ -124,7 +124,7 @@ namespace Authorization.Presentation.DependencyInjection
                 },
                 new Client
                 {
-                    ClientId = configuration["AuthorizationClients:AuthProfilesM2M:ClientId"],
+                    ClientId = configuration["AuthorizationClients:AuthProfilesM2M:ClientId"] ?? throw new ArgumentNullException("AuthorizationClients:AuthProfilesM2M:ClientId is null"),
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
                     ClientSecrets = { new Secret(configuration["AuthorizationClientSecrets:AuthProfilesM2M:ClientSecret"].Sha256()) },
                     AllowedScopes = { "create_patient_profile" }

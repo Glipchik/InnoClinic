@@ -24,7 +24,7 @@ namespace Authorization.Data.Repositories
         public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
             var entityToDelete = await _context.Set<T>().FindAsync(id);
-            _context.Set<T>().Remove(entityToDelete);
+            _context.Set<T>().Remove(entityToDelete ?? throw new ArgumentNullException("Object to delete is null"));
             await _context.SaveChangesAsync(cancellationToken: cancellationToken);
         }
 
@@ -33,7 +33,7 @@ namespace Authorization.Data.Repositories
             return await _context.Set<T>().AsNoTracking().ToListAsync(cancellationToken);
         }
 
-        public async Task<T> GetAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<T?> GetAsync(Guid id, CancellationToken cancellationToken)
         {
             return await _context.Set<T>().FindAsync(id);
         }

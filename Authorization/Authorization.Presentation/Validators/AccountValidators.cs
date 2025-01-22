@@ -12,6 +12,12 @@ namespace Authorization.Presentation.Validators
 
             RuleFor(patient => patient.LastName).NotEmpty().MaximumLength(50);
 
+            RuleFor(patient => patient.DateOfBirth)
+                            .NotEmpty().WithMessage("Date of birth must not be empty")
+                            .Must(BeAValidDate).WithMessage("Date of birth must be a valid date")
+                            .LessThan(DateTime.Now).WithMessage("Date of birth cannot be in the future")
+                            .GreaterThan(DateTime.Now.AddYears(-120)).WithMessage("Date of birth cannot be more than 120 years ago");
+
             RuleFor(acc => acc.Email)
                 .NotEmpty().WithMessage("Email is required")
                 .MaximumLength(100).WithMessage("Email is too long")
@@ -23,6 +29,11 @@ namespace Authorization.Presentation.Validators
             RuleFor(acc => acc.PhoneNumber)
                 .NotEmpty().WithMessage("Phone number is required")
                 .Matches("^[0-9\\-\\+]{9,15}$").WithMessage("Invalid format of phone number");
+        }
+
+        private bool BeAValidDate(DateTime? date)
+        {
+            return !date.Equals(default(DateTime));
         }
     }
 
