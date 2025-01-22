@@ -124,6 +124,10 @@ namespace Profiles.Application.Services
         {
             return _mapper.Map<PatientModel>(await _unitOfWork.PatientRepository.GetAsync(id, cancellationToken: cancellationToken));
         }
+        public async Task<PatientModel> GetByAccountId(Guid id, CancellationToken cancellationToken)
+        {
+            return _mapper.Map<PatientModel>(await _unitOfWork.PatientRepository.GetByAccountIdAsync(id, cancellationToken: cancellationToken));
+        }
 
         public async Task<IEnumerable<PatientModel>> GetAll(CancellationToken cancellationToken)
         {

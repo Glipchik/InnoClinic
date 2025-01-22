@@ -96,6 +96,11 @@ namespace Profiles.Application.Services
             return _mapper.Map<IEnumerable<ReceptionistModel>>(await _unitOfWork.ReceptionistRepository.GetAllAsync(cancellationToken));
         }
 
+        public async Task<ReceptionistModel> GetByAccountId(Guid id, CancellationToken cancellationToken)
+        {
+            return _mapper.Map<ReceptionistModel>(await _unitOfWork.ReceptionistRepository.GetByAccountIdAsync(id, cancellationToken: cancellationToken));
+        }
+
         public async Task Update(
             UpdateReceptionistModel updateReceptionistModel, 
             FileModel? fileModel,
