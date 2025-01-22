@@ -35,10 +35,16 @@ namespace Profiles.Infrastructure.Repositories
                 .ToListAsync(cancellationToken);
         }
 
-        public async override Task<Patient> GetAsync(Guid id, CancellationToken cancellationToken)
+        public async override Task<Patient> GetAsync(Guid id, CancellationToken cancellationToken, bool isIncluded = true)
         {
+            if (isIncluded)
+            {
+                return await _context.Set<Patient>().AsNoTracking()
+                    .Include(p => p.Account)
+                    .FirstOrDefaultAsync(p => p.Id == id, cancellationToken: cancellationToken);
+            }
+
             return await _context.Set<Patient>().AsNoTracking()
-                .Include(p => p.Account)
                 .FirstOrDefaultAsync(p => p.Id == id, cancellationToken: cancellationToken);
         }
     }

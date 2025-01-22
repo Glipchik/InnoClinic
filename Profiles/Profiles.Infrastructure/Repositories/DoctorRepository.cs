@@ -35,12 +35,18 @@ namespace Profiles.Infrastructure.Repositories
                 .ToListAsync(cancellationToken);
         }
 
-        public async override Task<Doctor> GetAsync(Guid id, CancellationToken cancellationToken)
+        public async override Task<Doctor> GetAsync(Guid id, CancellationToken cancellationToken, bool isIncluded = true)
         {
+            if (isIncluded)
+            {
+                return await _context.Set<Doctor>().AsNoTracking()
+                    .Include(d => d.Specialization)
+                    .Include(d => d.Account)
+                    .Include(d => d.Office)
+                    .FirstOrDefaultAsync(s => s.Id == id, cancellationToken: cancellationToken);
+            }
+
             return await _context.Set<Doctor>().AsNoTracking()
-                .Include(d => d.Specialization)
-                .Include(d => d.Account)
-                .Include(d => d.Office)
                 .FirstOrDefaultAsync(s => s.Id == id, cancellationToken: cancellationToken);
         }
     }

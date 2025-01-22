@@ -18,13 +18,24 @@ namespace Profiles.Infrastructure.Repositories
         {
             var endpoint = configuration["Minio:Endpoint"];
             var accessKey = configuration["Minio:AccessKey"];
-            var secretKey = configuration["Minio:SecretKey"];
+            var secretKey = configuration["MinioSecrets:SecretKey"];
             _bucketName = configuration["Minio:BucketName"];
 
             _minioClient = new MinioClient()
                 .WithEndpoint(endpoint)
                 .WithCredentials(accessKey, secretKey)
                 .Build();
+
+            InitializeAsync().GetAwaiter().GetResult();
+        }
+
+        private async Task InitializeAsync()
+        {
+            bool found = await _minioClient.BucketExistsAsync(new BucketExistsArgs().WithBucket(_bucketName));
+            if (!found)
+            {
+                await _minioClient.MakeBucketAsync(new MakeBucketArgs().WithBucket(_bucketName));
+            }
         }
 
         public async Task<bool> DoesFileExist(string fileName)

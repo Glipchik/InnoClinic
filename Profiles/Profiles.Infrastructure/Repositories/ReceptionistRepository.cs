@@ -27,11 +27,17 @@ namespace Profiles.Infrastructure.Repositories
                 .ToListAsync(cancellationToken);
         }
 
-        public async override Task<Receptionist> GetAsync(Guid id, CancellationToken cancellationToken)
+        public async override Task<Receptionist> GetAsync(Guid id, CancellationToken cancellationToken, bool isIncluded = true)
         {
+            if (isIncluded)
+            {
+                return await _context.Set<Receptionist>().AsNoTracking()
+                    .Include(r => r.Account)
+                    .Include(r => r.Office)
+                    .FirstOrDefaultAsync(r => r.Id == id, cancellationToken: cancellationToken);
+            }
+
             return await _context.Set<Receptionist>().AsNoTracking()
-                .Include(r => r.Account)
-                .Include(r => r.Office)
                 .FirstOrDefaultAsync(r => r.Id == id, cancellationToken: cancellationToken);
         }
     }

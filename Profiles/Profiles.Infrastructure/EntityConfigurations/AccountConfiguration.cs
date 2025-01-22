@@ -22,7 +22,6 @@ namespace Profiles.Infrastructure.EntityConfigurations
                 .HasMaxLength(255);
 
             builder.Property(a => a.PhotoFileName)
-                .IsRequired()
                 .HasMaxLength(255);
 
             builder.Property(a => a.CreatedBy)

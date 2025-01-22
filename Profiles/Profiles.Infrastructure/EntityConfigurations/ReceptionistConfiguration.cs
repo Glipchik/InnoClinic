@@ -28,7 +28,7 @@ namespace Profiles.Infrastructure.EntityConfigurations
 
             builder.HasOne(r => r.Account)
                 .WithOne()
-                .HasForeignKey<Patient>(r => r.AccountId)
+                .HasForeignKey<Receptionist>(r => r.AccountId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(r => r.Office)

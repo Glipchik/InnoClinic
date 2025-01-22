@@ -37,7 +37,7 @@ namespace Profiles.Infrastructure.Repositories
             return await _context.Set<T>().AsNoTracking().ToListAsync(cancellationToken);
         }
 
-        public virtual async Task<T> GetAsync(Guid id, CancellationToken cancellationToken)
+        public virtual async Task<T> GetAsync(Guid id, CancellationToken cancellationToken, bool isIncluded = true)
         {
             return await _context.Set<T>().FindAsync(id);
         }
