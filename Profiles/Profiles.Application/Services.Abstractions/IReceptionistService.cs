@@ -15,6 +15,7 @@ namespace Profiles.Application.Services.Abstractions
             FileModel? fileModel,
             CancellationToken cancellationToken);
         Task<ReceptionistModel> Get(Guid id, CancellationToken cancellationToken);
+        Task<ReceptionistModel> GetByAccountId(Guid id, CancellationToken cancellationToken);
         Task<IEnumerable<ReceptionistModel>> GetAll(CancellationToken cancellationToken);
         Task Update(
             UpdateReceptionistModel updateReceptionistModel, 

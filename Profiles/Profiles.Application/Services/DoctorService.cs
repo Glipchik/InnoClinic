@@ -106,6 +106,11 @@ namespace Profiles.Application.Services
             return _mapper.Map<IEnumerable<DoctorModel>>(await _unitOfWork.DoctorRepository.GetAllAsync(cancellationToken: cancellationToken));
         }
 
+        public async Task<DoctorModel> GetByAccountId(Guid id, CancellationToken cancellationToken)
+        {
+            return _mapper.Map<DoctorModel>(await _unitOfWork.DoctorRepository.GetByAccountIdAsync(id, cancellationToken: cancellationToken));
+        }
+
         public async Task Update(
             UpdateDoctorModel updateDoctorModel, 
             FileModel? fileModel, 
