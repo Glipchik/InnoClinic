@@ -6,7 +6,7 @@ project.lock.json
 .DS_Store
 *.pyc
 
-.minio_data/
+minio_data/
 
 # Visual Studio Code
 .vscode
