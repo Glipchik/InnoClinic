@@ -4,11 +4,17 @@ namespace Authorization.Presentation.Validators
 {
     public class CreateAccountInputModelValidator : AbstractValidator<Pages.Create.InputModel>
     {
-        public CreateAccountInputModelValidator() 
+        public CreateAccountInputModelValidator()
         {
+            RuleFor(patient => patient.FirstName).NotEmpty().MaximumLength(50);
+
+            RuleFor(patient => patient.MiddleName).MaximumLength(50);
+
+            RuleFor(patient => patient.LastName).NotEmpty().MaximumLength(50);
+
             RuleFor(acc => acc.Email)
                 .NotEmpty().WithMessage("Email is required")
-                .MaximumLength(50).WithMessage("Email is too long")
+                .MaximumLength(100).WithMessage("Email is too long")
                 .EmailAddress().WithMessage("Invalid format of email address");
             RuleFor(acc => acc.Password)
                 .NotEmpty().WithMessage("Password is required")

@@ -22,6 +22,7 @@ namespace Authorization.Application.DependencyInjection
 
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IPasswordService, PasswordService>();
+            services.AddScoped<IProfileService, ProfileService>();
 
             return services;
         }

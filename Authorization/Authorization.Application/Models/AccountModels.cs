@@ -23,6 +23,13 @@ namespace Authorization.Application.Models
         string? Password
     );
 
+    public class CreateAccountForProfilesApiModel
+    {
+        public Guid Id { get; set; }
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
+    }
+
     public record AccountModel(
         Guid Id,
         string Email,
