@@ -22,6 +22,7 @@ namespace Profiles.Application.Services.Abstractions
             CancellationToken cancellationToken);
 
         Task<PatientModel> Get(Guid id, CancellationToken cancellationToken);
+        Task<PatientModel> GetByAccountId(Guid id, CancellationToken cancellationToken);
         Task<IEnumerable<PatientModel>> GetAll(CancellationToken cancellationToken);
         Task Update(
             UpdatePatientModel updatePatientModel,
