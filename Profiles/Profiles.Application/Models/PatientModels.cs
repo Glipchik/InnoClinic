@@ -6,27 +6,32 @@ using System.Threading.Tasks;
 
 namespace Profiles.Application.Models
 {
-    public record CreatePatientModel(
-        string FirstName,
-        string LastName,
-        string MiddleName,
-        DateTime DateOfBirth);
+    public class CreatePatientModel
+    {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string MiddleName { get; set; }
+        public DateTime DateOfBirth { get; set; }
+    }
 
-    public record PatientModel(
-        Guid Id,
-        string FirstName,
-        string LastName,
-        string MiddleName,
-        bool IsLinkedToAccount,
-        Guid AccountId,
-        DateTime DateOfBirth);
+    public class PatientModel
+    {
+        public Guid Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string MiddleName { get; set; }
+        public bool IsLinkedToAccount { get; set; }
+        public Guid AccountId { get; set; }
+        public DateTime DateOfBirth { get; set; }
+    }
 
-    public record UpdatePatientModel(
-        Guid Id,
-        string FirstName,
-        string LastName,
-        string MiddleName,
-        DateTime DateOfBirth,
-        
-        Guid AuthorId);
+    public class UpdatePatientModel
+    {
+        public Guid Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string MiddleName { get; set; }
+        public DateTime DateOfBirth { get; set; }
+        public Guid AuthorId { get; set; }
+    }
 }

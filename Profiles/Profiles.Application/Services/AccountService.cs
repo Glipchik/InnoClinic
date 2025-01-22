@@ -7,6 +7,9 @@ using System.Net.Http.Json;
 using Microsoft.Extensions.Configuration;
 using System.Net;
 using Profiles.Application.Exceptions;
+using System.Net.Http.Headers;
+using IdentityModel.Client;
+using System.Security.Principal;
 
 namespace Profiles.Application.Services
 {
@@ -14,43 +17,35 @@ namespace Profiles.Application.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        private readonly HttpClient _httpClient;
-        private readonly string _authorizationServerUrl;
+        private readonly IAuthorizationService _authorizationService;
 
-        public AccountService(IUnitOfWork unitOfWork, IMapper mapper, HttpClient httpClient, IConfiguration configuration)
+        public AccountService(IUnitOfWork unitOfWork, IMapper mapper, IAuthorizationService authorizationService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
-            _httpClient = httpClient;
-            _authorizationServerUrl = configuration["Authorization:ServerUrl"];
+            _authorizationService = authorizationService;
         }
 
-        public async Task<AccountModel> Create(CreateAccountModel createAccountModel, CancellationToken cancellationToken)
+        public async Task<AuthorizationAccountModel> Create(CreateAccountModel createAccountModel, CancellationToken cancellationToken)
         {
-            var createAccountAuthorizationServerModel = _mapper.Map<CreateAccountAuthorizationServerModel>(createAccountModel);
-            var response = await SendCreateRequest(createAccountAuthorizationServerModel, cancellationToken);
+            var createAccountAuthorizationServerModel = new CreateAccountAuthorizationServerModel
+            {
+                RoleId = (int)createAccountModel.Role,
+                Email = createAccountModel.Email,
+                PhoneNumber = createAccountModel.PhoneNumber
+            };
+
+            var response = await _authorizationService.CreateAccount(createAccountAuthorizationServerModel, cancellationToken);
 
             var account = _mapper.Map<Account>(response);
 
             await _unitOfWork.AccountRepository.CreateAsync(account, createAccountModel.AuthorId, cancellationToken);
 
-            return _mapper.Map<AccountModel>(account);
-        }
+            var authorizationAccountModel = _mapper.Map<AuthorizationAccountModel>(account);
+            authorizationAccountModel.PhotoFileName = String.Empty;
+            authorizationAccountModel.Role = createAccountModel.Role;
 
-        private async Task<AccountModel> SendCreateRequest(CreateAccountAuthorizationServerModel createAccountAuthorizationServerModel, CancellationToken cancellationToken)
-        {
-            var response = await _httpClient.PostAsJsonAsync($"{_authorizationServerUrl}api/Accounts", createAccountAuthorizationServerModel, cancellationToken);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                if (response.StatusCode == HttpStatusCode.BadRequest)
-                {
-                    throw new BadRequestException(response.ReasonPhrase);
-                }
-            }
-
-            var accountModel = await response.Content.ReadFromJsonAsync<AccountModel>(cancellationToken: cancellationToken);
-            return accountModel;
+            return authorizationAccountModel;
         }
 
         public async Task<AccountModel> FindByEmail(string email, CancellationToken cancellationToken)
@@ -63,6 +58,19 @@ namespace Profiles.Application.Services
         {
             var account = await _unitOfWork.AccountRepository.GetAsync(id, cancellationToken);
             return _mapper.Map<AccountModel>(account);
+        }
+
+        public async Task<AccountModel> CreateFromAuthServer(CreateAccountFromAuthServerModel createAccountFromAuthServerModel, CancellationToken cancellationToken)
+        {
+            var account = _mapper.Map<Account>(createAccountFromAuthServerModel);
+
+            await _unitOfWork.AccountRepository.CreateAsync(account, createAccountFromAuthServerModel.AuthorId, cancellationToken);
+
+            var authorizationAccountModel = _mapper.Map<AccountModel>(account);
+            authorizationAccountModel.PhotoFileName = String.Empty;
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            return authorizationAccountModel;
         }
     }
 }

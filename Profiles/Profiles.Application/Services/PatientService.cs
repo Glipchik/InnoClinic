@@ -35,29 +35,69 @@ namespace Profiles.Application.Services
         {
             try
             {
-                _unitOfWork.BeginTransaction(cancellationToken: cancellationToken);
-                var createdAccount = await _accountService.Create(createAccountModel, cancellationToken);
-
-                var patient = _mapper.Map<Patient>(createPatientModel);
-
-                patient.IsLinkedToAccount = true;
-                patient.AccountId = createdAccount.Id;
-
-                await _unitOfWork.PatientRepository.CreateAsync(patient, cancellationToken);
-
-                if (fileModel != null)
+                using (var transaction = _unitOfWork.BeginTransaction(cancellationToken: cancellationToken))
                 {
-                    await _fileService.Upload(fileModel.FileName, fileModel.FileStream, fileModel.ContentType);
-                    
-                    patient.Account.PhotoFileName = fileModel.FileName;
-                }
+                    var createdAccount = await _accountService.Create(createAccountModel, cancellationToken);
 
-                await _unitOfWork.SaveChangesAsync(cancellationToken);
+                    var patient = _mapper.Map<Patient>(createPatientModel);
+
+                    patient.IsLinkedToAccount = true;
+                    patient.AccountId = createdAccount.Id;
+
+                    await _unitOfWork.PatientRepository.CreateAsync(patient, cancellationToken);
+
+                    if (fileModel != null)
+                    {
+                        await _fileService.Upload(fileModel.FileName, fileModel.FileStream, fileModel.ContentType);
+                    
+                        patient.Account.PhotoFileName = fileModel.FileName;
+                    }
+
+                    await _unitOfWork.SaveChangesAsync(cancellationToken);
+                    await transaction.CommitAsync(cancellationToken);
+                }
             }
             catch
             {
-                if (fileModel != null)
+                if (fileModel != null && await _fileService.DoesFileExist(fileModel.FileName))
                 {                
+                    await _fileService.Remove(fileModel.FileName);
+                }
+
+                throw;
+            }
+        }
+
+        public async Task CreateFromAuthServer(CreatePatientModel createPatientModel, CreateAccountFromAuthServerModel createAccountFromAuthServerModel, FileModel? fileModel, CancellationToken cancellationToken)
+        {
+            try
+            {
+                using (var transaction = _unitOfWork.BeginTransaction(cancellationToken: cancellationToken))
+                {
+                    var createdAccount = await _accountService.CreateFromAuthServer(createAccountFromAuthServerModel, cancellationToken);
+
+                    var patient = _mapper.Map<Patient>(createPatientModel);
+
+                    patient.IsLinkedToAccount = true;
+                    patient.AccountId = createdAccount.Id;
+
+                    await _unitOfWork.PatientRepository.CreateAsync(patient, cancellationToken);
+
+                    if (fileModel != null)
+                    {
+                        await _fileService.Upload(fileModel.FileName, fileModel.FileStream, fileModel.ContentType);
+
+                        patient.Account.PhotoFileName = fileModel.FileName;
+                    }
+
+                    await transaction.CommitAsync(cancellationToken);
+                    await _unitOfWork.SaveChangesAsync(cancellationToken);
+                }
+            }
+            catch
+            {
+                if (fileModel != null && await _fileService.DoesFileExist(fileModel.FileName))
+                {
                     await _fileService.Remove(fileModel.FileName);
                 }
 
@@ -67,7 +107,7 @@ namespace Profiles.Application.Services
 
         public async Task Delete(Guid id, CancellationToken cancellationToken)
         {
-            var patientToDelete = await _unitOfWork.PatientRepository.GetAsync(id, cancellationToken);
+            var patientToDelete = await _unitOfWork.PatientRepository.GetAsync(id, cancellationToken: cancellationToken);
             if (patientToDelete == null)
             {
                 throw new NotFoundException($"Patient with id: {id} is not found. Can't delete.");
@@ -82,7 +122,7 @@ namespace Profiles.Application.Services
 
         public async Task<PatientModel> Get(Guid id, CancellationToken cancellationToken)
         {
-            return _mapper.Map<PatientModel>(await _unitOfWork.PatientRepository.GetAsync(id, cancellationToken));
+            return _mapper.Map<PatientModel>(await _unitOfWork.PatientRepository.GetAsync(id, cancellationToken: cancellationToken));
         }
 
         public async Task<IEnumerable<PatientModel>> GetAll(CancellationToken cancellationToken)
@@ -95,15 +135,24 @@ namespace Profiles.Application.Services
             FileModel? fileModel,
             CancellationToken cancellationToken)
         {
-            var patientToUpdate = await _unitOfWork.PatientRepository.GetAsync(updatePatientModel.Id, cancellationToken) 
+            var patientToUpdate = await _unitOfWork.PatientRepository.GetAsync(updatePatientModel.Id, isIncluded: false, cancellationToken: cancellationToken) 
                 ?? throw new NotFoundException($"Patient with id: {updatePatientModel.Id} is not found. Can't update.");
 
             if (fileModel != null)
             {
+                var accountToUpdate = await _unitOfWork.AccountRepository.GetAsync(patientToUpdate.AccountId, cancellationToken: cancellationToken);
+
+                if (accountToUpdate == null)
+                {
+                    throw new RelatedObjectNotFoundException($"Related account with id {patientToUpdate.AccountId} is not found.");
+                }
+
                 await _fileService.Remove(patientToUpdate.Account.PhotoFileName);
                 await _fileService.Upload(fileModel.FileName, fileModel.FileStream, fileModel.ContentType);
-                
-                patientToUpdate.Account.PhotoFileName = fileModel.FileName;
+
+                accountToUpdate.PhotoFileName = fileModel.FileName;
+
+                await _unitOfWork.AccountRepository.UpdateAsync(accountToUpdate, updatePatientModel.AuthorId, cancellationToken);
             }
 
             _mapper.Map(updatePatientModel, patientToUpdate);

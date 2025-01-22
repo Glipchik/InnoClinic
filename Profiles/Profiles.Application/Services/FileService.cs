@@ -4,6 +4,7 @@ using Profiles.Domain.Repositories.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,6 +19,11 @@ namespace Profiles.Application.Services
             _fileRepository = fileRepository;
         }
 
+        public async Task<bool> DoesFileExist(string fileName)
+        {
+            return await _fileRepository.DoesFileExist(fileName);
+        }
+
         public async Task<string> GetFileUrl(string fileName)
         {
             return await _fileRepository.GetFileUrlAsync(fileName);
@@ -25,6 +31,10 @@ namespace Profiles.Application.Services
 
         public async Task Remove(string fileName)
         {
+            if (String.IsNullOrWhiteSpace(fileName))
+            {
+                return;
+            }
             if (!await _fileRepository.DoesFileExist(fileName))
             {
                 throw new NotFoundException($"File {fileName} does not exist.");
