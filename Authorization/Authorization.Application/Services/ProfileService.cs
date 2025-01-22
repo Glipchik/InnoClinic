@@ -25,10 +25,10 @@ namespace Authorization.Application.Services
         public ProfileService(HttpClient httpClient, IConfiguration configuration)
         {
             _httpClient = httpClient;
-            _authorizationServerUrl = configuration["AuthorizationServerUrl"];
-            _profileServerUrl = configuration["AuthorizationClients:AuthProfilesM2M:ProfilesApiBaseUrl"];
-            _clientSecret = configuration["AuthorizationClientSecrets:AuthProfilesM2M:ClientSecret"];
-            _clientId = configuration["AuthorizationClients:AuthProfilesM2M:ClientId"];
+            _authorizationServerUrl = configuration["AuthorizationServerUrl"] ?? throw new ArgumentNullException("AuthorizationServerUrl string is null");
+            _profileServerUrl = configuration["AuthorizationClients:AuthProfilesM2M:ProfilesApiBaseUrl"] ?? throw new ArgumentNullException("AuthorizationClients:AuthProfilesM2M:ProfilesApiBaseUrl string is null");
+            _clientSecret = configuration["AuthorizationClientSecrets:AuthProfilesM2M:ClientSecret"] ?? throw new ArgumentNullException("AuthorizationClientSecrets:AuthProfilesM2M:ClientSecret string is null");
+            _clientId = configuration["AuthorizationClients:AuthProfilesM2M:ClientId"] ?? throw new ArgumentNullException("AuthorizationClients:AuthProfilesM2M:ClientId string is null");
         }
 
         private async Task<string> GetAccessTokenAsync(CancellationToken cancellationToken)

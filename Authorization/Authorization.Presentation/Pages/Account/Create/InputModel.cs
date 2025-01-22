@@ -15,7 +15,7 @@ namespace Authorization.Presentation.Pages.Create
         public string? MiddleName { get; set; }
 
         [Required]
-        public DateTime DateOfBirth { get; set; } = DateTime.Today;
+        public DateTime? DateOfBirth { get; set; } = null;
 
         [Required]
         public string? Email { get; set; }

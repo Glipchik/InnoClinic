@@ -18,6 +18,7 @@ using System.Security.Claims;
 using System.Text;
 using static Duende.IdentityServer.Models.IdentityResources;
 using System.Threading;
+using Authorization.Application.Exceptions;
 
 namespace Authorization.Presentation.Pages.Create
 {
@@ -86,7 +87,7 @@ namespace Authorization.Presentation.Pages.Create
                     user = await _accountService.CreateAccount(createAccountModel, cancellation,
                         new CreatePatientModel()
                         {
-                            DateOfBirth = Input.DateOfBirth,
+                            DateOfBirth = Input.DateOfBirth ?? throw new BadRequestException("DateOfBirth cannot be null"),
                             FirstName = Input.FirstName,
                             LastName = Input.LastName,
                             MiddleName = Input.MiddleName,
@@ -100,7 +101,7 @@ namespace Authorization.Presentation.Pages.Create
                     user = await _accountService.CreateAccount(createAccountModel, cancellation,
                         new CreatePatientModel()
                         {
-                            DateOfBirth = Input.DateOfBirth,
+                            DateOfBirth = Input.DateOfBirth ?? throw new BadRequestException("DateOfBirth cannot be null"),
                             FirstName = Input.FirstName,
                             LastName = Input.LastName,
                             MiddleName = Input.MiddleName,
