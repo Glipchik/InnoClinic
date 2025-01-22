@@ -1,4 +1,5 @@
 using Authorization.Application.Models;
+using Authorization.Application.Models.Enums;
 using Authorization.Application.Services.Abstractions;
 using Authorization.Presentation.DTOs;
 using AutoMapper;
@@ -28,13 +29,19 @@ namespace Authorization.Presentation.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "CreateAccountScope")]
+        [Authorize(Policy = "RequireCreateAccountScope")]
         public async Task<AccountModel> CreateAccount([FromBody] CreateAccountDto createAccountDto, CancellationToken cancellationToken)
         {
             await _createAccountDtoValidator.ValidateAndThrowAsync(createAccountDto, cancellationToken);
 
-            var accountCreateModel = _mapper.Map<CreateAccountModel>(createAccountDto);
-            var createdAccountModel = await _accountService.CreateAccount(accountCreateModel, cancellationToken);
+            var accountCreateModel = new CreateAccountModel
+            (
+                Email: createAccountDto.Email,
+                PhoneNumber: createAccountDto.PhoneNumber,
+                Role: (RoleModel)createAccountDto.RoleId,
+                null
+            );
+            var createdAccountModel = await _accountService.CreateAccount(accountCreateModel, cancellationToken, null, isCreatingPatientRequired: false);
             _logger.LogInformation("New account was successfully created");
 
             return createdAccountModel;
