@@ -128,7 +128,5 @@ namespace Authorization.Application.Services
 
             return false;
         }
-
-        
     }
 }
