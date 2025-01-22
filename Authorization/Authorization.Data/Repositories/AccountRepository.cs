@@ -13,7 +13,7 @@ namespace Authorization.Data.Repositories
             _context = context;
         }
 
-        public async Task<Account> GetByEmailAsync(string email, CancellationToken cancellationToken)
+        public async Task<Account?> GetByEmailAsync(string email, CancellationToken cancellationToken)
         {
             return await _context.Accounts
                 .AsNoTracking()
