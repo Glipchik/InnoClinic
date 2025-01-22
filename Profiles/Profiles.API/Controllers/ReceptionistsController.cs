@@ -74,12 +74,19 @@ namespace Profiles.API.Controllers
         /// <response code="400">If validation errors occured</response>
         /// <response code="404">If the receptionist is not found</response>
         /// <response code="500">If there was an internal server error</response>
-        [HttpGet("{id}")]
+        [HttpGet("me")]
         [Authorize(Roles = "Receptionist")]
-        public async Task<ReceptionistDto> Get(string id, CancellationToken cancellationToken)
+        public async Task<ReceptionistDto> GetMyProfile(CancellationToken cancellationToken)
         {
-            var receptionist = await _receptionistService.Get(Guid.Parse(id), cancellationToken);
-            _logger.LogInformation("Requested receptionist with id {id}", id);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null)
+            {
+                throw new ForbiddenException("You are not allowed to access this resource");
+            }
+
+            var receptionist = await _receptionistService.GetByAccountId(Guid.Parse(userId), cancellationToken);
+            _logger.LogInformation("Requested receptionist with id {id}", userId);
             return _mapper.Map<ReceptionistDto>(receptionist);
         }
 

@@ -78,20 +78,19 @@ namespace Profiles.API.Controllers
         /// <response code="400">If validation errors occured</response>
         /// <response code="404">If the patient is not found</response>
         /// <response code="500">If there was an internal server error</response>
-        [HttpGet("{id}")]
-        [Authorize]
-        public async Task<PatientDto> Get(string id, CancellationToken cancellationToken)
+        [HttpGet("me")]
+        [Authorize(Roles = "Patient")]
+        public async Task<PatientDto> GetMyProfile(CancellationToken cancellationToken)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (userId == null || (Guid.Parse(userId) != Guid.Parse(id) && !User.IsInRole("Receptionist")))
+            if (userId == null)
             {
-                _logger.LogWarning("Unauthorized access to doctor with id {id}", Guid.Parse(id));
                 throw new ForbiddenException("You are not allowed to access this resource");
             }
 
-            var patient = await _patientService.Get(Guid.Parse(id), cancellationToken);
-            _logger.LogInformation("Requested patient with id {id}", id);
+            var patient = await _patientService.GetByAccountId(Guid.Parse(userId), cancellationToken);
+            _logger.LogInformation("Requested patient with id {id}", userId);
             return _mapper.Map<PatientDto>(patient);
         }
 

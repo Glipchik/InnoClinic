@@ -82,12 +82,19 @@ public class DoctorsController : ControllerBase
     /// <response code="400">If validation errors occured</response>
     /// <response code="404">If the doctor is not found</response>
     /// <response code="500">If there was an internal server error</response>
-    [HttpGet("{id}")]
-    [Authorize]
-    public async Task<DoctorDto> Get(string id, CancellationToken cancellationToken)
+    [HttpGet("me")]
+    [Authorize(Roles = "Doctor")]
+    public async Task<DoctorDto> GetMyProfile(CancellationToken cancellationToken)
     {
-        var doctor = await _doctorService.Get(Guid.Parse(id), cancellationToken);
-        _logger.LogInformation("Requested doctor with id {id}", id);
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (userId == null)
+        {
+            throw new ForbiddenException("You are not allowed to access this resource");
+        }
+
+        var doctor = await _doctorService.GetByAccountId(Guid.Parse(userId), cancellationToken);
+        _logger.LogInformation("Requested doctor with id {id}", userId);
         return _mapper.Map<DoctorDto>(doctor);
     }
 
