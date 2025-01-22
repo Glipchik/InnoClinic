@@ -8,8 +8,8 @@ namespace Authorization.Application.Models
 {
     public class CreatePatientModel
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public required string FirstName { get; set; }
+        public required string LastName { get; set; }
         public string? MiddleName { get; set; }
         public DateTime DateOfBirth { get; set; }
 

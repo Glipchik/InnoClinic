@@ -53,7 +53,7 @@ namespace Authorization.Application.Services
 
         private class TokenResponse
         {
-            public string AccessToken { get; set; }
+            public required string AccessToken { get; set; }
         }
 
         public async Task CreatePatientProfile(CreatePatientModel createPatientModel, CreateAccountForProfilesApiModel createAccountForProfilesApiModel, CancellationToken cancellationToken)
