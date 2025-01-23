@@ -1,10 +1,4 @@
-﻿using Appointments..Domain.Enums;
-using Appointments.Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Appointments.Domain.Enums;
 
 namespace Appointments.Domain.Entities
 {
