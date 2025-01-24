@@ -1,0 +1,26 @@
+﻿using Appointments.Domain.Entities;
+using Appointments.Domain.Repositories.Abstractions;
+using Appointments.Infrastructure.Contexts;
+using Microsoft.EntityFrameworkCore;
+
+namespace Appointments.Infrastructure.Repositories
+{
+    public class DoctorRepository : GenericRepository<Doctor>, IDoctorRepository
+    {
+        private readonly AppDbContext _context;
+
+        public DoctorRepository(AppDbContext context) : base(context)
+        {
+            _context = context;
+        }
+
+        public async override Task<Doctor> DeleteAsync(Guid id, CancellationToken cancellationToken)
+        {
+            var doctorToDelete = await GetAsync(id, cancellationToken);
+            ArgumentNullException.ThrowIfNull(doctorToDelete, nameof(doctorToDelete));
+            doctorToDelete.Status = Domain.Enums.DoctorStatus.Inactive;
+            _context.Set<Doctor>().Update(doctorToDelete);
+            return doctorToDelete;
+        }
+    }
+}

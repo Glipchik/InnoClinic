@@ -84,7 +84,7 @@ namespace Appointments.Application.Services
 
             _mapper.Map(appointment, updateAppointmentModel);
 
-            var updatedAppointment = await _unitOfWork.AppointmentRepository.UpdateAsync(appointment, cancellationToken);
+            var updatedAppointment = await _unitOfWork.AppointmentRepository.Update(appointment, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             return _mapper.Map<AppointmentModel>(updatedAppointment);
         }
