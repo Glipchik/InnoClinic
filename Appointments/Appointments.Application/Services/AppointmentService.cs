@@ -25,7 +25,8 @@ namespace Appointments.Application.Services
                 throw new BadRequestException("Doctor is not available at this time. Change time.");
             }
 
-            return await Update(_mapper.Map<UpdateAppointmentModel>(appointment), cancellationToken);
+            var approvedAppointment = await _unitOfWork.AppointmentRepository.ApproveAsync(appointmentId, cancellationToken);
+            return _mapper.Map<AppointmentModel>(approvedAppointment);
         }
 
         public async Task<AppointmentModel> Create(CreateAppointmentModel createAppointmentModel, CancellationToken cancellationToken)
