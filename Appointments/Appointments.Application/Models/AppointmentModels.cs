@@ -22,8 +22,8 @@ namespace Appointments.Application.Models
         public required Guid PatientId { get; set; }
         public required Guid DoctorId { get; set; }
         public required Guid ServiceId { get; set; }
+        public required int TimeSlotId { get; set; }
         public required DateOnly Date { get; set; }
-        public required TimeOnly Time { get; set; }
     }
 
     public class UpdateAppointmentModel
@@ -33,9 +33,11 @@ namespace Appointments.Application.Models
         public required TimeOnly Time { get; set; }
     }
 
-    public class AppointmentsScheduleModel
+    public class TimeSlotModel
     {
-        public required DateTime Start { get; set; }
-        public required DateTime Finish { get; set; }
+        public required int Id { get; set; }
+        public required bool IsAvailable { get; set; }
+        public required TimeOnly Start { get; set; }
+        public required TimeOnly Finish { get; set; }
     }
 }
