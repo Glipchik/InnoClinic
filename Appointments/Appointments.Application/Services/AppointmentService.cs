@@ -14,13 +14,16 @@ namespace Appointments.Application.Services
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
 
+        private readonly TimeOnly _startOfTheWorkingDay = new TimeOnly(9, 0, 0);
+        private readonly TimeOnly _endOfTheWorkingDay = new TimeOnly(18, 0, 0);
+        private readonly int _timeSlotSize = 10;
+
         public async Task<AppointmentModel> Approve(Guid appointmentId, CancellationToken cancellationToken)
         {
             var appointment = await _unitOfWork.AppointmentRepository.GetAsync(appointmentId, cancellationToken)
                 ?? throw new NotFoundException($"Appointment with id: {appointmentId} is not found. Can't approve appointment.");
 
-            var appointmentDateTime = appointment.Date.ToDateTime(appointment.Time);
-            if (!await CheckIsDoctorIsAvailable(appointmentDateTime, appointment.DoctorId, cancellationToken))
+            if (!await CheckIsDoctorIsAvailable(appointment.Time, appointment.Date, appointment.DoctorId, appointment.Service.ServiceCategory, cancellationToken))
             {
                 throw new BadRequestException("Doctor is not available at this time. Change time.");
             }
@@ -46,10 +49,18 @@ namespace Appointments.Application.Services
                 throw new RelatedObjectNotFoundException($"Service with id: {createAppointmentModel.ServiceId} is not found or not active. Can't create appointment.");
             }
 
-            var appointmentDateTime = createAppointmentModel.Date.ToDateTime(createAppointmentModel.Time);
-            ValidateDate(appointmentDateTime, cancellationToken);
+            var appointmentDate = createAppointmentModel.Date;
+            ValidateDate(appointmentDate, cancellationToken);
 
-            if (!await CheckIsDoctorIsAvailable(appointmentDateTime, createAppointmentModel.DoctorId, cancellationToken))
+            var doctorSchedule = await GetDoctorsSchedule(createAppointmentModel.DoctorId, createAppointmentModel.Date, cancellationToken);
+
+            if (!await CheckIsDoctorIsAvailable(
+                (doctorSchedule.SingleOrDefault(t => t.Id == createAppointmentModel.TimeSlotId)
+                ?? throw new NotFoundException($"Time slot with id: {createAppointmentModel.TimeSlotId} is not found. Can't create appointment.")).Start,
+                createAppointmentModel.Date,
+                createAppointmentModel.DoctorId,
+                service.ServiceCategory,
+                cancellationToken))
             {
                 throw new BadRequestException("Doctor is not available at this time. Change time.");
             }
@@ -89,31 +100,75 @@ namespace Appointments.Application.Services
             return _mapper.Map<AppointmentModel>(updatedAppointment);
         }
 
-        private static void ValidateDate(DateTime date, CancellationToken cancellationToken)
+        private static void ValidateDate(DateOnly date, CancellationToken cancellationToken)
         {
-            var minimalValidDateTime = DateTime.Now.AddDays(1);
-            if (date < minimalValidDateTime)
+            var minimalValidDateTime = DateTime.Now.AddDays(2);
+            if (date.ToDateTime(TimeOnly.MinValue) < minimalValidDateTime)
             {
-                throw new BadRequestException("Date and time must be more than 'Now + 1 day'.");
+                throw new BadRequestException("Date and time must be more than 'Now + 2 days'.");
             }
         }
 
-        private async Task<bool> CheckIsDoctorIsAvailable(DateTime dateTime, Guid doctorId, CancellationToken cancellationToken)
+        private async Task<bool> CheckIsDoctorIsAvailable(
+            TimeOnly time, 
+            DateOnly date, 
+            Guid doctorId, 
+            ServiceCategory category,
+            CancellationToken cancellationToken)
         {
-            var doctorSchedule = await GetDoctorsSchedule(doctorId, cancellationToken);
+            var doctorSchedule = await GetDoctorsSchedule(doctorId, date, cancellationToken);
 
-            return doctorSchedule.SingleOrDefault(schedule => schedule.Start <= dateTime && schedule.Finish >= dateTime) != null;
+            var neededTimeSlots = Math.Ceiling(category.TimeSlotSize.TotalMinutes / _timeSlotSize);
+
+            var timeSlot = doctorSchedule.SingleOrDefault(t => t.Start <= time && t.Finish >= time) 
+                ?? throw new NotFoundException($"Time slot with time {time} is not found.");
+
+            for (int i = 0; i < neededTimeSlots; i++)
+            {
+                var currentTime = time.AddMinutes(i * _timeSlotSize);
+
+                if (!(doctorSchedule.SingleOrDefault(t => t.Start <= currentTime && t.Finish >= currentTime)
+                    ?? throw new BadRequestException("Not enough available slots for this service")).IsAvailable)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
-        public async Task<IEnumerable<AppointmentsScheduleModel>> GetDoctorsSchedule(Guid doctorId, CancellationToken cancellationToken)
+        public async Task<IEnumerable<TimeSlotModel>> GetDoctorsSchedule(Guid doctorId, DateOnly date, CancellationToken cancellationToken)
         {
-            var doctorAppointments = await _unitOfWork.AppointmentRepository.GetAllApprovedByDoctorIdFromNowAsync(doctorId, cancellationToken);
+            var doctorAppointments = await _unitOfWork.AppointmentRepository.GetAllApprovedByDoctorIdAsync(doctorId, date, cancellationToken);
 
-            return doctorAppointments.Select(appointment => new AppointmentsScheduleModel
+            var numberOfTimeSlots = (int)(_endOfTheWorkingDay.ToTimeSpan().TotalMinutes - _startOfTheWorkingDay.ToTimeSpan().TotalMinutes)
+                / _timeSlotSize;
+
+            var timeSlots = new List<TimeSlotModel>();
+            for (int i = 0; i < numberOfTimeSlots; i++)
             {
-                Start = appointment.Date.ToDateTime(appointment.Time),
-                Finish = appointment.Date.ToDateTime(appointment.Time).AddMinutes(appointment.Service.ServiceCategory.TimeSlotSize.TotalMinutes)
-            });
+                timeSlots.Add(new TimeSlotModel()
+                {
+                    Start = _startOfTheWorkingDay.AddMinutes(_timeSlotSize * i),
+                    Finish = _startOfTheWorkingDay.AddMinutes(_timeSlotSize * i + 1),
+                    Id = i,
+                    IsAvailable = true,
+                });
+            }
+
+            foreach (var appointment in doctorAppointments)
+            {
+                int startIndex = (int)((appointment.Time - _startOfTheWorkingDay).TotalMinutes / _timeSlotSize);
+                int endIndex = (int)((appointment.Time.AddMinutes(appointment.Service.ServiceCategory.TimeSlotSize.TotalMinutes)
+                    - _startOfTheWorkingDay).TotalMinutes / _timeSlotSize);
+
+                for (int i = startIndex; i < endIndex && i < timeSlots.Count; i++)
+                {
+                    timeSlots[i].IsAvailable = false;
+                }
+            }
+
+            return timeSlots;
         }
     }
 }
