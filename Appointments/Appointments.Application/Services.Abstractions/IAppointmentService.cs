@@ -10,5 +10,6 @@ namespace Appointments.Application.Services.Abstractions
         Task<IEnumerable<AppointmentModel>> GetAllByPatientId(Guid patientId, CancellationToken cancellationToken);
         Task<IEnumerable<AppointmentModel>> GetAllByDoctorId(Guid doctorId, CancellationToken cancellationToken);
         Task<AppointmentModel> Approve(Guid appointmentId, CancellationToken cancellationToken);
+        Task<IEnumerable<TimeSlotModel>> GetDoctorsSchedule(Guid doctorId, DateOnly date, CancellationToken cancellationToken);
     }
 }

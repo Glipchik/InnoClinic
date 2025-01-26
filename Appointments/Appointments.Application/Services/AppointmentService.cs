@@ -14,8 +14,8 @@ namespace Appointments.Application.Services
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
 
-        private readonly TimeOnly _startOfTheWorkingDay = new TimeOnly(9, 0, 0);
-        private readonly TimeOnly _endOfTheWorkingDay = new TimeOnly(18, 0, 0);
+        private readonly TimeOnly _startOfTheWorkingDay = new TimeOnly(10, 0, 0);
+        private readonly TimeOnly _endOfTheWorkingDay = new TimeOnly(16, 0, 0);
         private readonly int _timeSlotSize = 10;
 
         public async Task<AppointmentModel> Approve(Guid appointmentId, CancellationToken cancellationToken)
@@ -94,6 +94,7 @@ namespace Appointments.Application.Services
                 ?? throw new NotFoundException($"Appointment with id: {updateAppointmentModel.Id} is not found. Can't update appointment.");
 
             _mapper.Map(appointment, updateAppointmentModel);
+            appointment.IsApproved = false;
 
             var updatedAppointment = await _unitOfWork.AppointmentRepository.UpdateAsync(appointment, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
