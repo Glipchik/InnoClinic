@@ -151,7 +151,7 @@ namespace Appointments.Application.Services
                 timeSlots.Add(new TimeSlotModel()
                 {
                     Start = _startOfTheWorkingDay.AddMinutes(_timeSlotSize * i),
-                    Finish = _startOfTheWorkingDay.AddMinutes(_timeSlotSize * i + 1),
+                    Finish = _startOfTheWorkingDay.AddMinutes(_timeSlotSize * (i + 1)),
                     Id = i,
                     IsAvailable = true,
                 });
