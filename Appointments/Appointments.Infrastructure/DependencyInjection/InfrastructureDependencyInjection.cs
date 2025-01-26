@@ -1,5 +1,6 @@
 ﻿using Appointments.Domain.Repositories.Abstractions;
 using Appointments.Infrastructure.Contexts;
+using Appointments.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,12 +15,11 @@ namespace Appointments.Infrastructure.DependencyInjection
                 options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
             services.AddScoped<IDoctorRepository, DoctorRepository>();
-            services.AddScoped<IAccountRepository, AccountRepository>();
-            services.AddScoped<IOfficeRepository, OfficeRepository>();
             services.AddScoped<IPatientRepository, PatientRepository>();
-            services.AddScoped<IReceptionistRepository, ReceptionistRepository>();
             services.AddScoped<ISpecializationRepository, SpecializationRepository>();
-            services.AddScoped<IFileRepository, FileRepository>();
+            services.AddScoped<IServiceCategoryRepository, ServiceCategoryRepository>();
+            services.AddScoped<IServiceRepository, ServiceRepository>();
+            services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
