@@ -183,15 +183,13 @@ namespace Appointments.API.Controllers
             if (User.IsInRole("Patient"))
             {
                 var appointment = await _appointmentService.Get(updateAppointmentDto.Id, cancellationToken);
-                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                    ?? throw new ForbiddenException("You are not allowed to access this resource");
 
-                if (userId == null)
+                var patient = await _patientService.GetByAccountId(Guid.Parse(userId), cancellationToken);
+                if (patient.Id != appointment.PatientId)
                 {
-                    var patient = await _patientService.GetByAccountId(Guid.Parse(userId), cancellationToken);
-                    if (patient.Id != appointment.PatientId)
-                    {
-                        throw new ForbiddenException("You are not allowed to access this resource");
-                    }
+                    throw new ForbiddenException("You are not allowed to access this resource");
                 }
             }
 

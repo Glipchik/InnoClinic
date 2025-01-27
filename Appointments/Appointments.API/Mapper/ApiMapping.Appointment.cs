@@ -8,6 +8,7 @@ namespace Appointments.API.Mapper
         partial void AddAppointmentMapping()
         {
             CreateMap<CreateAppointmentDto, CreateAppointmentModel>();
+            CreateMap<UpdateAppointmentDto, UpdateAppointmentModel>();
         }
     }
 }
