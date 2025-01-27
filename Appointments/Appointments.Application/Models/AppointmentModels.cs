@@ -30,7 +30,7 @@ namespace Appointments.Application.Models
     {
         public required Guid Id { get; set; }
         public required DateOnly Date { get; set; }
-        public required TimeOnly Time { get; set; }
+        public required int TimeSlotId { get; set; }
     }
 
     public class TimeSlotModel
