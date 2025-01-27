@@ -12,4 +12,8 @@ namespace Appointments.API.DTOs
         Guid Id,
         int TimeSlotId,
         DateOnly Date);
+
+    public record GetScheduleDto(
+        Guid DoctorId,
+        DateOnly Date);
 }

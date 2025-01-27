@@ -25,19 +25,22 @@ namespace Appointments.API.Controllers
         // Validators
         private readonly IValidator<CreateAppointmentDto> _createAppointmentDtoValidator;
         private readonly IValidator<UpdateAppointmentDto> _updateAppointmentDtoValidator;
+        private readonly IValidator<GetScheduleDto> _getScheduleDtoValidator;
 
         public AppointmentsController(
             IAppointmentService appointmentService,
             ILogger<AppointmentsController> logger,
             IMapper mapper,
             IValidator<CreateAppointmentDto> createAppointmentDtoValidator,
-            IValidator<UpdateAppointmentDto> updateAppointmentDtoValidator)
+            IValidator<UpdateAppointmentDto> updateAppointmentDtoValidator,
+            IValidator<GetScheduleDto> getScheduleDtoValidator)
         {
             _appointmentService = appointmentService;
             _logger = logger;
             _mapper = mapper;
             _createAppointmentDtoValidator = createAppointmentDtoValidator;
             _updateAppointmentDtoValidator = updateAppointmentDtoValidator;
+            _getScheduleDtoValidator = getScheduleDtoValidator;
         }
 
         /// <summary>
@@ -160,6 +163,25 @@ namespace Appointments.API.Controllers
             var updateAppointmentModel = _mapper.Map<UpdateAppointmentModel>(updateAppointmentDto);
             await _appointmentService.Update(updateAppointmentModel, cancellationToken);
             _logger.LogInformation("New appointment was successfully updated.");
+        }
+
+        /// <summary>
+        /// Gets a schedule of a doctor on some day.
+        /// </summary>
+        /// <param name="getScheduleDto">The object which contains fields for getting schedule.</param>
+        /// <returns>Returns the schedule.</returns>
+        /// <response code="200">Success</response>
+        /// <response code="400">If validation errors occured</response>
+        /// <response code="404">If not found</response>
+        /// <response code="500">If there was an internal server error</response>
+        [HttpGet("Schedule")]
+        [Authorize]
+        public async Task<IEnumerable<TimeSlotModel>> GetSchedule([FromQuery] GetScheduleDto getScheduleDto, CancellationToken cancellationToken)
+        {
+            await _getScheduleDtoValidator.ValidateAndThrowAsync(getScheduleDto, cancellationToken);
+            var schedule = await _appointmentService.GetDoctorsSchedule(getScheduleDto.DoctorId, getScheduleDto.Date, cancellationToken);
+            _logger.LogInformation("Requested schedule");
+            return schedule;
         }
     }
 }

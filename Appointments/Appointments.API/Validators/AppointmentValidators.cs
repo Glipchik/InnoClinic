@@ -23,4 +23,13 @@ namespace Appointments.API.Validators
             RuleFor(appointment => appointment.Date).NotEmpty().WithMessage("Date of appointment must not be empty");
         }
     }
+
+    public class GetScheduleDtoValidator : AbstractValidator<GetScheduleDto>
+    {
+        public GetScheduleDtoValidator()
+        {
+            RuleFor(appointment => appointment.DoctorId).NotEmpty();
+            RuleFor(appointment => appointment.Date).NotEmpty().WithMessage("Date of appointment must not be empty");
+        }
+    }
 }
