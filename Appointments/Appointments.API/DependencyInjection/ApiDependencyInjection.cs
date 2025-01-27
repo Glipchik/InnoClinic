@@ -17,15 +17,6 @@ namespace Appointments.API.DependencyInjection
         {
             services.AddInfrastructureDependencyInjection(configuration);
 
-
-            services.AddSwaggerGen(options =>
-            {
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                options.IncludeXmlComments(xmlPath);
-            });
-
-
             services.AddControllers();
 
             services.AddEndpointsApiExplorer();
@@ -65,6 +56,13 @@ namespace Appointments.API.DependencyInjection
             });
 
             services.AddAuthorization();
+
+            services.AddSwaggerGen(options =>
+            {
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                options.IncludeXmlComments(xmlPath);
+            });
 
             return services;
         }
