@@ -33,6 +33,20 @@ services:
     volumes:
       - mssql_data_authorization:/var/opt/mssql
 
+  postgressql-db-appointments-api:
+    image: postgres:15
+    container_name: postgresql_appointments_container
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mypassword123!
+      POSTGRES_DB: appointmentsdb
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+
 volumes:
+  postgres_data:
   mssql_data_services:
   mssql_data_authorization:
