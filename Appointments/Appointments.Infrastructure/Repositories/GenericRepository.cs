@@ -40,14 +40,9 @@ namespace Appointments.Infrastructure.Repositories
             return await _context.Set<T>().AsNoTracking().ToListAsync(cancellationToken);
         }
 
-        public virtual async Task<T?> GetAsync(Guid id, CancellationToken cancellationToken, bool isIncluded = true)
+        public virtual async Task<T?> GetAsync(Guid id, CancellationToken cancellationToken)
         {
             return await _context.Set<T>().AsNoTracking().FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
-        }
-
-        public Task<T?> GetAsync(Guid id, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
         }
 
         public T Update(T entity, CancellationToken cancellationToken)
