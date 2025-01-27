@@ -59,24 +59,55 @@ namespace Appointments.API.Controllers
         /// <response code="404">If the doctor is not found</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpGet("Doctor/{id}")]
-        [Authorize(Roles = "Doctor,Receptionist")]
-        public async Task<IEnumerable<AppointmentModel>> GetDoctorsAppointments(string id, CancellationToken cancellationToken)
+        [Authorize(Roles = "Receptionist")]
+        public async Task<IEnumerable<AppointmentModel>> GetDoctorsAppointmentsAsReceptionist(string id, CancellationToken cancellationToken)
         {
-            if (User.IsInRole("Doctor"))
-            {
-                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-                if (userId == null)
-                {
-                    var doctor = await _doctorService.GetByAccountId(Guid.Parse(userId), cancellationToken);
-                    if (doctor.Id != Guid.Parse(id))
-                    {
-                        throw new ForbiddenException("You are not allowed to access this resource");
-                    }
-                }
-            }
             var appointments = await _appointmentService.GetAllByDoctorId(Guid.Parse(id), cancellationToken);
             _logger.LogInformation("Requested doctors appointments with id {id}", id);
+            return appointments;
+        }
+
+        /// <summary>
+        /// Gets list of appointments for a patient as patient.
+        /// </summary>
+        /// <returns>Returns the list of appointments.</returns>
+        /// <response code="200">If the patient is found</response>
+        /// <response code="400">If validation errors occured</response>
+        /// <response code="404">If the patient is not found</response>
+        /// <response code="500">If there was an internal server error</response>
+        [HttpGet("as-patient")]
+        [Authorize(Roles = "Patient")]
+        public async Task<IEnumerable<AppointmentModel>> GetPatientsAppointments(CancellationToken cancellationToken)
+        {
+            var userId = (User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
+                    ?? throw new ForbiddenException("You are not allowed to access this resource");
+
+            var patientModel = await _patientService.GetByAccountId(Guid.Parse(userId), cancellationToken);
+
+            var appointments = await _appointmentService.GetAllByPatientId(patientModel.Id, cancellationToken);
+            _logger.LogInformation($"Requested patients appointments with id {patientModel.Id}", patientModel.Id);
+            return appointments;
+        }
+
+        /// <summary>
+        /// Gets list of appointments for a doctor as doctor.
+        /// </summary>
+        /// <returns>Returns the list of appointments.</returns>
+        /// <response code="200">If the doctor is found</response>
+        /// <response code="400">If validation errors occured</response>
+        /// <response code="404">If the doctor is not found</response>
+        /// <response code="500">If there was an internal server error</response>
+        [HttpGet("as-doctor")]
+        [Authorize(Roles = "Doctor")]
+        public async Task<IEnumerable<AppointmentModel>> GetDoctorsAppointments(CancellationToken cancellationToken)
+        {
+            var userId = (User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
+                    ?? throw new ForbiddenException("You are not allowed to access this resource");
+
+            var doctorModel = await _doctorService.GetByAccountId(Guid.Parse(userId), cancellationToken);
+
+            var appointments = await _appointmentService.GetAllByDoctorId(doctorModel.Id, cancellationToken);
+            _logger.LogInformation("Requested doctors appointments with id {id}", doctorModel.Id);
             return appointments;
         }
 
@@ -90,22 +121,9 @@ namespace Appointments.API.Controllers
         /// <response code="404">If the patient is not found</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpGet("Patient/{id}")]
-        [Authorize(Roles = "Patient,Receptionist")]
-        public async Task<IEnumerable<AppointmentModel>> GetPatientsAppointments(string id, CancellationToken cancellationToken)
+        [Authorize(Roles = "Receptionist")]
+        public async Task<IEnumerable<AppointmentModel>> GetPatientsAppointmentsAsReceptionist(string id, CancellationToken cancellationToken)
         {
-            if (User.IsInRole("Patient"))
-            {
-                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-                if (userId == null)
-                {
-                    var patient = await _patientService.GetByAccountId(Guid.Parse(userId), cancellationToken);
-                    if (patient.Id != Guid.Parse(id))
-                    {
-                        throw new ForbiddenException("You are not allowed to access this resource");
-                    }
-                }
-            }
             var appointments = await _appointmentService.GetAllByPatientId(Guid.Parse(id), cancellationToken);
             _logger.LogInformation("Requested patient appointments with id {id}", id);
             return appointments;
