@@ -12,6 +12,8 @@ namespace Appointments.Application.DependencyInjection
             services.AddAutoMapper(typeof(ApplicationMapping));
 
             services.AddScoped<IAppointmentService, AppointmentService>();
+            services.AddScoped<IPatientService, PatientService>();
+            services.AddScoped<IDoctorService, DoctorService>();
 
             return services;
         }
