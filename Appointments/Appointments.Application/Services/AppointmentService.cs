@@ -95,7 +95,10 @@ namespace Appointments.Application.Services
             var appointment = await _unitOfWork.AppointmentRepository.GetAsync(updateAppointmentModel.Id, cancellationToken)
                 ?? throw new NotFoundException($"Appointment with id: {updateAppointmentModel.Id} is not found. Can't update appointment.");
 
-            _mapper.Map(appointment, updateAppointmentModel);
+            var doctorSchedule = await GetDoctorsSchedule(appointment.DoctorId, appointment.Date, cancellationToken);
+
+            _mapper.Map(updateAppointmentModel, appointment);
+            appointment.Time = doctorSchedule.ElementAt(updateAppointmentModel.TimeSlotId).Start;
             appointment.IsApproved = false;
 
             var updatedAppointment = _unitOfWork.AppointmentRepository.Update(appointment, cancellationToken);

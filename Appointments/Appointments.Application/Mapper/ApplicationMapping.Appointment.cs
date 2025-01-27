@@ -9,6 +9,8 @@ namespace Appointments.Application.Mapper
         {
             CreateMap<Appointment, AppointmentModel>();
             CreateMap<CreateAppointmentModel, Appointment>();
+            CreateMap<UpdateAppointmentModel, Appointment>();
+            CreateMap<Appointment, UpdateAppointmentModel>();
         }
     }
 }
