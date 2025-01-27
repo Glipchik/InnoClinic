@@ -1,9 +1,16 @@
-﻿using Appointments.Domain.Enums;
+﻿using Appointments.Domain.Entities;
+using Appointments.Domain.Enums;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Appointments.Domain.Entities
+namespace Appointments.Application.Models
 {
-    public class Doctor : BaseEntity
+    public class DoctorModel
     {
+        public required Guid Id { get; set; }
         public required string FirstName { get; set; }
         public required string LastName { get; set; }
         public string? MiddleName { get; set; }
@@ -12,6 +19,5 @@ namespace Appointments.Domain.Entities
         public required Guid AccountId { get; set; }
         public required DoctorStatus Status { get; set; } = DoctorStatus.AtWork;
         public required Guid SpecializationId { get; set; }
-        public required Specialization Specialization { get; set; }
     }
 }
