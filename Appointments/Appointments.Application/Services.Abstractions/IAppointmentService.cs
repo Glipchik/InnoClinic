@@ -6,6 +6,7 @@ namespace Appointments.Application.Services.Abstractions
     {
         Task<AppointmentModel> Create(CreateAppointmentModel createAppointmentModel, CancellationToken cancellationToken);
         Task<AppointmentModel> Update(UpdateAppointmentModel updateAppointmentModel, CancellationToken cancellationToken);
+        Task<AppointmentModel> Get(Guid Id, CancellationToken cancellationToken);
         Task<IEnumerable<AppointmentModel>> GetAll(CancellationToken cancellationToken);
         Task<IEnumerable<AppointmentModel>> GetAllByPatientId(Guid patientId, CancellationToken cancellationToken);
         Task<IEnumerable<AppointmentModel>> GetAllByDoctorId(Guid doctorId, CancellationToken cancellationToken);
