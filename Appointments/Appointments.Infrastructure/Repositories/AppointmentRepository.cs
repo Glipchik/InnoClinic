@@ -36,8 +36,7 @@ namespace Appointments.Infrastructure.Repositories
                 .Include(a => a.Doctor)
                 .Include(a => a.Doctor)
                 .Include(a => a.Service)
-                .Include(a => a.Service.ServiceCategory)
-                .Where(a => a.DoctorId == doctorId && a.Date == date).ToListAsync(cancellationToken);
+                .Where(a => a.DoctorId == doctorId && a.Date == date && a.IsApproved == true).ToListAsync(cancellationToken);
         }
 
         public async Task<IEnumerable<Appointment>> GetAllByDoctorIdAsync(Guid doctorId, CancellationToken cancellationToken)
