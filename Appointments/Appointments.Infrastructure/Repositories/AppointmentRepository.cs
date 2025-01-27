@@ -44,5 +44,14 @@ namespace Appointments.Infrastructure.Repositories
         {
             return await _context.Set<Appointment>().AsNoTracking().Where(a => a.PatientId == patientId).ToListAsync(cancellationToken);
         }
+
+        public override async Task<Appointment?> GetAsync(Guid id, CancellationToken cancellationToken)
+        {
+            return await _context.Set<Appointment>().AsNoTracking()
+                .Include(a => a.Doctor)
+                .Include(a => a.Doctor)
+                .Include(a => a.Service)
+                .FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
+        }
     }
 }

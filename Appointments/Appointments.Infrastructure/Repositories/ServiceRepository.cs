@@ -1,6 +1,7 @@
 ﻿using Appointments.Domain.Entities;
 using Appointments.Domain.Repositories.Abstractions;
 using Appointments.Infrastructure.Contexts;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,14 @@ namespace Appointments.Infrastructure.Repositories
             serviceToDelete.IsActive = false;
             _context.Set<Service>().Update(serviceToDelete);
             return serviceToDelete;
+        }
+
+        public override async Task<Service?> GetAsync(Guid id, CancellationToken cancellationToken)
+        {
+            return await _context.Set<Service>().AsNoTracking()
+                .Include(s => s.ServiceCategory)
+                .Include(s => s.Specialization)
+                .FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
         }
     }
 }
