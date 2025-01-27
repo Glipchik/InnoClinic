@@ -19,6 +19,8 @@ namespace Appointments.API.Controllers
     public class AppointmentsController : ControllerBase
     {
         private readonly IAppointmentService _appointmentService;
+        private readonly IDoctorService _doctorService;
+        private readonly IPatientService _patientService;
         private readonly ILogger<AppointmentsController> _logger;
         private readonly IMapper _mapper;
 
@@ -60,9 +62,13 @@ namespace Appointments.API.Controllers
             {
                 var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-                if (userId == null || userId != id)
+                if (userId == null)
                 {
-                    throw new ForbiddenException("You are not allowed to access this resource");
+                    var doctor = await _doctorService.GetByAccountId(Guid.Parse(userId), cancellationToken);
+                    if (doctor.Id != Guid.Parse(id))
+                    {
+                        throw new ForbiddenException("You are not allowed to access this resource");
+                    }
                 }
             }
             var appointments = await _appointmentService.GetAllByDoctorId(Guid.Parse(id), cancellationToken);
@@ -87,9 +93,13 @@ namespace Appointments.API.Controllers
             {
                 var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-                if (userId == null || userId != id)
+                if (userId == null)
                 {
-                    throw new ForbiddenException("You are not allowed to access this resource");
+                    var patient = await _patientService.GetByAccountId(Guid.Parse(userId), cancellationToken);
+                    if (patient.Id != Guid.Parse(id))
+                    {
+                        throw new ForbiddenException("You are not allowed to access this resource");
+                    }
                 }
             }
             var appointments = await _appointmentService.GetAllByPatientId(Guid.Parse(id), cancellationToken);
@@ -131,7 +141,7 @@ namespace Appointments.API.Controllers
             await _createAppointmentDtoValidator.ValidateAndThrowAsync(createAppointmentDto, cancellationToken);
 
             var createAppointmentModel = _mapper.Map<CreateAppointmentModel>(createAppointmentDto);
-            createAppointmentModel.PatientId = Guid.Parse(userId);
+            createAppointmentModel.PatientId = (await _patientService.GetByAccountId(Guid.Parse(userId), cancellationToken)).Id;
             await _appointmentService.Create(createAppointmentModel, cancellationToken);
             _logger.LogInformation("New appointment was successfully created");
         }
@@ -152,9 +162,13 @@ namespace Appointments.API.Controllers
                 var appointment = await _appointmentService.Get(updateAppointmentDto.Id, cancellationToken);
                 var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-                if (userId == null || Guid.Parse(userId) != appointment.PatientId)
+                if (userId == null)
                 {
-                    throw new ForbiddenException("You are not allowed to access this resource.");
+                    var patient = await _patientService.GetByAccountId(Guid.Parse(userId), cancellationToken);
+                    if (patient.Id != appointment.PatientId)
+                    {
+                        throw new ForbiddenException("You are not allowed to access this resource");
+                    }
                 }
             }
 

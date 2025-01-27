@@ -19,6 +19,7 @@ namespace Appointments.Infrastructure.Migrations
                     FirstName = table.Column<string>(type: "character varying(63)", maxLength: 63, nullable: false),
                     LastName = table.Column<string>(type: "character varying(63)", maxLength: 63, nullable: false),
                     MiddleName = table.Column<string>(type: "character varying(63)", maxLength: 63, nullable: true),
+                    AccountId = table.Column<Guid>(type: "uuid", nullable: false),
                     DateOfBirth = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
@@ -62,6 +63,7 @@ namespace Appointments.Infrastructure.Migrations
                     MiddleName = table.Column<string>(type: "character varying(63)", maxLength: 63, nullable: true),
                     DateOfBirth = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CareerStartYear = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    AccountId = table.Column<Guid>(type: "uuid", nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false),
                     SpecializationId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
