@@ -171,5 +171,13 @@ namespace Appointments.Application.Services
 
             return timeSlots;
         }
+
+        public async Task<AppointmentModel> Get(Guid Id, CancellationToken cancellationToken)
+        {
+            var appointment = await _unitOfWork.AppointmentRepository.GetAsync(Id, cancellationToken)
+                ?? throw new NotFoundException($"Appointment with id: {Id} is not found.");
+
+            return _mapper.Map<AppointmentModel>(appointment);
+        }
     }
 }
