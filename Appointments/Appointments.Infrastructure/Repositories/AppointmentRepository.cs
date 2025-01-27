@@ -32,17 +32,29 @@ namespace Appointments.Infrastructure.Repositories
 
         public async Task<IEnumerable<Appointment>> GetAllApprovedByDoctorIdAsync(Guid doctorId, DateOnly date, CancellationToken cancellationToken)
         {
-            return await _context.Set<Appointment>().AsNoTracking().Where(a => a.DoctorId == doctorId && a.Date == date).ToListAsync(cancellationToken);
+            return await _context.Set<Appointment>().AsNoTracking()
+                .Include(a => a.Doctor)
+                .Include(a => a.Doctor)
+                .Include(a => a.Service)
+                .Where(a => a.DoctorId == doctorId && a.Date == date).ToListAsync(cancellationToken);
         }
 
         public async Task<IEnumerable<Appointment>> GetAllByDoctorIdAsync(Guid doctorId, CancellationToken cancellationToken)
         {
-            return await _context.Set<Appointment>().AsNoTracking().Where(a => a.DoctorId == doctorId).ToListAsync(cancellationToken);
+            return await _context.Set<Appointment>().AsNoTracking()
+                .Include(a => a.Doctor)
+                .Include(a => a.Doctor)
+                .Include(a => a.Service)
+                .Where(a => a.DoctorId == doctorId).ToListAsync(cancellationToken);
         }
 
         public async Task<IEnumerable<Appointment>> GetAllByPatientIdAsync(Guid patientId, CancellationToken cancellationToken)
         {
-            return await _context.Set<Appointment>().AsNoTracking().Where(a => a.PatientId == patientId).ToListAsync(cancellationToken);
+            return await _context.Set<Appointment>().AsNoTracking()
+                .Include(a => a.Doctor)
+                .Include(a => a.Doctor)
+                .Include(a => a.Service)
+                .Where(a => a.PatientId == patientId).ToListAsync(cancellationToken);
         }
 
         public override async Task<Appointment?> GetAsync(Guid id, CancellationToken cancellationToken)
