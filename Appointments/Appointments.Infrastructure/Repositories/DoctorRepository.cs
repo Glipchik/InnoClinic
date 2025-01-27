@@ -22,5 +22,10 @@ namespace Appointments.Infrastructure.Repositories
             _context.Set<Doctor>().Update(doctorToDelete);
             return doctorToDelete;
         }
+
+        public async Task<Doctor?> GetByAccountIdAsync(Guid accountId, CancellationToken cancellationToken)
+        {
+            return await _context.Set<Doctor>().AsNoTracking().FirstOrDefaultAsync(d => d.AccountId == accountId, cancellationToken);
+        }
     }
 }
