@@ -25,7 +25,9 @@ namespace Appointments.Infrastructure.Repositories
 
         public async Task<Doctor?> GetByAccountIdAsync(Guid accountId, CancellationToken cancellationToken)
         {
-            return await _context.Set<Doctor>().AsNoTracking().FirstOrDefaultAsync(d => d.AccountId == accountId, cancellationToken);
+            return await _context.Set<Doctor>().AsNoTracking()
+                .Include(d => d.Specialization)
+                .FirstOrDefaultAsync(d => d.AccountId == accountId, cancellationToken);
         }
 
         public override async Task<Doctor?> GetAsync(Guid id, CancellationToken cancellationToken)
