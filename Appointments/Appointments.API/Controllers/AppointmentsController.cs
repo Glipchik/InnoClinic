@@ -31,6 +31,8 @@ namespace Appointments.API.Controllers
 
         public AppointmentsController(
             IAppointmentService appointmentService,
+            IDoctorService doctorService,
+            IPatientService patientService,
             ILogger<AppointmentsController> logger,
             IMapper mapper,
             IValidator<CreateAppointmentDto> createAppointmentDtoValidator,
@@ -43,6 +45,8 @@ namespace Appointments.API.Controllers
             _createAppointmentDtoValidator = createAppointmentDtoValidator;
             _updateAppointmentDtoValidator = updateAppointmentDtoValidator;
             _getScheduleDtoValidator = getScheduleDtoValidator;
+            _doctorService = doctorService;
+            _patientService = patientService;
         }
 
         /// <summary>
@@ -141,7 +145,8 @@ namespace Appointments.API.Controllers
             await _createAppointmentDtoValidator.ValidateAndThrowAsync(createAppointmentDto, cancellationToken);
 
             var createAppointmentModel = _mapper.Map<CreateAppointmentModel>(createAppointmentDto);
-            createAppointmentModel.PatientId = (await _patientService.GetByAccountId(Guid.Parse(userId), cancellationToken)).Id;
+            var patient = await _patientService.GetByAccountId(Guid.Parse(userId), cancellationToken);
+            createAppointmentModel.PatientId = patient.Id;
             await _appointmentService.Create(createAppointmentModel, cancellationToken);
             _logger.LogInformation("New appointment was successfully created");
         }
