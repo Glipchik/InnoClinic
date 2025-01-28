@@ -29,6 +29,7 @@ namespace Appointments.Application.Services
             }
 
             var approvedAppointment = await _unitOfWork.AppointmentRepository.ApproveAsync(appointmentId, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
             return _mapper.Map<AppointmentModel>(approvedAppointment);
         }
 
@@ -99,7 +100,7 @@ namespace Appointments.Application.Services
             appointment.Time = doctorSchedule.ElementAt(updateAppointmentModel.TimeSlotId).Start;
             appointment.IsApproved = false;
 
-            var updatedAppointment = await _unitOfWork.AppointmentRepository.UpdateAsync(appointment, cancellationToken);
+            var updatedAppointment = _unitOfWork.AppointmentRepository.Update(appointment, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             return _mapper.Map<AppointmentModel>(updatedAppointment);
         }
