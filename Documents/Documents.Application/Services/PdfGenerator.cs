@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Documents.Application.Services
 {
-    public static class PdfGenerator : IPdfGenerator
+    public static class PdfGenerator
     {
         public async static Task<byte[]> GenerateFile(string text, CancellationToken cancellationToken)
         {
