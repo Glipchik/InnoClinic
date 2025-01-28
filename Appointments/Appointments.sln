@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113 d17.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Appointments.Domain", "Appointments.Domain\Appointments.Domain.csproj", "{9C7F75AC-6AC7-4CB7-AFB8-E77C1758C41A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Appointments.Application", "Appointments.Application\Appointments.Application.csproj", "{B240A17D-F8C2-4251-9713-79B3A17D7745}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9C7F75AC-6AC7-4CB7-AFB8-E77C1758C41A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C7F75AC-6AC7-4CB7-AFB8-E77C1758C41A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C7F75AC-6AC7-4CB7-AFB8-E77C1758C41A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C7F75AC-6AC7-4CB7-AFB8-E77C1758C41A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B240A17D-F8C2-4251-9713-79B3A17D7745}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B240A17D-F8C2-4251-9713-79B3A17D7745}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B240A17D-F8C2-4251-9713-79B3A17D7745}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B240A17D-F8C2-4251-9713-79B3A17D7745}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
