@@ -1,7 +1,14 @@
-﻿namespace Appointments.Domain.Entities
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Appointments.Application.Models
 {
-    public class Patient : BaseEntity
+    public class PatientModel
     {
+        public required Guid Id { get; set; }
         public required string FirstName { get; set; }
         public required string LastName { get; set; }
         public string? MiddleName { get; set; }
