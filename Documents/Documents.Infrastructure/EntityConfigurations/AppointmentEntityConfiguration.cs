@@ -13,19 +13,19 @@ namespace Documents.Infrastructure.EntityConfigurations
             builder.HasOne(a => a.Service)
                .WithMany()
                .HasForeignKey(a => a.ServiceId)
-               .OnDelete(DeleteBehavior.Cascade)
+               .OnDelete(DeleteBehavior.Restrict)
                .IsRequired();
 
             builder.HasOne(a => a.Doctor)
                 .WithMany()
                 .HasForeignKey(a => a.DoctorId)
-                .OnDelete(DeleteBehavior.Cascade)
+                .OnDelete(DeleteBehavior.Restrict)
                 .IsRequired();
 
             builder.HasOne(a => a.Patient)
                 .WithMany()
                 .HasForeignKey(a => a.PatientId)
-                .OnDelete(DeleteBehavior.Cascade)
+                .OnDelete(DeleteBehavior.Restrict)
                 .IsRequired();
 
             builder.Property(a => a.Date)
