@@ -114,6 +114,7 @@ namespace Authorization.Presentation.DependencyInjection
                 GetClient(configuration, "ServicesApi"),
                 GetClient(configuration, "OfficesApi"),
                 GetClient(configuration, "ProfilesApi"),
+                GetClient(configuration, "DocumentsApi"),
                 new Client
                 {
                     ClientId = configuration.GetSection("AuthorizationClients").GetSection("ProfilesAuthM2M")["ClientId"]!,

@@ -1,3 +1,4 @@
+using Documents.API.DependencyInjection;
 using Documents.Infrastructure.Contexts;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,6 +9,8 @@ configuration.AddUserSecrets<Program>();
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
+
+builder.Services.AddApiDependencyInjection(configuration);
 
 var app = builder.Build();
 

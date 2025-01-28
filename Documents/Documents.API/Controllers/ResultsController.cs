@@ -15,29 +15,24 @@ namespace Documents.API.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class ResultsController : ControllerBase
+    public class ResultsController(
+        IResultService resultService,
+        IPatientService patientService,
+        IDoctorService doctorService,
+        ILogger<ResultsController> logger,
+        IMapper mapper,
+        IValidator<CreateResultDto> createResultDtoValidator,
+        IValidator<UpdateResultDto> updateResultDtoValidator) : ControllerBase
     {
-        private readonly IResultService _resultService;
-        private readonly ILogger<ResultsController> _logger;
-        private readonly IMapper _mapper;
+        private readonly IResultService _resultService = resultService;
+        private readonly IPatientService _patientService = patientService;
+        private readonly IDoctorService _doctorService = doctorService;
+        private readonly ILogger<ResultsController> _logger = logger;
+        private readonly IMapper _mapper = mapper;
 
         // Validators
-        private readonly IValidator<CreateResultDto> _createResultDtoValidator;
-        private readonly IValidator<UpdateResultDto> _updateResultDtoValidator;
-
-        public ResultsController(
-            IResultService resultService,
-            ILogger<ResultsController> logger,
-            IMapper mapper,
-            IValidator<CreateResultDto> createResultDtoValidator,
-            IValidator<UpdateResultDto> updateResultDtoValidator)
-        {
-            _resultService = resultService;
-            _logger = logger;
-            _mapper = mapper;
-            _createResultDtoValidator = createResultDtoValidator;
-            _updateResultDtoValidator = updateResultDtoValidator;
-        }
+        private readonly IValidator<CreateResultDto> _createResultDtoValidator = createResultDtoValidator;
+        private readonly IValidator<UpdateResultDto> _updateResultDtoValidator = updateResultDtoValidator;
 
         /// <summary>
         /// Gets list of result for a doctor.
