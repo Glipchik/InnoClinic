@@ -11,11 +11,15 @@ namespace Documents.Application.Mapper
     {
         partial void AddResultMapping();
         partial void AddAppointmentMapping();
+        partial void AddDoctorMapping();
+        partial void AddPatientMapping();
 
         public ApplicationMapping()
         {
             AddResultMapping();
             AddAppointmentMapping();
+            AddDoctorMapping();
+            AddPatientMapping();
         }
     }
 }
