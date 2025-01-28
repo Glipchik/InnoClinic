@@ -7,7 +7,7 @@ namespace Documents.Application.Services.Abstractions
     {
         Task<ResultModel> Create(CreateResultModel createResultModel, CancellationToken cancellationToken);
         Task<ResultModel> Update(UpdateResultModel updateResultModel, CancellationToken cancellationToken);
-        Task<ResultModel?> Get(Guid id, CancellationToken cancellationToken);
+        Task<ResultModel> Get(Guid id, CancellationToken cancellationToken);
         Task<IEnumerable<ResultModel>> GetAll(CancellationToken cancellationToken);
         Task<IEnumerable<ResultModel>> GetAllByPatientId(Guid patientId, CancellationToken cancellationToken);
         Task<IEnumerable<ResultModel>> GetAllByDoctorid(Guid doctorId, CancellationToken cancellationToken);
