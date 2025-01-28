@@ -4,6 +4,7 @@ using Documents.Application.Models;
 using Documents.Application.Services.Abstractions;
 using Documents.Domain.Entities;
 using Documents.Domain.Repositories.Abstractions;
+using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
 
 namespace Documents.Application.Services
 {
@@ -49,6 +50,17 @@ namespace Documents.Application.Services
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return _mapper.Map<ResultModel>(resultToDelete);
+        }
+
+        public async Task<byte[]> GeneratePdf(Guid resultId, CancellationToken cancellationToken)
+        {
+            var result = await _unitOfWork.ResultRepository.GetAsync(resultId, cancellationToken)
+                ?? throw new NotFoundException($"Result with id {resultId} is not found.");
+
+            var text =
+                $"Result: {result.Appointment.Service} + {result.Appointment.Date} + {result.Appointment.Time} \nComplaints: {result.Complaints}\nConclusion: {result.Conclusion}\nRecomendations: {result.Recomendations}";
+
+            return await PdfGenerator.GenerateFile(text, cancellationToken); 
         }
 
         public async Task<ResultModel> Get(Guid id, CancellationToken cancellationToken)
