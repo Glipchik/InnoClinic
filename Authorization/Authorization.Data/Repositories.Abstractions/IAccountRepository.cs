@@ -9,6 +9,6 @@ namespace Authorization.Data.Repositories.Abstractions
 {
     public interface IAccountRepository : IGenericRepository<Account>
     {
-        Task<Account> GetByEmailAsync(string email, CancellationToken cancellationToken);
+        Task<Account?> GetByEmailAsync(string email, CancellationToken cancellationToken);
     }
 }

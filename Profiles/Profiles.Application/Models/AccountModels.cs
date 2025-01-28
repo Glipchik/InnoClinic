@@ -9,9 +9,9 @@ namespace Profiles.Application.Models
 {
     public class CreateAccountModel
     {
-        public string Email { get; set; }
-        public string PhoneNumber { get; set; }
-        public string PhotoFileName { get; set; }
+        public required string Email { get; set; }
+        public required string PhoneNumber { get; set; }
+        public required string PhotoFileName { get; set; }
         public bool IsEmailVerified { get; set; }
         public RoleModel Role { get; set; }
         public Guid AuthorId { get; set; }
@@ -20,26 +20,26 @@ namespace Profiles.Application.Models
     public class CreateAccountFromAuthServerModel
     {
         public Guid Id { get; set; }
-        public string Email { get; set; }
-        public string PhoneNumber { get; set; }
-        public string PhotoFileName { get; set; }
+        public required string Email { get; set; }
+        public required string PhoneNumber { get; set; }
+        public required string PhotoFileName { get; set; }
         public bool IsEmailVerified { get; set; }
         public Guid AuthorId { get; set; }
     }
 
     public class CreateAccountAuthorizationServerModel
     {
-        public string Email { get; set; }
-        public string PhoneNumber { get; set; }
+        public required string Email { get; set; }
+        public required string PhoneNumber { get; set; }
         public int RoleId { get; set; }
     }
 
     public class AuthorizationAccountModel
     {
         public Guid Id { get; set; }
-        public string Email { get; set; }
-        public string PhoneNumber { get; set; }
-        public string PhotoFileName { get; set; }
+        public required string Email { get; set; }
+        public required string PhoneNumber { get; set; }
+        public required string PhotoFileName { get; set; }
         public bool IsEmailVerified { get; set; }
         public RoleModel Role { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -51,9 +51,9 @@ namespace Profiles.Application.Models
     public class AccountModel
     {
         public Guid Id { get; set; }
-        public string Email { get; set; }
-        public string PhoneNumber { get; set; }
-        public string PhotoFileName { get; set; }
+        public required string Email { get; set; }
+        public required string PhoneNumber { get; set; }
+        public required string PhotoFileName { get; set; }
         public bool IsEmailVerified { get; set; }
         public DateTime CreatedAt { get; set; }
         public Guid CreatedBy { get; set; }

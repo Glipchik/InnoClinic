@@ -50,7 +50,7 @@ try
 
     app.Use(async (context, next) =>
     {
-        context.Response.Headers.Add("Content-Security-Policy",
+        context.Response.Headers.Append("Content-Security-Policy",
             "default-src 'self'; " +
             "connect-src 'self' ws://localhost:* wss://localhost:* http://localhost:*; " +
             "script-src 'self' 'unsafe-inline'; " +

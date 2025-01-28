@@ -18,6 +18,7 @@ using System.Security.Claims;
 using System.Text;
 using static Duende.IdentityServer.Models.IdentityResources;
 using System.Threading;
+using Authorization.Application.Exceptions;
 
 namespace Authorization.Presentation.Pages.Create
 {
@@ -68,14 +69,14 @@ namespace Authorization.Presentation.Pages.Create
                 }
             }
 
-            if ((await _accountService.FindByEmail(Input.Email, cancellation)) != null)
+            if ((await _accountService.FindByEmail(Input.Email!, cancellation)) != null)
             {
                 ModelState.AddModelError("Input.Email", "Invalid email");
             }
 
             if (ModelState.IsValid)
             {
-                var createAccountModel = new CreateAccountModel(Input.Email, Input.PhoneNumber, Application.Models.Enums.RoleModel.Patient, Input.Password);
+                var createAccountModel = new CreateAccountModel(Input.Email!, Input.PhoneNumber!, Application.Models.Enums.RoleModel.Patient, Input.Password);
                 AccountModel user;
 
                 if (Input.ProfilePicture != null)
@@ -86,9 +87,9 @@ namespace Authorization.Presentation.Pages.Create
                     user = await _accountService.CreateAccount(createAccountModel, cancellation,
                         new CreatePatientModel()
                         {
-                            DateOfBirth = Input.DateOfBirth,
-                            FirstName = Input.FirstName,
-                            LastName = Input.LastName,
+                            DateOfBirth = Input.DateOfBirth ?? throw new BadRequestException("DateOfBirth cannot be null"),
+                            FirstName = Input.FirstName!,
+                            LastName = Input.LastName!,
                             MiddleName = Input.MiddleName,
                             ProfilePicture = fileModel
                         },
@@ -100,9 +101,9 @@ namespace Authorization.Presentation.Pages.Create
                     user = await _accountService.CreateAccount(createAccountModel, cancellation,
                         new CreatePatientModel()
                         {
-                            DateOfBirth = Input.DateOfBirth,
-                            FirstName = Input.FirstName,
-                            LastName = Input.LastName,
+                            DateOfBirth = Input.DateOfBirth ?? throw new BadRequestException("DateOfBirth cannot be null"),
+                            FirstName = Input.FirstName!,
+                            LastName = Input.LastName!,
                             MiddleName = Input.MiddleName,
                             ProfilePicture = null
                         },

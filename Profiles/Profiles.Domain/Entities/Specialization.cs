@@ -8,7 +8,7 @@ namespace Profiles.Domain.Entities
 {
     public class Specialization : BaseEntity
     {
-        public string SpecializationName { get; set; }
+        public string SpecializationName { get; set; } = null!;
         public bool IsActive { get; set; }
     }
 }

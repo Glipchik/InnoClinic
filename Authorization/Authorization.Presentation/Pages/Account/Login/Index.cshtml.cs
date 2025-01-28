@@ -87,10 +87,10 @@ namespace Authorization.Presentation.Pages.Login
 
             if (ModelState.IsValid)
             {
-                var validateCredentialModel = new CredentialsModel(Input.Email, Input.Password);
+                var validateCredentialModel = new CredentialsModel(Input.Email!, Input.Password!);
                 if (await _accountService.AreCredentialsValid(validateCredentialModel, cancellationToken))
                 {
-                    var account = await _accountService.FindByEmail(Input.Email, cancellationToken);
+                    var account = await _accountService.FindByEmail(Input.Email!, cancellationToken);
                     await _events.RaiseAsync(new UserLoginSuccessEvent(account.Email, account.Id.ToString(), account.Email, clientId: context?.Client.ClientId));
                     Telemetry.Metrics.UserLogin(context?.Client.ClientId, IdentityServerConstants.LocalIdentityProvider);
 

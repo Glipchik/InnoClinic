@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Profiles.Application.Services.Abstractions
 {
-    public interface IAuthorizationService
+    public interface IAuthorizationServerManager
     {
         Task<AuthorizationAccountModel> CreateAccount(CreateAccountAuthorizationServerModel createAccountAuthorizationServerModel, CancellationToken cancellationToken);
     }
