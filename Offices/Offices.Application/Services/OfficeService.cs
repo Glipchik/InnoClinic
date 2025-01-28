@@ -31,13 +31,18 @@ namespace Offices.Application.Services
 
         public async Task Update(UpdateOfficeModel updateOfficeModel, CancellationToken cancellationToken)
         {
+            var officeToUpdate = await _officeRepository.GetAsync(updateOfficeModel.Id, cancellationToken)
+                ?? throw new NotFoundException($"Office not found: {updateOfficeModel.Id}");
+
             var office = _mapper.Map<Office>(updateOfficeModel);
             await _officeRepository.UpdateAsync(office, cancellationToken);
         }
 
         public async Task<OfficeModel> Get(string id, CancellationToken cancellationToken)
         {
-            var office = await _officeRepository.GetAsync(id, cancellationToken);
+            var office = await _officeRepository.GetAsync(id, cancellationToken)
+                ?? throw new NotFoundException($"Office not found: {id}");
+
             return _mapper.Map<OfficeModel>(office);
         }
 
@@ -48,6 +53,9 @@ namespace Offices.Application.Services
 
         public async Task Delete(string id, CancellationToken cancellationToken)
         {
+            var officeToDelete = await _officeRepository.GetAsync(id, cancellationToken)
+                ?? throw new NotFoundException($"Office not found: {id}");
+
             // If there are doctors or receptionists found in this office, can't make this office inactive
             if (await CheckIfThereAreActiveDoctorsOrReceptionistsInOffice(id, cancellationToken))
             {

@@ -54,7 +54,9 @@ namespace Offices.Application.Services
 
         public async Task<DoctorModel> Get(string id, CancellationToken cancellationToken)
         {
-            var doctor = await _doctorRepository.GetAsync(id, cancellationToken);
+            var doctor = await _doctorRepository.GetAsync(id, cancellationToken)
+                ?? throw new NotFoundException($"Doctor not found: {id}");
+
             return _mapper.Map<DoctorModel>(doctor);
         }
 
@@ -65,6 +67,9 @@ namespace Offices.Application.Services
 
         public async Task Delete(string id, CancellationToken cancellationToken)
         {
+            var doctorToDelete = await _doctorRepository.GetAsync(id, cancellationToken)
+                ?? throw new NotFoundException($"Doctor not found: {id}");
+
             await _doctorRepository.DeleteAsync(id, cancellationToken);
         }
     }

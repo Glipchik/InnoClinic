@@ -42,19 +42,26 @@ namespace Offices.Application.Services
         {
             // Get related to receptionist office
             var officeRelatedToReceptionist = await _officeRepository.GetAsync(updateReceptionistModel.OfficeId, cancellationToken);
+
             // If specified office is not active or not found, can't update entity
             if (officeRelatedToReceptionist == null || !officeRelatedToReceptionist.IsActive)
             {
                 // Throw exception if there is no active office with this id for this worker
                 throw new RelatedObjectNotFoundException($"Can't update receptionist with id {updateReceptionistModel.Id} because office with id {updateReceptionistModel.OfficeId} is not active or doesn't exist!");
             }
+
+            var receptionistToUpdate = await _receptionistRepository.GetAsync(updateReceptionistModel.Id, cancellationToken)
+                ?? throw new NotFoundException($"Receptionist not found: {updateReceptionistModel.Id}");
+
             var receptionist = _mapper.Map<Receptionist>(updateReceptionistModel);
             await _receptionistRepository.UpdateAsync(receptionist, cancellationToken);
         }
 
         public async Task<ReceptionistModel> Get(string id, CancellationToken cancellationToken)
         {
-            var receptionist = await _receptionistRepository.GetAsync(id, cancellationToken);
+            var receptionist = await _receptionistRepository.GetAsync(id, cancellationToken)
+                 ?? throw new NotFoundException($"Receptionist not found: {id}");
+
             return _mapper.Map<ReceptionistModel>(receptionist);
         }
 
@@ -65,6 +72,9 @@ namespace Offices.Application.Services
 
         public async Task Delete(string id, CancellationToken cancellationToken)
         {
+            var receptionistToDelete = await _receptionistRepository.GetAsync(id, cancellationToken)
+                 ?? throw new NotFoundException($"Receptionist not found: {id}");
+
             await _receptionistRepository.DeleteAsync(id, cancellationToken);
         }
     }
