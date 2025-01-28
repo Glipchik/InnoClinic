@@ -14,5 +14,6 @@ namespace Profiles.Domain.Repositories.Abstractions
         Task UpdateAsync(Account entity, Guid authorId, CancellationToken cancellationToken);
         Task DeleteAsync(Guid id, Guid authorId, CancellationToken cancellationToken);
         Task CreateAsync(Account entity, Guid authorId, CancellationToken cancellationToken);
+        Task<Account> FindByEmailAsync(string email, CancellationToken cancellationToken);
     }
 }

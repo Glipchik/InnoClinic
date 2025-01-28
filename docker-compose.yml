@@ -37,7 +37,7 @@ services:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: mssql_documents_container
     ports:
-      - "1435:1433"
+      - "1436:1433"
     environment:
       SA_PASSWORD: "mypassword123!"
       ACCEPT_EULA: "Y"
@@ -45,7 +45,33 @@ services:
     volumes:
       - mssql_data_documents:/var/opt/mssql
 
+  mssql-db-profiles-api:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql_profiles_container
+    ports:
+      - "1435:1433"
+    environment:
+      SA_PASSWORD: "mypassword123!"
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Express"
+    volumes:
+      - mssql_data_profiles:/var/opt/mssql
+
+  minio:
+    image: minio/minio
+    container_name: minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: "admin"
+      MINIO_ROOT_PASSWORD: "password"
+    command: server /data --console-address ":9001"
+    volumes:
+      - ./minio_data:/data
+
 volumes:
   mssql_data_services:
   mssql_data_authorization:
   mssql_data_documents:
+  mssql_data_profiles:
