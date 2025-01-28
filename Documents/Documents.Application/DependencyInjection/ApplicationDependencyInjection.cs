@@ -13,6 +13,8 @@ namespace Documents.Application.DependencyInjection
 
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IResultService, ResultService>();
+            services.AddScoped<IPatientService, PatientService>();
+            services.AddScoped<IDoctorService, DoctorService>();
 
             return services;
         }
