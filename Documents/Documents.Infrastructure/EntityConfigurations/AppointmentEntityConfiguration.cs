@@ -22,10 +22,6 @@ namespace Documents.Infrastructure.EntityConfigurations
                 .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired();
 
-            builder.HasOne(a => a.Result)
-                .WithOne()
-                .HasForeignKey<Result>(r => r.AppointmentId);
-
             builder.HasOne(a => a.Patient)
                 .WithMany()
                 .HasForeignKey(a => a.PatientId)
