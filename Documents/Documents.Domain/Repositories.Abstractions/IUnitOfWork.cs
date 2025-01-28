@@ -11,7 +11,8 @@ namespace Documents.Domain.Repositories.Abstractions
         ISpecializationRepository SpecializationRepository { get; }
         IPatientRepository PatientRepository { get; }
         IAppointmentRepository AppointmentRepository { get; }
-
+        IAccountRepository AccountRepository { get; }
+        IResultRepository ResultRepository { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
         IDbContextTransaction BeginTransaction(
             IsolationLevel isolationLevel = IsolationLevel.ReadCommitted,
