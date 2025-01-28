@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Documents.Application.Exceptions
 {
-    public class ForbiddenException : Exception
+    public class ForbiddenException : BadRequestException
     {
         public ForbiddenException()
             : base("Forbidden.")
