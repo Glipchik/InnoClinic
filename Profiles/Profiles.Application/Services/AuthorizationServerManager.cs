@@ -15,7 +15,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Profiles.Application.Services
 {
-    public class AuthorizationService : IAuthorizationService
+    public class AuthorizationServerManager : IAuthorizationServerManager
     {
         private readonly HttpClient _httpClient;
         private readonly string _authorizationServerUrl;
@@ -23,7 +23,7 @@ namespace Profiles.Application.Services
         private readonly string _clientSecret;
         private readonly string _clientId;
 
-        public AuthorizationService(HttpClient httpClient, IConfiguration configuration)
+        public AuthorizationServerManager(HttpClient httpClient, IConfiguration configuration)
         {
             _httpClient = httpClient;
             _authorizationServerUrl = configuration["Authorization:ServerUrl"] ?? throw new ArgumentNullException("Authorization:ServerUrl string is null");
