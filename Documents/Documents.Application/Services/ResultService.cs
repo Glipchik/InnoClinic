@@ -58,7 +58,7 @@ namespace Documents.Application.Services
                 ?? throw new NotFoundException($"Result with id {resultId} is not found.");
 
             var text =
-                $"Result: {result.Appointment.Service} + {result.Appointment.Date} + {result.Appointment.Time} \nComplaints: {result.Complaints}\nConclusion: {result.Conclusion}\nRecomendations: {result.Recomendations}";
+                $"Result: {result.Appointment.Service} + {result.Appointment.Date} + {result.Appointment.Time} \nComplaints: {result.Complaints}\nConclusion: {result.Conclusion}\nRecommendations: {result.Recommendations}";
 
             return await PdfGenerator.GenerateFile(text, cancellationToken); 
         }
@@ -92,7 +92,7 @@ namespace Documents.Application.Services
 
             await _emailService.SendEmailAsync(email,
                 "Result",
-                $"Complaints: {result.Complaints}\nConclusion: {result.Conclusion}\nRecomendations: {result.Recomendations}", cancellationToken);
+                $"Complaints: {result.Complaints}\nConclusion: {result.Conclusion}\nRecommendations: {result.Recommendations}", cancellationToken);
 
             return _mapper.Map<ResultModel>(result);
         }
