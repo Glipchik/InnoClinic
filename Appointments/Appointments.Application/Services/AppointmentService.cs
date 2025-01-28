@@ -131,10 +131,12 @@ namespace Appointments.Application.Services
             {
                 var currentTime = time.AddMinutes(i * _timeSlotSize);
 
-                if (!(doctorSchedule.SingleOrDefault(t => t.Start <= currentTime && t.Finish >= currentTime)
-                    ?? throw new BadRequestException("Not enough available slots for this service")).IsAvailable)
-                {
-                    return false;
+                var currentIndex = doctorSchedule.SingleOrDefault(t => t.Start <= currentTime && t.Finish >= currentTime)
+                    ?? throw new BadRequestException("Not enough available slots for this service");
+
+                if (!currentIndex.IsAvailable)
+                { 
+                    return false; 
                 }
             }
 
@@ -145,34 +147,38 @@ namespace Appointments.Application.Services
         {
             var doctorAppointments = await _unitOfWork.AppointmentRepository.GetAllApprovedByDoctorIdAsync(doctorId, date, cancellationToken);
 
-            var numberOfTimeSlots = (int)(_endOfTheWorkingDay.ToTimeSpan().TotalMinutes - _startOfTheWorkingDay.ToTimeSpan().TotalMinutes)
-                / _timeSlotSize;
+            var timeSlots = GenerateTimeSlots();
 
-            var timeSlots = new List<TimeSlotModel>();
-            for (int i = 0; i < numberOfTimeSlots; i++)
+            MarkUnavailableTimeSlots(timeSlots, doctorAppointments);
+
+            return timeSlots;
+        }
+
+        private List<TimeSlotModel> GenerateTimeSlots()
+        {
+            var numberOfTimeSlots = (int)(_endOfTheWorkingDay.ToTimeSpan().TotalMinutes - _startOfTheWorkingDay.ToTimeSpan().TotalMinutes) / _timeSlotSize;
+
+            return Enumerable.Range(0, numberOfTimeSlots).Select(i => new TimeSlotModel
             {
-                timeSlots.Add(new TimeSlotModel()
-                {
-                    Start = _startOfTheWorkingDay.AddMinutes(_timeSlotSize * i),
-                    Finish = _startOfTheWorkingDay.AddMinutes(_timeSlotSize * (i + 1)),
-                    Id = i,
-                    IsAvailable = true,
-                });
-            }
+                Start = _startOfTheWorkingDay.AddMinutes(_timeSlotSize * i),
+                Finish = _startOfTheWorkingDay.AddMinutes(_timeSlotSize * (i + 1)),
+                Id = i,
+                IsAvailable = true
+            }).ToList();
+        }
 
+        private void MarkUnavailableTimeSlots(List<TimeSlotModel> timeSlots, IEnumerable<Appointment> doctorAppointments)
+        {
             foreach (var appointment in doctorAppointments)
             {
                 int startIndex = (int)((appointment.Time - _startOfTheWorkingDay).TotalMinutes / _timeSlotSize);
-                int endIndex = (int)((appointment.Time.AddMinutes(appointment.Service.ServiceCategory.TimeSlotSize.TotalMinutes)
-                    - _startOfTheWorkingDay).TotalMinutes / _timeSlotSize);
+                int endIndex = (int)((appointment.Time.AddMinutes(appointment.Service.ServiceCategory.TimeSlotSize.TotalMinutes) - _startOfTheWorkingDay).TotalMinutes / _timeSlotSize);
 
                 for (int i = startIndex; i < endIndex && i < timeSlots.Count; i++)
                 {
                     timeSlots[i].IsAvailable = false;
                 }
             }
-
-            return timeSlots;
         }
 
         public async Task<AppointmentModel> Get(Guid Id, CancellationToken cancellationToken)
