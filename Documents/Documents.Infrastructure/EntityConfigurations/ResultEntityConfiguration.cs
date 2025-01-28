@@ -20,7 +20,7 @@ namespace Documents.Infrastructure.EntityConfigurations
                .IsRequired()
                .HasMaxLength(500);
 
-            builder.Property(r => r.Recomendations)
+            builder.Property(r => r.Recommendations)
                .IsRequired()
                .HasMaxLength(500);
 

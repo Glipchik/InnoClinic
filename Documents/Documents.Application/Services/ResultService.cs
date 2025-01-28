@@ -58,7 +58,7 @@ namespace Documents.Application.Services
                 ?? throw new NotFoundException($"Result with id {resultId} is not found.");
 
             var text =
-                $"Result: {result.Appointment.Service} + {result.Appointment.Date} + {result.Appointment.Time} \nComplaints: {result.Complaints}\nConclusion: {result.Conclusion}\nRecomendations: {result.Recomendations}";
+                $"Result: {result.Appointment.Service} + {result.Appointment.Date} + {result.Appointment.Time} \nComplaints: {result.Complaints}\nConclusion: {result.Conclusion}\nRecomendations: {result.Recommendations}";
 
             return await PdfGenerator.GenerateFile(text, cancellationToken); 
         }
@@ -74,7 +74,7 @@ namespace Documents.Application.Services
             return _mapper.Map<IEnumerable<ResultModel>>(await _unitOfWork.ResultRepository.GetAllAsync(cancellationToken));
         }
 
-        public async Task<IEnumerable<ResultModel>> GetAllByDoctorid(Guid doctorId, CancellationToken cancellationToken)
+        public async Task<IEnumerable<ResultModel>> GetAllByDoctorId(Guid doctorId, CancellationToken cancellationToken)
         {
 
             return _mapper.Map<IEnumerable<ResultModel>>(await _unitOfWork.ResultRepository.GetAllByDoctorIdAsync(doctorId, cancellationToken));
@@ -92,7 +92,7 @@ namespace Documents.Application.Services
 
             await _emailService.SendEmailAsync(email,
                 "Result",
-                $"Complaints: {result.Complaints}\nConclusion: {result.Conclusion}\nRecomendations: {result.Recomendations}", cancellationToken);
+                $"Complaints: {result.Complaints}\nConclusion: {result.Conclusion}\nRecomendations: {result.Recommendations}", cancellationToken);
 
             return _mapper.Map<ResultModel>(result);
         }
