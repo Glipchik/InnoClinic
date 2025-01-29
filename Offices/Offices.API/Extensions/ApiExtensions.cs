@@ -20,6 +20,7 @@ using Offices.Application.Extensions;
 using Offices.Application.MappingProfiles;
 using Offices.Application.Services;
 using Offices.Application.Services.Abstractions;
+using Offices.Consumers.DependencyInjection;
 using Offices.Data.Entities;
 using Offices.Data.Extensions;
 using Offices.Data.Providers;
@@ -37,6 +38,8 @@ namespace Offices.API.Extensions
 
             // Adding application extensions
             services.AddApplicationExtensions();
+
+            services.AddConsumersDependencyInjection();
 
             // Global exception handler
             services.AddExceptionHandler<GlobalExceptionHandler>();
