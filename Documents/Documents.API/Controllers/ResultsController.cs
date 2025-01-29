@@ -182,5 +182,68 @@ namespace Documents.API.Controllers
             await _resultService.Update(updateResultModel, cancellationToken);
             _logger.LogInformation("New result was successfully updated.");
         }
+
+        /// <summary>
+        /// Send results to email as patient.
+        /// </summary>
+        /// <returns>Sends results.</returns>
+        /// <response code="200">If the patient is found</response>
+        /// <response code="400">If validation errors occured</response>
+        /// <response code="404">If the patient is not found</response>
+        /// <response code="500">If there was an internal server error</response>
+        [HttpPost("send-results")]
+        [Authorize(Roles = "Patient")]
+        public async Task SendPatientsResults(string resultId, CancellationToken cancellationToken)
+        {
+            var userId = (User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
+                    ?? throw new ForbiddenException("You are not allowed to access this resource");
+
+            var userEmail = User.FindFirst(ClaimTypes.Email)?.Value
+                    ?? throw new ForbiddenException("You are not allowed to access this resource");
+
+            var patientModel = await _patientService.GetByAccountId(Guid.Parse(userId), cancellationToken);
+
+            var result = await _resultService.Get(Guid.Parse(resultId), cancellationToken);
+
+            if (result.Appointment.PatientId != patientModel.Id)
+            {
+                throw new ForbiddenException("You are not allowed to access this resource");
+            }
+
+            await _resultService.SendResultByEmail(Guid.Parse(resultId), userEmail, cancellationToken);
+
+            _logger.LogInformation("Requested sending results by patient with id {id}", patientModel.Id);
+        }
+
+        /// <summary>
+        /// Download results as pdf file as patient.
+        /// </summary>
+        /// <returns>Returns file.</returns>
+        /// <response code="200">If the patient is found</response>
+        /// <response code="400">If validation errors occured</response>
+        /// <response code="404">If the patient is not found</response>
+        /// <response code="500">If there was an internal server error</response>
+        [HttpGet("download")]
+        [Authorize(Roles = "Patient")]
+        public async Task<ActionResult> DownloadPatientsResults(string resultId, CancellationToken cancellationToken)
+        {
+            var userId = (User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
+                    ?? throw new ForbiddenException("You are not allowed to access this resource");
+
+            var patientModel = await _patientService.GetByAccountId(Guid.Parse(userId), cancellationToken);
+
+            var result = await _resultService.Get(Guid.Parse(resultId), cancellationToken);
+
+            if (result.Appointment.PatientId != patientModel.Id)
+            {
+                throw new ForbiddenException("You are not allowed to access this resource");
+            }
+
+            var file = await _resultService.GeneratePdf(Guid.Parse(resultId), cancellationToken);
+
+            _logger.LogInformation("Requested sending results by patient with id {id}", patientModel.Id);
+
+            return File(file, "application/pdf", "result.pdf");
+        }
     }
 }
