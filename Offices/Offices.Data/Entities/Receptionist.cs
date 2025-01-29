@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,7 @@ namespace Offices.Data.Entities
         public string? MiddleName { get; set; }
 
         [BsonRequired]
-        public required string OfficeId { get; set; }
+        [BsonRepresentation(BsonType.String)]
+        public required Guid OfficeId { get; set; }
     }
 }

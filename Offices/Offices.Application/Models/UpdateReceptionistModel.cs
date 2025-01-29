@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Offices.Application.Models
 {
-    public record UpdateReceptionistModel(string Id, string FirstName, string LastName, string? MiddleName, string OfficeId);
+    public record UpdateReceptionistModel(Guid Id, string FirstName, string LastName, string? MiddleName, Guid OfficeId);
 }

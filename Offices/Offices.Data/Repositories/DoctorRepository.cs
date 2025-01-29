@@ -21,12 +21,12 @@ namespace Offices.Data.Repositories
         {
         }
 
-        public override async Task DeleteAsync(string id, CancellationToken cancellationToken)
+        public override async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
             await _collection.UpdateOneAsync(Builders<Doctor>.Filter.Eq(e => e.Id, id), Builders<Doctor>.Update.Set(e => e.Status, DoctorStatus.Inactive), cancellationToken: cancellationToken);
         }
 
-        public async Task<IEnumerable<Doctor>> GetActiveDoctorsFromOffice(string officeId, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Doctor>> GetActiveDoctorsFromOffice(Guid officeId, CancellationToken cancellationToken)
         {
             var cursor = await _collection.FindAsync(d => d.OfficeId == officeId && d.Status == DoctorStatus.AtWork, cancellationToken: cancellationToken);
             return await cursor.ToListAsync(cancellationToken);
