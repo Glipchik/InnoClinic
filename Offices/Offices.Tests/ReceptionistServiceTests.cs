@@ -44,7 +44,7 @@ namespace Offices.Tests
             // Arrange
             var office = CreateOffice(Id: createReceptionistModel.OfficeId, IsActive: true);
 
-            _officeRepositoryMock.Setup(repo => repo.GetAsync(It.IsAny<string>(), CancellationToken.None))
+            _officeRepositoryMock.Setup(repo => repo.GetAsync(It.IsAny<Guid>(), CancellationToken.None))
                                  .ReturnsAsync(office);
 
             // Act and Assert
@@ -76,7 +76,7 @@ namespace Offices.Tests
         public async Task Create_RelatedOfficeNotFound_ShouldBeException(CreateReceptionistModel createReceptionistModel)
         {
             // Arrange
-            _officeRepositoryMock.Setup(repo => repo.GetAsync(It.Is<string>(id => id == createReceptionistModel.OfficeId), CancellationToken.None))
+            _officeRepositoryMock.Setup(repo => repo.GetAsync(It.Is<Guid>(id => id == createReceptionistModel.OfficeId), CancellationToken.None))
                                  .ReturnsAsync((Office?)null);
 
             // Act and Assert
@@ -92,10 +92,10 @@ namespace Offices.Tests
         {
             // Arrange
             _officeRepositoryMock
-                .Setup(repo => repo.GetAsync(It.Is<string>(id => id == updateReceptionistModel.OfficeId), CancellationToken.None))
+                .Setup(repo => repo.GetAsync(It.Is<Guid>(id => id == updateReceptionistModel.OfficeId), CancellationToken.None))
                 .ReturnsAsync(CreateOffice(Id: updateReceptionistModel.OfficeId, IsActive: true));
 
-            _receptionistRepositoryMock.Setup(repo => repo.GetAsync(It.Is<string>(id => id == updateReceptionistModel.Id), CancellationToken.None))
+            _receptionistRepositoryMock.Setup(repo => repo.GetAsync(It.Is<Guid>(id => id == updateReceptionistModel.Id), CancellationToken.None))
                               .ReturnsAsync(CreateReceptionist(Id: updateReceptionistModel.Id, OfficeId: updateReceptionistModel.OfficeId));
             // Act and Assert
             await Should.NotThrowAsync(async () =>
@@ -145,19 +145,19 @@ namespace Offices.Tests
         }
 
 
-        private Office CreateOffice(string? Id = null, bool IsActive = true)
+        private Office CreateOffice(Guid? Id = null, bool IsActive = true)
         {
             return _fixture.Build<Office>()
-                .With(x => x.Id, Id ?? _fixture.Create<string>())
+                .With(x => x.Id, Id ?? Guid.NewGuid())
                 .With(x => x.IsActive, IsActive)
                 .Create();
         }
 
-        private Receptionist CreateReceptionist(string? Id = null, string? OfficeId = null)
+        private Receptionist CreateReceptionist(Guid? Id = null, Guid? OfficeId = null)
         {
             return _fixture.Build<Receptionist>()
-                .With(x => x.Id, Id ?? _fixture.Create<string>())
-                .With(x => x.OfficeId, OfficeId ?? _fixture.Create<string>())
+                .With(x => x.Id, Id ?? Guid.NewGuid())
+                .With(x => x.OfficeId, OfficeId ?? Guid.NewGuid())
                 .Create();
         }
     }

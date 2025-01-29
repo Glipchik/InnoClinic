@@ -10,9 +10,9 @@ namespace Offices.Application.Services.Abstractions
     public interface IReceptionistService
     {
         Task Create(CreateReceptionistModel createReceptionistModel, CancellationToken cancellationToken);
-        Task<ReceptionistModel> Get(string id, CancellationToken cancellationToken);
+        Task<ReceptionistModel> Get(Guid id, CancellationToken cancellationToken);
         Task<IEnumerable<ReceptionistModel>> GetAll(CancellationToken cancellationToken);
         Task Update(UpdateReceptionistModel updateReceptionistModel, CancellationToken cancellationToken);
-        Task Delete(string id, CancellationToken cancellationToken);
+        Task Delete(Guid id, CancellationToken cancellationToken);
     }
 }

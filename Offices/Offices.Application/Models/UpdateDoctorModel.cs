@@ -7,5 +7,5 @@ using System.Threading.Tasks;
 
 namespace Offices.Application.Models
 {
-    public record UpdateDoctorModel(string Id, string FirstName, string LastName, string? MiddleName, string OfficeId, DoctorStatusModel Status);
+    public record UpdateDoctorModel(Guid Id, string FirstName, string LastName, string? MiddleName, Guid OfficeId, DoctorStatusModel Status);
 }

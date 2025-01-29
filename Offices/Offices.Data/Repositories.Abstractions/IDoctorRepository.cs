@@ -9,6 +9,6 @@ namespace Offices.Data.Repositories.Abstractions
 {
     public interface IDoctorRepository: IGenericRepository<Doctor>
     {
-        Task<IEnumerable<Doctor>> GetActiveDoctorsFromOffice(string officeId, CancellationToken cancellationToken);
+        Task<IEnumerable<Doctor>> GetActiveDoctorsFromOffice(Guid officeId, CancellationToken cancellationToken);
     }
 }
