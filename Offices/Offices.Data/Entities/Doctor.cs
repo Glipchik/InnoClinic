@@ -1,18 +1,30 @@
-﻿using System;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Offices.Data.Enums;
 
 namespace Offices.Data.Entities
 {
-    public class Doctor: BaseEntity
+    public class Doctor : BaseEntity
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string MiddleName { get; set; }
-        public string OfficeId { get; set; }
-        public string Status { get; set; }
+        [BsonRequired]
+        public required string FirstName { get; set; }
 
+        [BsonRequired]
+        public required string LastName { get; set; }
+
+        public string? MiddleName { get; set; }
+
+        [BsonRequired]
+        [BsonRepresentation(BsonType.ObjectId)]
+
+        public required string OfficeId { get; set; }
+
+        [BsonRequired]
+        public required DoctorStatus Status { get; set; }
     }
 }

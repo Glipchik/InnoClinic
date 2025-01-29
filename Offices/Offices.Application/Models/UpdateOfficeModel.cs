@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Offices.Application.Models
 {
-    public record UpdateOfficeModel(string Id, string Address, string PhotoURL, string RegistryPhoneNumber, bool IsActive);
+    public record UpdateOfficeModel(string Id, string Address, string RegistryPhoneNumber, bool IsActive);
 }
