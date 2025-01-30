@@ -34,6 +34,7 @@ msbuild.wrn
 
 # Visual Studio 2015
 .vs/
+/minio_data
 
 # Jetbrains
 # Common IntelliJ Platform excludes
