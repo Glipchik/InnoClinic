@@ -2,7 +2,7 @@ using System;
 
 namespace Profiles.Application.Exceptions;
 
-public class FileAlreadyExistsException : Exception
+public class FileAlreadyExistsException : BadRequestException
 {
     public FileAlreadyExistsException()
         : base("File with this name already exists.")

@@ -9,9 +9,9 @@ namespace Profiles.Application.Models
 {
     public class CreateDoctorModel
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string MiddleName { get; set; }
+        public required string FirstName { get; set; }
+        public required string LastName { get; set; }
+        public required string MiddleName { get; set; }
         public Guid SpecializationId { get; set; }
         public DateTime CareerStartYear { get; set; }
         public Guid OfficeId { get; set; }
@@ -22,9 +22,9 @@ namespace Profiles.Application.Models
     public class DoctorModel
     {
         public Guid Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string MiddleName { get; set; }
+        public required string FirstName { get; set; }
+        public required string LastName { get; set; }
+        public required string MiddleName { get; set; }
         public Guid SpecializationId { get; set; }
         public Guid AccountId { get; set; }
         public DateTime CareerStartYear { get; set; }
@@ -36,9 +36,9 @@ namespace Profiles.Application.Models
     public class UpdateDoctorModel
     {
         public Guid Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string MiddleName { get; set; }
+        public required string FirstName { get; set; }
+        public required string LastName { get; set; }
+        public required string MiddleName { get; set; }
         public Guid SpecializationId { get; set; }
         public DateTime CareerStartYear { get; set; }
         public Guid OfficeId { get; set; }

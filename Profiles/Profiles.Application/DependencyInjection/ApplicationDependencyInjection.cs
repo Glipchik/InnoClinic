@@ -21,7 +21,7 @@ namespace Profiles.Application.DependencyInjection
             services.AddScoped<IPatientService, PatientService>();
             services.AddScoped<IReceptionistService, ReceptionistService>();
             services.AddScoped<IFileService, FileService>();
-            services.AddScoped<IAuthorizationService, AuthorizationService>();
+            services.AddScoped<IAuthorizationServerManager, AuthorizationServerManager>();
 
             return services;
         }

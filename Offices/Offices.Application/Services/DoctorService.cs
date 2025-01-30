@@ -52,9 +52,11 @@ namespace Offices.Application.Services
             await _doctorRepository.UpdateAsync(doctor, cancellationToken);
         }
 
-        public async Task<DoctorModel> Get(string id, CancellationToken cancellationToken)
+        public async Task<DoctorModel> Get(Guid id, CancellationToken cancellationToken)
         {
-            var doctor = await _doctorRepository.GetAsync(id, cancellationToken);
+            var doctor = await _doctorRepository.GetAsync(id, cancellationToken)
+                ?? throw new NotFoundException($"Doctor not found: {id}");
+
             return _mapper.Map<DoctorModel>(doctor);
         }
 
@@ -63,8 +65,11 @@ namespace Offices.Application.Services
             return _mapper.Map<IEnumerable<DoctorModel>>(await _doctorRepository.GetAllAsync(cancellationToken));
         }
 
-        public async Task Delete(string id, CancellationToken cancellationToken)
+        public async Task Delete(Guid id, CancellationToken cancellationToken)
         {
+            var doctorToDelete = await _doctorRepository.GetAsync(id, cancellationToken)
+                ?? throw new NotFoundException($"Doctor not found: {id}");
+
             await _doctorRepository.DeleteAsync(id, cancellationToken);
         }
     }

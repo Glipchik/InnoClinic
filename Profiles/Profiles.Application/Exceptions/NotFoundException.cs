@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Profiles.Application.Exceptions
 {
-    public class NotFoundException : Exception
+    public class NotFoundException : BadRequestException
     {
         public NotFoundException()
             : base("Object not found.")
