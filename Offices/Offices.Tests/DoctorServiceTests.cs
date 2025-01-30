@@ -152,19 +152,19 @@ namespace Offices.Tests
             });
         }
 
-        private Office CreateOffice(string? Id = null, bool IsActive = true)
+        private Office CreateOffice(Guid? Id = null, bool IsActive = true)
         {
             return _fixture.Build<Office>()
-                .With(x => x.Id, Id ?? _fixture.Create<string>())
+                .With(x => x.Id, Id ?? Guid.NewGuid())
                 .With(x => x.IsActive, IsActive)
                 .Create();
         }
 
-        private Doctor CreateDoctor(string? Id = null, string? OfficeId = null)
+        private Doctor CreateDoctor(Guid? Id = null, Guid? OfficeId = null)
         {
             return _fixture.Build<Doctor>()
-                .With(x => x.Id, Id ?? _fixture.Create<string>())
-                .With(x => x.OfficeId, OfficeId ?? _fixture.Create<string>())
+                .With(x => x.Id, Id ?? Guid.NewGuid())
+                .With(x => x.OfficeId, OfficeId ?? Guid.NewGuid())
                 .Create();
         }
     }
