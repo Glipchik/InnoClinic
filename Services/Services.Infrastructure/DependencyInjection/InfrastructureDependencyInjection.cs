@@ -10,6 +10,7 @@ using Services.Infrastructure.Contexts;
 using System.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
+using Services.Infrastructure.Mapper;
 
 namespace Services.Infrastructure.Extensions
 {
@@ -26,6 +27,8 @@ namespace Services.Infrastructure.Extensions
             services.AddScoped<ISpecializationRepository, SpecializationRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            services.AddAutoMapper(typeof(EventMapping));
 
             return services;
         }
