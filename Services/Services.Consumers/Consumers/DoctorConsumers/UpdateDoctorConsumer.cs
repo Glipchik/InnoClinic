@@ -6,14 +6,15 @@ using Services.Domain.Repositories.Abstractions;
 
 namespace Services.Consumers.Consumers.DoctorConsumers
 {
-    public class UpdateDoctorConsumer(IDoctorRepository doctorRepository, IMapper mapper) : IConsumer<DoctorUpdated>
+    public class UpdateDoctorConsumer(IUnitOfWork unitOfWork, IMapper mapper) : IConsumer<DoctorUpdated>
     {
-        private readonly IDoctorRepository _doctorRepository = doctorRepository;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
 
         public async Task Consume(ConsumeContext<DoctorUpdated> context)
         {
-            await _doctorRepository.UpdateAsync(_mapper.Map<Doctor>(context.Message), CancellationToken.None);
+            await _unitOfWork.DoctorRepository.UpdateAsync(_mapper.Map<Doctor>(context.Message), CancellationToken.None);
+            await _unitOfWork.SaveChangesAsync(CancellationToken.None);
         }
     }
 }
