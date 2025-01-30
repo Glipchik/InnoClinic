@@ -6,7 +6,7 @@ project.lock.json
 .DS_Store
 *.pyc
 
-.minio_data
+minio_data/
 
 # Visual Studio Code
 .vscode
@@ -71,3 +71,5 @@ Thumbs.db
 Desktop.ini
 .DS_Store
 /minio_data
+/Profiles/Profiles.API/keys
+*.jwk
