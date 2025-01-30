@@ -90,7 +90,7 @@ namespace Offices.API.Controllers
                 throw new Domain.Exceptions.ValidationException(validationErrors);
             }
 
-            var doctor = await _doctorService.Get(id, cancellationToken);
+            var doctor = await _doctorService.Get(Guid.Parse(id), cancellationToken);
             _logger.LogInformation("Requested doctor with id {id}", id);
             return _mapper.Map<DoctorDto>(doctor);
         }
@@ -182,7 +182,7 @@ namespace Offices.API.Controllers
                 throw new Domain.Exceptions.ValidationException(validationErrors);
             }
 
-            await _doctorService.Delete(id, cancellationToken);
+            await _doctorService.Delete(Guid.Parse(id), cancellationToken);
             _logger.LogInformation("Doctor with id {id} was successfully deleted", id);
         }
     }
