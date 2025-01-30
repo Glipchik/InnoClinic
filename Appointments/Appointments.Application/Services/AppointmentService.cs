@@ -68,7 +68,8 @@ namespace Appointments.Application.Services
 
             var newAppointment = _mapper.Map<Appointment>(createAppointmentModel);
             newAppointment.IsApproved = false;
-            
+            newAppointment.Time = doctorSchedule.ElementAt(createAppointmentModel.TimeSlotId).Start;
+
             var createdAppointment = await _unitOfWork.AppointmentRepository.CreateAsync(newAppointment, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             return _mapper.Map<AppointmentModel>(createdAppointment);
@@ -125,7 +126,7 @@ namespace Appointments.Application.Services
 
             var neededTimeSlots = Math.Ceiling(category.TimeSlotSize.TotalMinutes / _timeSlotSize);
 
-            var timeSlot = doctorSchedule.SingleOrDefault(t => t.Start <= time && t.Finish >= time) 
+            var timeSlot = doctorSchedule.SingleOrDefault(t => t.Start <= time && t.Finish > time) 
                 ?? throw new NotFoundException($"Time slot with time {time} is not found.");
 
             for (int i = 0; i < neededTimeSlots; i++)
