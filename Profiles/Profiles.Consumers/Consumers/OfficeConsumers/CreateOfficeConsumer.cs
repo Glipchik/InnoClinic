@@ -6,14 +6,15 @@ using Profiles.Domain.Repositories.Abstractions;
 
 namespace Profiles.Consumers.Consumers.OfficeConsumers
 {
-    public class CreateOfficeConsumer(IOfficeRepository officeRepository, IMapper mapper) : IConsumer<OfficeCreated>
+    public class CreateOfficeConsumer(IUnitOfWork unitOfWork, IMapper mapper) : IConsumer<OfficeCreated>
     {
-        private readonly IOfficeRepository _officeRepository = officeRepository;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
 
         public async Task Consume(ConsumeContext<OfficeCreated> context)
         {
-            await _officeRepository.CreateAsync(_mapper.Map<Office>(context.Message), CancellationToken.None);
+            await _unitOfWork.OfficeRepository.CreateAsync(_mapper.Map<Office>(context.Message), CancellationToken.None);
+            await _unitOfWork.SaveChangesAsync(CancellationToken.None);
         }
     }
 }
