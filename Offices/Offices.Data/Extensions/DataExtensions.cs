@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
 using Offices.Data.Entities;
+using Offices.Data.Mapper;
 using Offices.Data.Providers;
 using Offices.Data.Repositories;
 using Offices.Data.Repositories.Abstractions;
@@ -24,6 +25,8 @@ namespace Offices.Data.Extensions
             services.AddScoped<IOfficeRepository, OfficeRepository>();
             services.AddScoped<IDoctorRepository, DoctorRepository>();
             services.AddScoped<IReceptionistRepository, ReceptionistRepository>();
+
+            services.AddAutoMapper(typeof(DataMapping));
 
             return services;
         }

@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Offices.Application\Offices.Application.csproj" />
+    <ProjectReference Include="..\Offices.Consumers\Offices.Consumers.csproj" />
     <ProjectReference Include="..\Offices.Domain\Offices.Domain.csproj" />
   </ItemGroup>
 

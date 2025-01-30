@@ -9,6 +9,7 @@ using Services.API.Infrastructure;
 using Services.API.Validators;
 using FluentValidation;
 using IdentityModel;
+using Services.Consumers.Consumers.DependencyInjection;
 
 namespace Services.API.DependencyInjection
 {
@@ -17,6 +18,8 @@ namespace Services.API.DependencyInjection
         public static IServiceCollection AddApiDependencyInjection(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddInfrastructureDependencyInjection(configuration);
+
+            services.AddConsumersDependencyInjection();
 
             services.AddProblemDetails();
 

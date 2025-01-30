@@ -1,4 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Events.Account;
+using Events.Doctor;
+using MassTransit;
+using Microsoft.EntityFrameworkCore;
+using Minio.DataModel.Notification;
 using Profiles.Domain.Entities;
 using Profiles.Domain.Repositories.Abstractions;
 using Profiles.Infrastructure.Contexts;
@@ -13,17 +18,44 @@ namespace Profiles.Infrastructure.Repositories
     public class DoctorRepository : GenericRepository<Doctor>, IDoctorRepository
     {
         private readonly AppDbContext _context;
+        private readonly IPublishEndpoint _publishEndpoint;
+        private readonly IMapper _mapper;
 
-        public DoctorRepository(AppDbContext context) : base(context)
+        public DoctorRepository(AppDbContext context, IPublishEndpoint publishEndpoint, IMapper mapper) : base(context)
         {
             _context = context;
+            _publishEndpoint = publishEndpoint;
+            _mapper = mapper;
+        }
+
+        public override async Task CreateAsync(Doctor entity, CancellationToken cancellationToken)
+        {
+            if (entity.Id == Guid.Empty)
+            {
+                entity.Id = Guid.NewGuid();
+            }
+
+            await _context.Set<Doctor>().AddAsync(entity, cancellationToken);
+
+            await _publishEndpoint.Publish(_mapper.Map<DoctorCreated>(entity), cancellationToken);
         }
 
         public async override Task DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
-            var doctorToDelete = await _context.Set<Doctor>().FindAsync(id);
+            var doctorToDelete = await GetAsync(id, cancellationToken)
+                ?? throw new ArgumentNullException($"Doctor with id {id} not found");
+
             doctorToDelete.Status = Domain.Enums.DoctorStatus.Inactive;
             _context.Set<Doctor>().Update(doctorToDelete);
+
+            await _publishEndpoint.Publish(_mapper.Map<DoctorUpdated>(doctorToDelete), cancellationToken);
+        }
+
+        public override async Task UpdateAsync(Doctor entity, CancellationToken cancellationToken)
+        {
+            _context.Set<Doctor>().Update(entity);
+
+            await _publishEndpoint.Publish(_mapper.Map<DoctorUpdated>(entity), cancellationToken);
         }
 
         public async override Task<IEnumerable<Doctor>> GetAllAsync(CancellationToken cancellationToken)

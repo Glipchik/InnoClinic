@@ -12,6 +12,7 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Duende.IdentityServer.Models;
+using Services.Consumers.Consumers.DependencyInjection;
 
 namespace Profiles.API.DependencyInjection;
 
@@ -22,6 +23,8 @@ public static class ApiDependencyInjection
         services.AddApplicationDependencyInjection();
         
         services.AddInfrastructureDependencyInjection(configuration);
+
+        services.AddConsumersDependencyInjection();
 
         services.AddProblemDetails();
 
