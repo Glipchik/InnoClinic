@@ -18,44 +18,60 @@ namespace Offices.Consumers.DependencyInjection
         {
             services.AddMassTransit(x =>
             {
-                x.AddConsumer<CreateDoctorConsumer>();
-                x.AddConsumer<UpdateDoctorConsumer>();
-
-                x.AddConsumer<CreateReceptionistConsumer>();
-                x.AddConsumer<UpdateReceptionistConsumer>();
-                x.AddConsumer<DeleteReceptionistConsumer>();
+                AddDoctorConsumers(x);
+                AddReceptionistConsumers(x);
 
                 x.UsingRabbitMq((context, cfg) =>
                 {
-                    cfg.Host("rabbitmq://localhost");
-
-                    cfg.ReceiveEndpoint("doctor-created", e =>
-                    {
-                        e.ConfigureConsumer<CreateDoctorConsumer>(context);
-                    });
-                    cfg.ReceiveEndpoint("doctor-updated", e =>
-                    {
-                        e.ConfigureConsumer<UpdateDoctorConsumer>(context);
-                    });
-
-                    cfg.ReceiveEndpoint("receptionist-created", e =>
-                    {
-                        e.ConfigureConsumer<CreateReceptionistConsumer>(context);
-                    });
-                    cfg.ReceiveEndpoint("receptionist-updated", e =>
-                    {
-                        e.ConfigureConsumer<UpdateReceptionistConsumer>(context);
-                    });
-                    cfg.ReceiveEndpoint("receptionist-deleted", e =>
-                    {
-                        e.ConfigureConsumer<DeleteReceptionistConsumer>(context);
-                    });
+                    ConfigureDoctorEndpoints(context, cfg);
+                    ConfigureReceptionistEndpoints(context, cfg);
                 });
             });
 
             services.AddAutoMapper(typeof(ConsumersMapping));
 
             return services;
+        }
+
+        private static void AddDoctorConsumers(IBusRegistrationConfigurator x)
+        {
+            x.AddConsumer<CreateDoctorConsumer>();
+            x.AddConsumer<UpdateDoctorConsumer>();
+        }
+
+        private static void AddReceptionistConsumers(IBusRegistrationConfigurator x)
+        {
+            x.AddConsumer<CreateReceptionistConsumer>();
+            x.AddConsumer<UpdateReceptionistConsumer>();
+            x.AddConsumer<DeleteReceptionistConsumer>();
+        }
+
+        private static void ConfigureDoctorEndpoints(IBusRegistrationContext context, IRabbitMqBusFactoryConfigurator cfg)
+        {
+            cfg.ReceiveEndpoint("doctor-created", e =>
+            {
+                e.ConfigureConsumer<CreateDoctorConsumer>(context);
+            });
+            cfg.ReceiveEndpoint("doctor-updated", e =>
+            {
+                e.ConfigureConsumer<UpdateDoctorConsumer>(context);
+            });
+        }
+
+        private static void ConfigureReceptionistEndpoints(IBusRegistrationContext context, IRabbitMqBusFactoryConfigurator cfg)
+        {
+            cfg.ReceiveEndpoint("receptionist-created", e =>
+            {
+                e.ConfigureConsumer<CreateReceptionistConsumer>(context);
+            });
+            cfg.ReceiveEndpoint("receptionist-updated", e =>
+            {
+                e.ConfigureConsumer<UpdateReceptionistConsumer>(context);
+            });
+            cfg.ReceiveEndpoint("receptionist-deleted", e =>
+            {
+                e.ConfigureConsumer<DeleteReceptionistConsumer>(context);
+            });
         }
     }
 }
