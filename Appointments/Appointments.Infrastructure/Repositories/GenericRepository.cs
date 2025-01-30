@@ -19,11 +19,17 @@ namespace Appointments.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<T> CreateAsync(T entity, CancellationToken cancellationToken)
+        public virtual async Task<T> CreateAsync(T entity, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(entity);
 
             await _context.Set<T>().AddAsync(entity, cancellationToken);
+            return entity;
+        }
+
+        public virtual async Task<T> UpdateAsync(T entity, CancellationToken cancellationToken)
+        {
+            _context.Set<T>().Update(entity);
             return entity;
         }
 
@@ -43,12 +49,6 @@ namespace Appointments.Infrastructure.Repositories
         public virtual async Task<T?> GetAsync(Guid id, CancellationToken cancellationToken)
         {
             return await _context.Set<T>().AsNoTracking().FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
-        }
-
-        public T Update(T entity, CancellationToken cancellationToken)
-        {
-            _context.Set<T>().Update(entity);
-            return entity;
         }
     }
 }

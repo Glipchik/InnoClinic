@@ -8,6 +8,7 @@ using Appointments.API.Infrastructure;
 using Appointments.API.DTOs;
 using Appointments.API.Validators;
 using Appointments.API.Mapper;
+using Appointments.MessageBroking.DependencyInjection;
 
 namespace Appointments.API.DependencyInjection
 {
@@ -16,6 +17,8 @@ namespace Appointments.API.DependencyInjection
         public static IServiceCollection AddApiDependencyInjection(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddInfrastructureDependencyInjection(configuration);
+
+            services.AddMessageBrokingDependencyInjection();
 
             services.AddControllers();
 

@@ -2,12 +2,6 @@
 using Appointments.Domain.Repositories.Abstractions;
 using Appointments.Infrastructure.Contexts;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Appointments.Infrastructure.Repositories
 {
@@ -26,8 +20,31 @@ namespace Appointments.Infrastructure.Repositories
                 ?? throw new ArgumentNullException("Appointment to approve is null.");
 
             appointmentToApprove.IsApproved = true;
-            Update(appointmentToApprove, cancellationToken);
+            await UpdateAsync(appointmentToApprove, cancellationToken);
+
             return appointmentToApprove;
+        }
+
+        public override async Task<Appointment> CreateAsync(Appointment entity, CancellationToken cancellationToken)
+        {
+            if (entity.Id == Guid.Empty)
+            {
+                entity.Id = Guid.NewGuid();
+            }
+
+            await _context.Set<Appointment>().AddAsync(entity, cancellationToken);
+
+            return entity;
+        }
+
+        public virtual async Task<Appointment> DeleteAsync(Guid id, CancellationToken cancellationToken)
+        {
+            var entityToDelete = await GetAsync(id, cancellationToken)
+                ?? throw new ArgumentNullException($"Entity with id {id} to delete is null.");
+
+            _context.Set<Appointment>().Remove(entityToDelete);
+
+            return entityToDelete;
         }
 
         public async Task<IEnumerable<Appointment>> GetAllApprovedByDoctorIdAsync(Guid doctorId, DateOnly date, CancellationToken cancellationToken)
