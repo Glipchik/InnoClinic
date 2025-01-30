@@ -20,9 +20,9 @@ namespace Offices.Data.Entities
         public string? MiddleName { get; set; }
 
         [BsonRequired]
-        [BsonRepresentation(BsonType.ObjectId)]
+        [BsonRepresentation(BsonType.String)]
 
-        public required string OfficeId { get; set; }
+        public required Guid OfficeId { get; set; }
 
         [BsonRequired]
         public required DoctorStatus Status { get; set; }

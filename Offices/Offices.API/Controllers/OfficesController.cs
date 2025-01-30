@@ -93,7 +93,7 @@ namespace Offices.API.Controllers
                 throw new Domain.Exceptions.ValidationException(validationErrors);
             }
 
-            var office = await _officeService.Get(id, cancellationToken);
+            var office = await _officeService.Get(Guid.Parse(id), cancellationToken);
             _logger.LogInformation("Requested office with id {id}", id);
             return _mapper.Map<OfficeDto>(office);
         }
@@ -185,7 +185,7 @@ namespace Offices.API.Controllers
                 throw new Domain.Exceptions.ValidationException(validationErrors);
             }
 
-            await _officeService.Delete(id, cancellationToken);
+            await _officeService.Delete(Guid.Parse(id), cancellationToken);
             _logger.LogInformation("Office with id {id} was successfully deleted", id);
         }
     }

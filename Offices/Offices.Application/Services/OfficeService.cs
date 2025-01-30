@@ -38,7 +38,7 @@ namespace Offices.Application.Services
             await _officeRepository.UpdateAsync(office, cancellationToken);
         }
 
-        public async Task<OfficeModel> Get(string id, CancellationToken cancellationToken)
+        public async Task<OfficeModel> Get(Guid id, CancellationToken cancellationToken)
         {
             var office = await _officeRepository.GetAsync(id, cancellationToken)
                 ?? throw new NotFoundException($"Office not found: {id}");
@@ -51,7 +51,7 @@ namespace Offices.Application.Services
             return _mapper.Map<IEnumerable<OfficeModel>>(await _officeRepository.GetAllAsync(cancellationToken));
         }
 
-        public async Task Delete(string id, CancellationToken cancellationToken)
+        public async Task Delete(Guid id, CancellationToken cancellationToken)
         {
             var officeToDelete = await _officeRepository.GetAsync(id, cancellationToken)
                 ?? throw new NotFoundException($"Office not found: {id}");
@@ -68,7 +68,7 @@ namespace Offices.Application.Services
             }
         }
 
-        private async Task<bool> CheckIfThereAreActiveDoctorsOrReceptionistsInOffice(string officeId, CancellationToken cancellationToken)
+        private async Task<bool> CheckIfThereAreActiveDoctorsOrReceptionistsInOffice(Guid officeId, CancellationToken cancellationToken)
         {
             var doctorsInOfficeCount = (await _doctorRepository.GetActiveDoctorsFromOffice(officeId, cancellationToken)).Count();
             var receptionistsInOfficeCount = (await _receptionistsRepository.GetActiveReceptionistsFromOffice(officeId, cancellationToken)).Count();

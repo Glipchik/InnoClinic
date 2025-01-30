@@ -57,7 +57,7 @@ namespace Offices.Application.Services
             await _receptionistRepository.UpdateAsync(receptionist, cancellationToken);
         }
 
-        public async Task<ReceptionistModel> Get(string id, CancellationToken cancellationToken)
+        public async Task<ReceptionistModel> Get(Guid id, CancellationToken cancellationToken)
         {
             var receptionist = await _receptionistRepository.GetAsync(id, cancellationToken)
                  ?? throw new NotFoundException($"Receptionist not found: {id}");
@@ -70,7 +70,7 @@ namespace Offices.Application.Services
             return _mapper.Map<IEnumerable<ReceptionistModel>>(await _receptionistRepository.GetAllAsync(cancellationToken));
         }
 
-        public async Task Delete(string id, CancellationToken cancellationToken)
+        public async Task Delete(Guid id, CancellationToken cancellationToken)
         {
             var receptionistToDelete = await _receptionistRepository.GetAsync(id, cancellationToken)
                  ?? throw new NotFoundException($"Receptionist not found: {id}");
