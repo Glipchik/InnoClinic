@@ -201,6 +201,34 @@ namespace Appointments.API.Controllers
         }
 
         /// <summary>
+        /// Delete an appointment.
+        /// </summary>
+        /// <param name="updateAppointmentDto">The appointment object fields containing details.</param>
+        /// <response code="200">If the appointment is updated</response>
+        /// <response code="400">If validation errors occured</response>
+        /// <response code="500">If there was an internal server error</response>
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Patient,Receptionist")]
+        public async Task Put(string id, CancellationToken cancellationToken)
+        {
+            if (User.IsInRole("Patient"))
+            {
+                var appointment = await _appointmentService.Get(Guid.Parse(id), cancellationToken);
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                    ?? throw new ForbiddenException("You are not allowed to access this resource");
+
+                var patient = await _patientService.GetByAccountId(Guid.Parse(userId), cancellationToken);
+                if (patient.Id != appointment.PatientId)
+                {
+                    throw new ForbiddenException("You are not allowed to access this resource");
+                }
+            }
+
+            await _appointmentService.Delete(Guid.Parse(id), cancellationToken);
+            _logger.LogInformation("New appointment was successfully deleted.");
+        }
+
+        /// <summary>
         /// Gets a schedule of a doctor on some day.
         /// </summary>
         /// <param name="getScheduleDto">The object which contains fields for getting schedule.</param>
