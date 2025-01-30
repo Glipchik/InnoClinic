@@ -40,7 +40,6 @@ namespace Offices.Data.Repositories
                 ?? throw new ArgumentNullException($"Updated office {id} is null.");
 
             OfficeUpdated officeUpdatedEvent = _mapper.Map<OfficeUpdated>(updatedOffice);
-            officeUpdatedEvent.Id = updatedOffice.Id.ToString();
 
             await _publishEndpoint.Publish(officeUpdatedEvent, cancellationToken);
         }
@@ -55,7 +54,6 @@ namespace Offices.Data.Repositories
 
 
             OfficeUpdated officeUpdatedEvent = _mapper.Map<OfficeUpdated>(updatedOffice);
-            officeUpdatedEvent.Id = updatedOffice.Id.ToString();
 
             await _publishEndpoint.Publish(officeUpdatedEvent, cancellationToken);
 
@@ -69,7 +67,6 @@ namespace Offices.Data.Repositories
 
 
             OfficeCreated officeCreatedEvent = _mapper.Map<OfficeCreated>(entity);
-            officeCreatedEvent.Id = entity.Id.ToString();
 
             await _publishEndpoint.Publish(officeCreatedEvent, cancellationToken);
 
