@@ -107,17 +107,32 @@ namespace Profiles.Application.Services
 
         public async Task Delete(Guid id, CancellationToken cancellationToken)
         {
-            var patientToDelete = await _unitOfWork.PatientRepository.GetAsync(id, cancellationToken: cancellationToken);
-            if (patientToDelete == null)
+            var patientToDelete = await _unitOfWork.PatientRepository.GetAsync(id, cancellationToken: cancellationToken)
+                ?? throw new NotFoundException($"Patient with id: {id} is not found. Can't delete.");
+
+            try
             {
-                throw new NotFoundException($"Patient with id: {id} is not found. Can't delete.");
+                using (var transaction = _unitOfWork.BeginTransaction(cancellationToken: cancellationToken))
+                {
+                    await _unitOfWork.PatientRepository.DeleteAsync(id, cancellationToken);
+
+                    await _unitOfWork.AccountRepository.DeleteAsync(patientToDelete.AccountId, patientToDelete.Id, cancellationToken);
+
+                    await _fileService.Remove(patientToDelete.Account.PhotoFileName);
+
+                    await transaction.CommitAsync(cancellationToken);
+                    await _unitOfWork.SaveChangesAsync(cancellationToken);
+                }
             }
+            catch
+            {
+                if (await _fileService.DoesFileExist(patientToDelete.Account.PhotoFileName))
+                {
+                    await _fileService.Remove(patientToDelete.Account.PhotoFileName);
+                }
 
-            await _unitOfWork.PatientRepository.DeleteAsync(id, cancellationToken);
-
-            await _fileService.Remove(patientToDelete.Account.PhotoFileName);
-
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+                throw;
+            }
         }
 
         public async Task<PatientModel> Get(Guid id, CancellationToken cancellationToken)

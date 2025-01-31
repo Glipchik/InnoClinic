@@ -89,9 +89,9 @@ namespace Profiles.Application.Services
                 throw new NotFoundException($"Doctor with id: {id} is not found. Can't delete.");
             }
 
-            await _unitOfWork.DoctorRepository.DeleteAsync(id, cancellationToken);
+            doctorToDelete.Status = Domain.Enums.DoctorStatus.Inactive;
 
-            await _fileService.Remove(doctorToDelete.Account.PhotoFileName);
+            await _unitOfWork.DoctorRepository.UpdateAsync(doctorToDelete, cancellationToken);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken: cancellationToken);
         }
