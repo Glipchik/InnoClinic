@@ -20,12 +20,12 @@ using Offices.Application.Extensions;
 using Offices.Application.MappingProfiles;
 using Offices.Application.Services;
 using Offices.Application.Services.Abstractions;
-using Offices.Consumers.DependencyInjection;
 using Offices.Data.Entities;
 using Offices.Data.Extensions;
 using Offices.Data.Providers;
 using Offices.Data.Repositories;
 using Offices.Data.Repositories.Abstractions;
+using Offices.MessageBroking.DependencyInjection;
 
 namespace Offices.API.Extensions
 {

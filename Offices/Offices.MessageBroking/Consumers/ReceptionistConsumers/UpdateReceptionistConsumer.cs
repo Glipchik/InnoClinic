@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Offices.Consumers.ReceptionistConsumers
+namespace Offices.MessageBroking.Consumers.ReceptionistConsumers
 {
     public class UpdateReceptionistConsumer(IReceptionistRepository receptionistRepository, IMapper mapper) : IConsumer<ReceptionistUpdated>
     {

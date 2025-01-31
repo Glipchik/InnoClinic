@@ -4,7 +4,7 @@ using MassTransit;
 using Offices.Data.Entities;
 using Offices.Data.Repositories.Abstractions;
 
-namespace Offices.Consumers.DoctorConsumers
+namespace Offices.MessageBroking.Consumers.DoctorConsumers
 {
     public class CreateDoctorConsumer(IDoctorRepository doctorRepository, IMapper mapper) : IConsumer<DoctorCreated>
     {

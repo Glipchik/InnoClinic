@@ -1,11 +1,10 @@
-﻿using System.Threading;
-using AutoMapper;
-using DnsClient.Internal;
+﻿using AutoMapper;
 using Offices.Application.Models;
 using Offices.Application.Services.Abstractions;
 using Offices.Data.Entities;
 using Offices.Data.Repositories.Abstractions;
 using Offices.Domain.Exceptions;
+using Offices.MessageBroking.Producers.Abstractions;
 
 namespace Offices.Application.Services
 {
@@ -15,18 +14,27 @@ namespace Offices.Application.Services
         private readonly IDoctorRepository _doctorRepository;
         private readonly IReceptionistRepository _receptionistsRepository;
         private readonly IMapper _mapper;
+        private readonly IOfficeProducer _officeProducer;
 
-        public OfficeService(IOfficeRepository officeRepository, IDoctorRepository doctorRepository, IReceptionistRepository receptionistRepository, IMapper mapper)
+        public OfficeService(
+            IOfficeRepository officeRepository,
+            IDoctorRepository doctorRepository,
+            IReceptionistRepository receptionistRepository,
+            IMapper mapper,
+            IOfficeProducer officeProducer)
         {
             _receptionistsRepository = receptionistRepository;
             _doctorRepository = doctorRepository;
             _officeRepository = officeRepository;
             _mapper = mapper;
+            _officeProducer = officeProducer;
         }
 
         public async Task Create(CreateOfficeModel createOfficeModel, CancellationToken cancellationToken)
         {
-            await _officeRepository.CreateAsync(_mapper.Map<Office>(createOfficeModel), cancellationToken);
+            var officeToCreate = _mapper.Map<Office>(createOfficeModel);
+            await _officeRepository.CreateAsync(officeToCreate, cancellationToken);
+            await _officeProducer.PublishOfficeCreated(officeToCreate, cancellationToken);
         }
 
         public async Task Update(UpdateOfficeModel updateOfficeModel, CancellationToken cancellationToken)
@@ -36,6 +44,7 @@ namespace Offices.Application.Services
 
             var office = _mapper.Map<Office>(updateOfficeModel);
             await _officeRepository.UpdateAsync(office, cancellationToken);
+            await _officeProducer.PublishOfficeUpdated(office, cancellationToken);
         }
 
         public async Task<OfficeModel> Get(Guid id, CancellationToken cancellationToken)
@@ -64,7 +73,9 @@ namespace Offices.Application.Services
             }
             else
             {
-                await _officeRepository.DeleteAsync(id, cancellationToken);
+                officeToDelete.IsActive = false;
+                await _officeRepository.UpdateAsync(officeToDelete, cancellationToken);
+                await _officeProducer.PublishOfficeUpdated(officeToDelete, cancellationToken);
             }
         }
 

@@ -1,16 +1,13 @@
 ﻿using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
-using Offices.Consumers.DoctorConsumers;
 using Offices.Consumers.Mapper;
-using Offices.Consumers.ReceptionistConsumers;
-using Offices.Data.Mapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Offices.MessageBroking.Consumers.DoctorConsumers;
+using Offices.MessageBroking.Consumers.ReceptionistConsumers;
+using Offices.MessageBroking.Mapper;
+using Offices.MessageBroking.Producers;
+using Offices.MessageBroking.Producers.Abstractions;
 
-namespace Offices.Consumers.DependencyInjection
+namespace Offices.MessageBroking.DependencyInjection
 {
     public static class ConsumersDependencyInjection
     {
@@ -29,6 +26,9 @@ namespace Offices.Consumers.DependencyInjection
             });
 
             services.AddAutoMapper(typeof(ConsumersMapping));
+            services.AddAutoMapper(typeof(ProducersMapping));
+
+            services.AddScoped<IOfficeProducer, OfficeProducer>();
 
             return services;
         }

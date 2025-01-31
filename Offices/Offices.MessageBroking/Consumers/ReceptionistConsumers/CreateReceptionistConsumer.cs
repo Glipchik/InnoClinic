@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Offices.Consumers.ReceptionistConsumers
+namespace Offices.MessageBroking.Consumers.ReceptionistConsumers
 {
     public class CreateReceptionistConsumer(IReceptionistRepository receptionistRepository, IMapper mapper) : IConsumer<ReceptionistCreated>
     {
