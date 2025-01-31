@@ -39,7 +39,7 @@ namespace Offices.API.Extensions
             // Adding application extensions
             services.AddApplicationExtensions();
 
-            services.AddConsumersDependencyInjection();
+            services.AddMessageBrokingDependencyInjection();
 
             // Global exception handler
             services.AddExceptionHandler<GlobalExceptionHandler>();
