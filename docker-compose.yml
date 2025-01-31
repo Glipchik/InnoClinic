@@ -33,6 +33,18 @@ services:
     volumes:
       - mssql_data_authorization:/var/opt/mssql
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    hostname: my-rabbitmq-server
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    restart: unless-stopped
+    
   postgressql-db-appointments-api:
     image: postgres:15
     container_name: postgresql_appointments_container

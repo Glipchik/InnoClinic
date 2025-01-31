@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
-using MassTransit;
-using MongoDB.Bson;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 using Offices.Data.Entities;
 using Offices.Data.Providers;
 using Offices.Data.Repositories.Abstractions;
-using Offices.Domain.Exceptions;
-using SharpCompress.Common;
 
 namespace Offices.Data.Repositories
 {
@@ -19,14 +9,12 @@ namespace Offices.Data.Repositories
     {
         protected readonly IMongoCollection<Doctor> _doctorCollection;
         protected readonly IMongoCollection<Receptionist> _receptionistCollection;
-        private readonly IMapper _mapper;
 
-        public OfficeRepository(MongoDbContext mongoDbContext, IMapper mapper) :
+        public OfficeRepository(MongoDbContext mongoDbContext) :
             base(mongoDbContext)
         {
             _doctorCollection = mongoDbContext.Database.GetCollection<Doctor>(typeof(Doctor).Name);
             _receptionistCollection = mongoDbContext.Database.GetCollection<Receptionist>(typeof(Receptionist).Name);
-            _mapper = mapper;
         }
 
         public override async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
@@ -50,7 +38,9 @@ namespace Offices.Data.Repositories
 
         public override async Task<Office> CreateAsync(Office entity, CancellationToken cancellationToken)
         {
-            entity.Id = Guid.NewGuid();
+            if (entity.Id == Guid.Empty)
+                entity.Id = Guid.NewGuid();
+
             await _collection.InsertOneAsync(entity, cancellationToken: cancellationToken);
 
             return entity;

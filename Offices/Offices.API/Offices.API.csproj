@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Offices.Application\Offices.Application.csproj" />
     <ProjectReference Include="..\Offices.Domain\Offices.Domain.csproj" />
+    <ProjectReference Include="..\Offices.MessageBroking\Offices.MessageBroking.csproj" />
   </ItemGroup>
 
     <PropertyGroup>

@@ -18,6 +18,7 @@ using Offices.Data.Entities;
 using Offices.Data.Enums;
 using Offices.Data.Repositories.Abstractions;
 using Offices.Domain.Exceptions;
+using Offices.MessageBroking.Producers.Abstractions;
 using Shouldly;
 
 namespace Offices.Tests
@@ -29,6 +30,7 @@ namespace Offices.Tests
         private readonly Mock<IOfficeRepository> _officeRepositoryMock;
         private readonly Mock<IReceptionistRepository> _receptionistRepositoryMock;
         private readonly Mock<IMapper> _mapperMock;
+        private readonly Mock<IOfficeProducer> _officeProducerMock;
         private readonly OfficeService _officeService;
 
         public OfficeServiceTests()
@@ -38,7 +40,9 @@ namespace Offices.Tests
             _doctorRepositoryMock = _fixture.Freeze<Mock<IDoctorRepository>>();
             _officeRepositoryMock = _fixture.Freeze<Mock<IOfficeRepository>>();
             _receptionistRepositoryMock = _fixture.Freeze<Mock<IReceptionistRepository>>();
-            _officeService = new OfficeService(_officeRepositoryMock.Object, _doctorRepositoryMock.Object, _receptionistRepositoryMock.Object, _mapperMock.Object);
+            _officeProducerMock = _fixture.Freeze<Mock<IOfficeProducer>>();
+
+            _officeService = new OfficeService(_officeRepositoryMock.Object, _doctorRepositoryMock.Object, _receptionistRepositoryMock.Object, _mapperMock.Object, _officeProducerMock.Object);
         }
 
         [Fact]
