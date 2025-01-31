@@ -76,14 +76,32 @@ namespace Profiles.Application.Services
 
         public async Task Delete(Guid id, CancellationToken cancellationToken)
         {
-            var receptionistToDelete = await _unitOfWork.ReceptionistRepository.GetAsync(id, cancellationToken: cancellationToken);
-            if (receptionistToDelete == null)
-            {
-                throw new NotFoundException($"Receptionist with id: {id} is not found. Can't delete.");
-            }
+            var receptionistToDelete = await _unitOfWork.ReceptionistRepository.GetAsync(id, cancellationToken: cancellationToken)
+                ?? throw new NotFoundException($"Receptionist with id: {id} is not found. Can't delete.");
 
-            await _unitOfWork.ReceptionistRepository.DeleteAsync(id, cancellationToken);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            try
+            {
+                using (var transaction = _unitOfWork.BeginTransaction(cancellationToken: cancellationToken))
+                {
+                    await _unitOfWork.ReceptionistRepository.DeleteAsync(id, cancellationToken);
+
+                    await _unitOfWork.AccountRepository.DeleteAsync(receptionistToDelete.AccountId, receptionistToDelete.Id, cancellationToken);
+
+                    await _fileService.Remove(receptionistToDelete.Account.PhotoFileName);
+
+                    await transaction.CommitAsync(cancellationToken);
+                    await _unitOfWork.SaveChangesAsync(cancellationToken);
+                }
+            }
+            catch
+            {
+                if (await _fileService.DoesFileExist(receptionistToDelete.Account.PhotoFileName))
+                {
+                    await _fileService.Remove(receptionistToDelete.Account.PhotoFileName);
+                }
+
+                throw;
+            }
         }
 
         public async Task<ReceptionistModel> Get(Guid id, CancellationToken cancellationToken)
