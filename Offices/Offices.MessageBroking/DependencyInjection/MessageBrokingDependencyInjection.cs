@@ -9,9 +9,9 @@ using Offices.MessageBroking.Producers.Abstractions;
 
 namespace Offices.MessageBroking.DependencyInjection
 {
-    public static class ConsumersDependencyInjection
+    public static class MessageBrokingDependencyInjection
     {
-        public static IServiceCollection AddConsumersDependencyInjection(this IServiceCollection services)
+        public static IServiceCollection AddMessageBrokingDependencyInjection(this IServiceCollection services)
         {
             services.AddMassTransit(x =>
             {
