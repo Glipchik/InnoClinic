@@ -45,6 +45,7 @@ namespace Appointments.Infrastructure.Repositories
                 .Include(a => a.Doctor)
                 .Include(a => a.Doctor)
                 .Include(a => a.Service)
+                .Include(a => a.Service.ServiceCategory)
                 .Where(a => a.DoctorId == doctorId).ToListAsync(cancellationToken);
         }
 
@@ -54,6 +55,7 @@ namespace Appointments.Infrastructure.Repositories
                 .Include(a => a.Doctor)
                 .Include(a => a.Doctor)
                 .Include(a => a.Service)
+                .Include(a => a.Service.ServiceCategory)
                 .Where(a => a.PatientId == patientId).ToListAsync(cancellationToken);
         }
 
@@ -63,6 +65,7 @@ namespace Appointments.Infrastructure.Repositories
                 .Include(a => a.Doctor)
                 .Include(a => a.Doctor)
                 .Include(a => a.Service)
+                .Include(a => a.Service.ServiceCategory)
                 .FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
         }
     }

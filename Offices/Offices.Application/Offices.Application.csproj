@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Offices.Data\Offices.Data.csproj" />
     <ProjectReference Include="..\Offices.Domain\Offices.Domain.csproj" />
+    <ProjectReference Include="..\Offices.MessageBroking\Offices.MessageBroking.csproj" />
   </ItemGroup>
 
 </Project>
