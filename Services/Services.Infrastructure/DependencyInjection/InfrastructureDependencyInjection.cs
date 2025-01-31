@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Services.Domain.Repositories.Abstractions;
 using Services.Infrastructure.Repositories;
 using Services.Infrastructure.Contexts;
-using System.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
-using Services.Infrastructure.Mapper;
 
 namespace Services.Infrastructure.Extensions
 {
@@ -27,8 +20,6 @@ namespace Services.Infrastructure.Extensions
             services.AddScoped<ISpecializationRepository, SpecializationRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-            services.AddAutoMapper(typeof(EventMapping));
 
             return services;
         }

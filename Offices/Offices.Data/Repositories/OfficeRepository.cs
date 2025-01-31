@@ -1,18 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
-using Events.Office;
-using MassTransit;
-using MongoDB.Bson;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 using Offices.Data.Entities;
 using Offices.Data.Providers;
 using Offices.Data.Repositories.Abstractions;
-using Offices.Domain.Exceptions;
-using SharpCompress.Common;
 
 namespace Offices.Data.Repositories
 {
@@ -20,16 +9,12 @@ namespace Offices.Data.Repositories
     {
         protected readonly IMongoCollection<Doctor> _doctorCollection;
         protected readonly IMongoCollection<Receptionist> _receptionistCollection;
-        private readonly IPublishEndpoint _publishEndpoint;
-        private readonly IMapper _mapper;
 
-        public OfficeRepository(MongoDbContext mongoDbContext, IPublishEndpoint publishEndpoint, IMapper mapper) :
+        public OfficeRepository(MongoDbContext mongoDbContext) :
             base(mongoDbContext)
         {
             _doctorCollection = mongoDbContext.Database.GetCollection<Doctor>(typeof(Doctor).Name);
             _receptionistCollection = mongoDbContext.Database.GetCollection<Receptionist>(typeof(Receptionist).Name);
-            _publishEndpoint = publishEndpoint;
-            _mapper = mapper;
         }
 
         public override async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
@@ -38,10 +23,6 @@ namespace Offices.Data.Repositories
 
             var updatedOffice = await GetAsync(id, cancellationToken)
                 ?? throw new ArgumentNullException($"Updated office {id} is null.");
-
-            OfficeUpdated officeUpdatedEvent = _mapper.Map<OfficeUpdated>(updatedOffice);
-
-            await _publishEndpoint.Publish(officeUpdatedEvent, cancellationToken);
         }
 
 
@@ -52,23 +33,15 @@ namespace Offices.Data.Repositories
             var updatedOffice = await GetAsync(entity.Id, cancellationToken)
                 ?? throw new ArgumentNullException($"Updated office {entity.Id} is null.");
 
-
-            OfficeUpdated officeUpdatedEvent = _mapper.Map<OfficeUpdated>(updatedOffice);
-
-            await _publishEndpoint.Publish(officeUpdatedEvent, cancellationToken);
-
             return entity;
         }
 
         public override async Task<Office> CreateAsync(Office entity, CancellationToken cancellationToken)
         {
-            entity.Id = Guid.NewGuid();
+            if (entity.Id == Guid.Empty)
+                entity.Id = Guid.NewGuid();
+
             await _collection.InsertOneAsync(entity, cancellationToken: cancellationToken);
-
-
-            OfficeCreated officeCreatedEvent = _mapper.Map<OfficeCreated>(entity);
-
-            await _publishEndpoint.Publish(officeCreatedEvent, cancellationToken);
 
             return entity;
         }
