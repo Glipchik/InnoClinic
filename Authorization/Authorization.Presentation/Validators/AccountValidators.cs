@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Authorization.Presentation.DTOs;
+using FluentValidation;
 
 namespace Authorization.Presentation.Validators
 {
@@ -60,6 +61,24 @@ namespace Authorization.Presentation.Validators
                 .MaximumLength(50).WithMessage("Email is too long")
                 .EmailAddress().WithMessage("Invalid format of email address");
             RuleFor(acc => acc.Password)
+                .NotEmpty().WithMessage("Password is required")
+                .MinimumLength(6).WithMessage("Password must be at least 6 characters long")
+                .MaximumLength(50).WithMessage("Email is too long");
+        }
+    }
+
+    public class ResetPasswordDtoValidator : AbstractValidator<ResetPasswordDto>
+    {
+        public ResetPasswordDtoValidator()
+        {
+            RuleFor(acc => acc.Email)
+                .NotEmpty().WithMessage("Email is required")
+                .MaximumLength(50).WithMessage("Email is too long")
+                .EmailAddress().WithMessage("Invalid format of email address");
+            RuleFor(acc => acc.Token)
+                .NotEmpty().WithMessage("Token is required")
+                .MaximumLength(50).WithMessage("Token is too long");
+            RuleFor(acc => acc.NewPassword)
                 .NotEmpty().WithMessage("Password is required")
                 .MinimumLength(6).WithMessage("Password must be at least 6 characters long")
                 .MaximumLength(50).WithMessage("Email is too long");
