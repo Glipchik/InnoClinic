@@ -12,14 +12,10 @@ namespace Profiles.Infrastructure.Repositories
     public class AccountRepository : IAccountRepository
     {
         private readonly AppDbContext _context;
-        private readonly IPublishEndpoint _publishEndpoint;
-        private readonly IMapper _mapper;
 
-        public AccountRepository(AppDbContext context, IPublishEndpoint publishEndpoint, IMapper mapper)
+        public AccountRepository(AppDbContext context)
         {
             _context = context;
-            _publishEndpoint = publishEndpoint;
-            _mapper = mapper;
         }
 
         public async Task CreateAsync(Account entity, Guid authorId, CancellationToken cancellationToken)
@@ -35,8 +31,6 @@ namespace Profiles.Infrastructure.Repositories
             entity.UpdatedBy = authorId;
 
             await _context.Set<Account>().AddAsync(entity, cancellationToken);
-
-            await _publishEndpoint.Publish(_mapper.Map<AccountCreated>(entity), cancellationToken);
         }
 
         public async Task DeleteAsync(Guid id, Guid authorId, CancellationToken cancellationToken)
@@ -45,8 +39,6 @@ namespace Profiles.Infrastructure.Repositories
                 ?? throw new ArgumentNullException($"Account with id {id} not found");
 
             _context.Set<Account>().Remove(entityToDelete);
-
-            await _publishEndpoint.Publish(new AccountDeleted() { Id = id }, cancellationToken);
         }
 
         public async Task<Account> FindByEmailAsync(string email, CancellationToken cancellationToken)

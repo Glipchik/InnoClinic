@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Events.Patient;
 using Events.Receptionist;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
@@ -12,19 +11,15 @@ namespace Profiles.Infrastructure.Repositories
     public class ReceptionistRepository : GenericRepository<Receptionist>, IReceptionistRepository
     {
         private readonly AppDbContext _context;
-        private readonly IPublishEndpoint _publishEndpoint;
-        private readonly IMapper _mapper;
         private IAccountRepository _accountRepository;
 
-        public ReceptionistRepository(AppDbContext context, IPublishEndpoint publishEndpoint, IMapper mapper, IAccountRepository accountRepository) : base(context)
+        public ReceptionistRepository(AppDbContext context, IAccountRepository accountRepository) : base(context)
         {
             _context = context;
-            _publishEndpoint = publishEndpoint;
-            _mapper = mapper;
             _accountRepository = accountRepository;
         }
 
-        public override async Task CreateAsync(Receptionist entity, CancellationToken cancellationToken)
+        public override async Task<Receptionist> CreateAsync(Receptionist entity, CancellationToken cancellationToken)
         {
             if (entity.Id == Guid.Empty)
             {
@@ -32,15 +27,13 @@ namespace Profiles.Infrastructure.Repositories
             }
 
             await _context.Set<Receptionist>().AddAsync(entity, cancellationToken);
-
-            await _publishEndpoint.Publish(_mapper.Map<ReceptionistCreated>(entity), cancellationToken);
+            return entity;
         }
 
-        public override async Task UpdateAsync(Receptionist entity, CancellationToken cancellationToken)
+        public override async Task<Receptionist> UpdateAsync(Receptionist entity, CancellationToken cancellationToken)
         {
             _context.Set<Receptionist>().Update(entity);
-
-            await _publishEndpoint.Publish(_mapper.Map<ReceptionistUpdated>(entity), cancellationToken);
+            return entity;
         }
 
         public async override Task DeleteAsync(Guid id, CancellationToken cancellationToken)
@@ -51,8 +44,6 @@ namespace Profiles.Infrastructure.Repositories
             _context.Set<Receptionist>().Remove(receptionist);
 
             await _accountRepository.DeleteAsync(receptionist.AccountId, id, cancellationToken);
-
-            await _publishEndpoint.Publish(new ReceptionistDeleted() { Id = id }, cancellationToken);
         }
 
         public async override Task<IEnumerable<Receptionist>> GetAllAsync(CancellationToken cancellationToken)

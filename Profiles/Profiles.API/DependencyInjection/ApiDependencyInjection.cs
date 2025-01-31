@@ -24,7 +24,7 @@ public static class ApiDependencyInjection
         
         services.AddInfrastructureDependencyInjection(configuration);
 
-        services.AddConsumersDependencyInjection();
+        services.AddMessageBrokingDependencyInjection();
 
         services.AddProblemDetails();
 

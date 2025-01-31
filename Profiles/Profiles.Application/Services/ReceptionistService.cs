@@ -4,6 +4,7 @@ using Profiles.Application.Models;
 using Profiles.Application.Services.Abstractions;
 using Profiles.Domain.Entities;
 using Profiles.Domain.Repositories.Abstractions;
+using Profiles.MessageBroking.Producers.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +19,19 @@ namespace Profiles.Application.Services
         private readonly IMapper _mapper;
         private readonly IAccountService _accountService;
         private readonly IFileService _fileService;
+        private readonly IReceptioinistProducer _receptionistProducer;
+        private readonly IAccountProducer _accountProducer;
 
-        public ReceptionistService(IUnitOfWork unitOfWork, IMapper mapper, IAccountService accountService, IFileService fileService)
+        public ReceptionistService(IUnitOfWork unitOfWork, IMapper mapper, IAccountService accountService, IFileService fileService,
+            IReceptioinistProducer receptionistProducer,
+            IAccountProducer accountProducer)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _accountService = accountService;
             _fileService = fileService;
+            _receptionistProducer = receptionistProducer;
+            _accountProducer = accountProducer;
         }
 
         public async Task Create(
@@ -61,6 +68,9 @@ namespace Profiles.Application.Services
 
                     await transaction.CommitAsync(cancellationToken);
                     await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+                    await _receptionistProducer.PublishReceptionistCreated(receptionist, cancellationToken);
+                    await _accountProducer.PublishAccountCreated(_mapper.Map<Account>(createdAccount), cancellationToken);
                 }
             }
             catch
@@ -91,6 +101,9 @@ namespace Profiles.Application.Services
 
                     await transaction.CommitAsync(cancellationToken);
                     await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+                    await _receptionistProducer.PublishReceptionistDeleted(id, cancellationToken);
+                    await _accountProducer.PublishAccountDeleted(receptionistToDelete.AccountId, cancellationToken);
                 }
             }
             catch
@@ -155,6 +168,8 @@ namespace Profiles.Application.Services
 
             await _unitOfWork.ReceptionistRepository.UpdateAsync(receptionistToUpdate, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            await _receptionistProducer.PublishReceptionistUpdated(receptionistToUpdate, cancellationToken);
         }
     }
 }
