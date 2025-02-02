@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using Offices.Data.Entities;
 using Offices.Data.Providers;
 using Offices.Data.Repositories;
 using Offices.Data.Repositories.Abstractions;

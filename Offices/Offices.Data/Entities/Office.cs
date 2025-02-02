@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,9 +9,13 @@ namespace Offices.Data.Entities
 {
     public class Office: BaseEntity
     {
-        public string Address { get; set; }
-        public string PhotoURL {  get; set; }
-        public string RegistryPhoneNumber { get; set; }
-        public bool IsActive { get; set; }
+        [BsonRequired]
+        public required string Address { get; set; }
+
+        [BsonRequired]
+        public required string RegistryPhoneNumber { get; set; }
+
+        [BsonRequired]
+        public required bool IsActive { get; set; }
     }
 }

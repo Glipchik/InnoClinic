@@ -15,8 +15,10 @@ using Offices.Application.Models;
 using Offices.Application.Services;
 using Offices.Application.Services.Abstractions;
 using Offices.Data.Entities;
+using Offices.Data.Enums;
 using Offices.Data.Repositories.Abstractions;
 using Offices.Domain.Exceptions;
+using Offices.MessageBroking.Producers.Abstractions;
 using Shouldly;
 
 namespace Offices.Tests
@@ -28,6 +30,7 @@ namespace Offices.Tests
         private readonly Mock<IOfficeRepository> _officeRepositoryMock;
         private readonly Mock<IReceptionistRepository> _receptionistRepositoryMock;
         private readonly Mock<IMapper> _mapperMock;
+        private readonly Mock<IOfficeProducer> _officeProducerMock;
         private readonly OfficeService _officeService;
 
         public OfficeServiceTests()
@@ -37,7 +40,9 @@ namespace Offices.Tests
             _doctorRepositoryMock = _fixture.Freeze<Mock<IDoctorRepository>>();
             _officeRepositoryMock = _fixture.Freeze<Mock<IOfficeRepository>>();
             _receptionistRepositoryMock = _fixture.Freeze<Mock<IReceptionistRepository>>();
-            _officeService = new OfficeService(_officeRepositoryMock.Object, _doctorRepositoryMock.Object, _receptionistRepositoryMock.Object, _mapperMock.Object);
+            _officeProducerMock = _fixture.Freeze<Mock<IOfficeProducer>>();
+
+            _officeService = new OfficeService(_officeRepositoryMock.Object, _doctorRepositoryMock.Object, _receptionistRepositoryMock.Object, _mapperMock.Object, _officeProducerMock.Object);
         }
 
         [Fact]
@@ -57,13 +62,13 @@ namespace Offices.Tests
 
         [Theory]
         [AutoData]
-        public async Task Delete_ThereAreDoctors_ShouldBeException(string officeId)
+        public async Task Delete_ThereAreDoctors_ShouldBeException(Guid officeId)
         {
             // Arrange
             _doctorRepositoryMock.Setup(repo => repo.GetActiveDoctorsFromOffice(officeId, CancellationToken.None))
                 .ReturnsAsync(new List<Doctor>
                 {
-                    CreateDoctor(OfficeId: officeId, Status: "Active")
+                    CreateDoctor(OfficeId: officeId, Status: DoctorStatus.AtWork)
                 });
 
             // Act and Assert
@@ -75,7 +80,7 @@ namespace Offices.Tests
 
         [Theory]
         [AutoData]
-        public async Task Delete_ThereAreReceptionists_ShouldBeException(string officeId)
+        public async Task Delete_ThereAreReceptionists_ShouldBeException(Guid officeId)
         {
             // Arrange
             _receptionistRepositoryMock.Setup(repo => repo.GetActiveReceptionistsFromOffice(officeId, CancellationToken.None))
@@ -93,7 +98,7 @@ namespace Offices.Tests
 
         [Theory]
         [AutoData]
-        public async void DeleteOffice_ShouldBe_Success(string officeId)
+        public async void DeleteOffice_ShouldBe_Success(Guid officeId)
         {
             // Arrange
             _doctorRepositoryMock.Setup(repo => repo.GetActiveDoctorsFromOffice(officeId, CancellationToken.None)).
@@ -108,20 +113,20 @@ namespace Offices.Tests
             });
         }
 
-        private Doctor CreateDoctor(string? Id = null, string? OfficeId = null, string? Status = null)
+        private Doctor CreateDoctor(Guid? Id = null, Guid? OfficeId = null, DoctorStatus? Status = null)
         {
             return _fixture.Build<Doctor>()
-                .With(x => x.Id, Id ?? _fixture.Create<string>())
-                .With(x => x.OfficeId, OfficeId ?? _fixture.Create<string>())
-                .With(x => x.Status, Status ?? _fixture.Create<string>())
+                .With(x => x.Id, Id ?? Guid.NewGuid())
+                .With(x => x.OfficeId, OfficeId ?? Guid.NewGuid())
+                .With(x => x.Status, Status ?? DoctorStatus.AtWork)
                 .Create();
         }
 
-        private Receptionist CreateReceptionist(string? Id = null, string? OfficeId = null)
+        private Receptionist CreateReceptionist(Guid? Id = null, Guid? OfficeId = null)
         {
             return _fixture.Build<Receptionist>()
-                .With(x => x.Id, Id ?? _fixture.Create<string>())
-                .With(x => x.OfficeId, OfficeId ?? _fixture.Create<string>())
+                .With(x => x.Id, Id ?? Guid.NewGuid())
+                .With(x => x.OfficeId, OfficeId ?? Guid.NewGuid())
                 .Create();
         }
     }
