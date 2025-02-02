@@ -17,7 +17,7 @@ namespace Offices.Data.Repositories
         {
         }
 
-        public async Task<IEnumerable<Receptionist>> GetActiveReceptionistsFromOffice(Guid officeId, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Receptionist>> GetReceptionistsFromOffice(Guid officeId, CancellationToken cancellationToken)
         {
             var cursor = await _collection.FindAsync(r => r.OfficeId == officeId, cancellationToken: cancellationToken);
             return await cursor.ToListAsync(cancellationToken);

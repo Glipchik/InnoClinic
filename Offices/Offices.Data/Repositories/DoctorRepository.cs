@@ -31,5 +31,11 @@ namespace Offices.Data.Repositories
             var cursor = await _collection.FindAsync(d => d.OfficeId == officeId && d.Status == DoctorStatus.AtWork, cancellationToken: cancellationToken);
             return await cursor.ToListAsync(cancellationToken);
         }
+
+        public async Task<IEnumerable<Doctor>> GetDoctorsFromOffice(Guid officeId, CancellationToken cancellationToken)
+        {
+            var cursor = await _collection.FindAsync(d => d.OfficeId == officeId, cancellationToken: cancellationToken);
+            return await cursor.ToListAsync(cancellationToken);
+        }
     }
 }

@@ -5,7 +5,9 @@ using Offices.Data.Entities;
 using Offices.Data.Providers;
 using Offices.Data.Repositories.Abstractions;
 using Offices.Domain.Exceptions;
+using Offices.Domain.Models;
 using SharpCompress.Common;
+using System.Numerics;
 
 namespace Offices.Data.Repositories
 {
@@ -32,9 +34,25 @@ namespace Offices.Data.Repositories
             await _collection.DeleteOneAsync(e => e.Id == id, cancellationToken: cancellationToken);
         }
 
+        public async Task<PaginatedList<T>> GetAllAsync(int pageIndex, int pageSize, CancellationToken cancellationToken)
+        {
+            var entities = _collection.Find(_ => true);
+
+            var paginatedEntities = (await entities.ToListAsync(cancellationToken: cancellationToken))
+                .OrderBy(b => b.Id)
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            var count = await entities.CountDocumentsAsync(cancellationToken);
+            var totalPages = (int)Math.Ceiling(count / (double)pageSize);
+
+            return new PaginatedList<T>(paginatedEntities, pageIndex, totalPages);
+        }
+
         public async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken)
         {
-            return await _collection.Find(_ => true).ToListAsync(cancellationToken: cancellationToken);
+            return await _collection.Find(_ => true).ToListAsync(cancellationToken);
         }
 
         public async Task<T?> GetAsync(Guid id, CancellationToken cancellationToken)
