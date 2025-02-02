@@ -57,9 +57,9 @@ namespace Offices.API.Controllers
         /// <response code="500">If there was an internal server error</response>
         [HttpGet]
         [Authorize]
-        public async Task<IEnumerable<OfficeDto>> Get(CancellationToken cancellationToken)
+        public async Task<IEnumerable<OfficeDto>> Get(CancellationToken cancellationToken, int pageIndex = 1, int pageSize = 10)
         {
-            var offices = await _officeService.GetAll(cancellationToken);
+            var offices = await _officeService.GetAll(pageIndex, pageSize, cancellationToken);
             _logger.LogInformation("Requested offices list");
 
             var officeDtos = _mapper.Map<IEnumerable<OfficeDto>>(offices);
