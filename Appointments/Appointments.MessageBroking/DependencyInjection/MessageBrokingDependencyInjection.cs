@@ -4,6 +4,7 @@ using Appointments.Consumers.Consumers.ServiceCategoryConsumers;
 using Appointments.Consumers.Consumers.ServiceConsumers;
 using Appointments.Consumers.Consumers.SpecializationConsumers;
 using Appointments.Consumers.Mapper;
+using Appointments.MessageBroking.Consumers.DoctorConsumers;
 using Appointments.MessageBroking.Producers.Abstractions.AppointmentProducers;
 using Appointments.MessageBroking.Producers.AppointmentProducers;
 using MassTransit;
@@ -52,6 +53,7 @@ namespace Appointments.MessageBroking.DependencyInjection
         {
             x.AddConsumer<CreateDoctorConsumer>();
             x.AddConsumer<UpdateDoctorConsumer>();
+            x.AddConsumer<DeactivateDoctorConsumer>();
         }
 
         private static void AddServiceCategoryConsumers(IBusRegistrationConfigurator x)
