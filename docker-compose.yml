@@ -58,6 +58,18 @@ services:
       RABBITMQ_DEFAULT_PASS: guest
     restart: unless-stopped
     
+  mssql-db-documents-api:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql_documents_container
+    ports:
+      - "1436:1433"
+    environment:
+      SA_PASSWORD: "mypassword123!"
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Express"
+    volumes:
+      - mssql_data_documents:/var/opt/mssql
+
   mssql-db-profiles-api:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: mssql_profiles_container
@@ -87,4 +99,5 @@ volumes:
   postgres_data:
   mssql_data_services:
   mssql_data_authorization:
+  mssql_data_documents:
   mssql_data_profiles:
