@@ -14,6 +14,7 @@ using Services.Application.Models;
 using Services.Application.Services;
 using Services.Domain.Entities;
 using Services.Domain.Repositories.Abstractions;
+using Services.MessageBroking.Producers.Abstractions;
 using Shouldly;
 
 namespace Services.Tests
@@ -23,6 +24,7 @@ namespace Services.Tests
         private readonly IFixture _fixture;
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
         private readonly Mock<IMapper> _mapperMock;
+        private readonly Mock<IServiceProducer> _producerMock;
         private readonly ServiceManager _serviceManager;
 
         public ServiceManagerTests()
@@ -36,8 +38,9 @@ namespace Services.Tests
 
             _mapperMock = _fixture.Freeze<Mock<IMapper>>();
             _unitOfWorkMock = _fixture.Freeze<Mock<IUnitOfWork>>();
+            _producerMock = _fixture.Freeze<Mock<IServiceProducer>>();
 
-            _serviceManager = new ServiceManager(_unitOfWorkMock.Object, _mapperMock.Object);
+            _serviceManager = new ServiceManager(_unitOfWorkMock.Object, _mapperMock.Object, _producerMock.Object);
 
             _fixture.Customize<decimal>(c => c.FromFactory(() => (decimal)(new Random().NextDouble() * 100)));
         }

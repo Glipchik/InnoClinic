@@ -22,6 +22,7 @@ namespace Offices.Data.Repositories
         {
             if (entity.Id == Guid.Empty)
                 entity.Id = Guid.NewGuid();
+
             await _collection.InsertOneAsync(entity, cancellationToken: cancellationToken);
             return entity;
         }

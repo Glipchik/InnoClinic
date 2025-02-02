@@ -19,7 +19,7 @@ namespace Services.API.DependencyInjection
         {
             services.AddInfrastructureDependencyInjection(configuration);
 
-            services.AddConsumersDependencyInjection();
+            services.AddMessageBrokingDependencyInjection();
 
             services.AddProblemDetails();
 

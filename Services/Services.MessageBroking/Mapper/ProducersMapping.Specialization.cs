@@ -2,11 +2,11 @@
 using Events.Specialization;
 using Services.Domain.Entities;
 
-namespace Services.Infrastructure.Mapper
+namespace Services.MessageBroking.Mapper
 {
-    public partial class EventMapping : Profile
+    public partial class ProducersMapping : Profile
     {
-        partial void AddSpecializationEventMapping()
+        partial void AddSpecializationMapping()
         {
             CreateMap<Specialization, SpecializationCreated>();
             CreateMap<Specialization, SpecializationUpdated>();

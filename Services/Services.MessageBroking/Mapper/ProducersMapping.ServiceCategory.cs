@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
-using Events.Doctor;
+using Events.Service;
 using Events.ServiceCategory;
 using Services.Domain.Entities;
 
-namespace Services.Infrastructure.Mapper
+namespace Services.MessageBroking.Mapper
 {
-    public partial class EventMapping : Profile
+    public partial class ProducersMapping : Profile
     {
-        partial void AddServiceCategoryEventMapping()
+        partial void AddServiceCategoryMapping()
         {
             CreateMap<ServiceCategory, ServiceCategoryCreated>();
             CreateMap<ServiceCategory, ServiceCategoryUpdated>();

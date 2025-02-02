@@ -14,6 +14,7 @@ using Services.Application.Services;
 using Services.Application.Services.Abstractions;
 using Services.Domain.Entities;
 using Services.Domain.Repositories.Abstractions;
+using Services.MessageBroking.Producers.Abstractions;
 using Shouldly;
 
 namespace Services.Tests
@@ -23,6 +24,9 @@ namespace Services.Tests
     {
         private readonly IFixture _fixture;
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
+        private readonly Mock<IServiceProducer> _serviceProducerMock;
+        private readonly Mock<IDoctorProducer> _doctorProducerMock;
+        private readonly Mock<ISpecializationProducer> _specializationProducerMock;
         private readonly Mock<IMapper> _mapperMock;
         private readonly SpecializationService _specializationService;
 
@@ -37,8 +41,11 @@ namespace Services.Tests
 
             _mapperMock = _fixture.Freeze<Mock<IMapper>>();
             _unitOfWorkMock = _fixture.Freeze<Mock<IUnitOfWork>>();
+            _serviceProducerMock = _fixture.Freeze<Mock<IServiceProducer>>();
+            _doctorProducerMock = _fixture.Freeze<Mock<IDoctorProducer>>();
+            _specializationProducerMock = _fixture.Freeze<Mock<ISpecializationProducer>>();
 
-            _specializationService = new SpecializationService(_unitOfWorkMock.Object, _mapperMock.Object);
+            _specializationService = new SpecializationService(_unitOfWorkMock.Object, _mapperMock.Object, _serviceProducerMock.Object, _specializationProducerMock.Object, _doctorProducerMock.Object);
         }
 
         [Theory]

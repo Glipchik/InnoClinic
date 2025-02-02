@@ -2,12 +2,15 @@
 using Microsoft.Extensions.DependencyInjection;
 using Services.Consumers.Consumers.DoctorConsumers;
 using Services.Consumers.Mapper;
+using Services.MessageBroking.Mapper;
+using Services.MessageBroking.Producers;
+using Services.MessageBroking.Producers.Abstractions;
 
 namespace Services.Consumers.Consumers.DependencyInjection
 {
-    public static class ConsumersDependencyInjection
+    public static class MessageBrokingDependencyInjection
     {
-        public static IServiceCollection AddConsumersDependencyInjection(this IServiceCollection services)
+        public static IServiceCollection AddMessageBrokingDependencyInjection(this IServiceCollection services)
         {
             services.AddMassTransit(x =>
             {
@@ -20,6 +23,12 @@ namespace Services.Consumers.Consumers.DependencyInjection
             });
 
             services.AddAutoMapper(typeof(ConsumersMapping));
+            services.AddAutoMapper(typeof(ProducersMapping));
+
+            services.AddScoped<IServiceCategoryProducer, ServiceCategoryProducer>();
+            services.AddScoped<IServiceProducer, ServiceProducer>();
+            services.AddScoped<IDoctorProducer, DoctorProducer>();
+            services.AddScoped<ISpecializationProducer, SpecializationProducer>();
 
             return services;
         }

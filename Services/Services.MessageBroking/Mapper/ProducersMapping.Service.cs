@@ -2,11 +2,11 @@
 using Events.Service;
 using Services.Domain.Entities;
 
-namespace Services.Infrastructure.Mapper
+namespace Services.MessageBroking.Mapper
 {
-    public partial class EventMapping : Profile
+    public partial class ProducersMapping : Profile
     {
-        partial void AddServiceEventMapping()
+        partial void AddServiceMapping()
         {
             CreateMap<Service, ServiceCreated>();
             CreateMap<Service, ServiceUpdated>();

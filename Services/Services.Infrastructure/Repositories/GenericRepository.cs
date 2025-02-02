@@ -19,7 +19,7 @@ namespace Services.Infrastructure.Repositories
             _context = context;
         }
 
-        public virtual async Task CreateAsync(T entity, CancellationToken cancellationToken)
+        public virtual async Task<T> CreateAsync(T entity, CancellationToken cancellationToken)
         {
             if (entity.Id == Guid.Empty)
             {
@@ -27,6 +27,8 @@ namespace Services.Infrastructure.Repositories
             }
 
             await _context.Set<T>().AddAsync(entity, cancellationToken);
+
+            return entity;
         }
 
         public virtual async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
@@ -47,9 +49,10 @@ namespace Services.Infrastructure.Repositories
             return await _context.Set<T>().FindAsync(id);
         }
 
-        public virtual async Task UpdateAsync(T entity, CancellationToken cancellationToken)
+        public virtual async Task<T> UpdateAsync(T entity, CancellationToken cancellationToken)
         {
             _context.Set<T>().Update(entity);
+            return entity;
         }
     }
 }

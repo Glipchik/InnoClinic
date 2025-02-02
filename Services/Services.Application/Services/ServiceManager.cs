@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Services.MessageBroking.Producers.Abstractions;
 
 namespace Services.Application.Services
 {
@@ -16,11 +17,13 @@ namespace Services.Application.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IServiceProducer _serviceProducer;
 
-        public ServiceManager(IUnitOfWork unitOfWork, IMapper mapper)
+        public ServiceManager(IUnitOfWork unitOfWork, IMapper mapper, IServiceProducer serviceProducer)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _serviceProducer = serviceProducer;
         }
 
         public async Task Create(CreateServiceModel createModel, CancellationToken cancellationToken)
@@ -39,8 +42,9 @@ namespace Services.Application.Services
                 throw new RelatedObjectNotFoundException($"Related category with id {createModel.ServiceCategoryId} is not found.");
             }
 
-            await _unitOfWork.ServiceRepository.CreateAsync(_mapper.Map<Service>(createModel), cancellationToken);
+            var createdService = await _unitOfWork.ServiceRepository.CreateAsync(_mapper.Map<Service>(createModel), cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _serviceProducer.PublishServiceCreated(createdService, cancellationToken);
         }
 
         public async Task Delete(Guid id, CancellationToken cancellationToken)
@@ -51,8 +55,11 @@ namespace Services.Application.Services
                 throw new NotFoundException($"Service with id: {id} is not found. Can't delete.");
             }
 
-            await _unitOfWork.ServiceRepository.DeleteAsync(id, cancellationToken);
+            serviceToDelete.IsActive = false;
+
+            var updatedService = await _unitOfWork.ServiceRepository.UpdateAsync(serviceToDelete, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _serviceProducer.PublishServiceUpdated(updatedService, cancellationToken);
         }
 
         public async Task<ServiceModel> Get(Guid id, CancellationToken cancellationToken)
@@ -87,8 +94,9 @@ namespace Services.Application.Services
                 throw new RelatedObjectNotFoundException($"Related category with id {updateModel.ServiceCategoryId} is not found.");
             }
 
-            await _unitOfWork.ServiceRepository.UpdateAsync(_mapper.Map<Service>(updateModel), cancellationToken);
+            var updatedService = await _unitOfWork.ServiceRepository.UpdateAsync(_mapper.Map<Service>(updateModel), cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _serviceProducer.PublishServiceUpdated(updatedService, cancellationToken);
         }
     }
 }
