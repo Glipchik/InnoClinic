@@ -8,11 +8,14 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="MassTransit" Version="8.3.5" />
+    <PackageReference Include="MassTransit.AspNetCore" Version="7.3.1" />
+    <PackageReference Include="MassTransit.RabbitMQ" Version="8.3.5" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Events\Events.csproj" />
     <ProjectReference Include="..\Services.Domain\Services.Domain.csproj" />
-    <ProjectReference Include="..\Services.MessageBroking\Services.MessageBroking.csproj" />
   </ItemGroup>
 
 </Project>

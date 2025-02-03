@@ -1,6 +1,6 @@
 ﻿namespace Events.Doctor
 {
-    public class DoctorDeleted
+    public class DoctorDeactivated
     {
         public required Guid Id { get; set; }
     }

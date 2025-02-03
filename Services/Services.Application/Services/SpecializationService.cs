@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Services.Application.Exceptions;
+using Services.MessageBroking.Producers.Abstractions;
 
 namespace Services.Application.Services
 {
@@ -18,17 +19,30 @@ namespace Services.Application.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IServiceProducer _serviceProducer;
+        private readonly IDoctorProducer _doctorProducer;
+        private readonly ISpecializationProducer _specializationProducer;
 
-        public SpecializationService(IUnitOfWork unitOfWork, IMapper mapper)
+        public SpecializationService(
+            IUnitOfWork unitOfWork, 
+            IMapper mapper,
+            IServiceProducer serviceProducer,
+            ISpecializationProducer specializationProducer,
+            IDoctorProducer doctorProducer)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _serviceProducer = serviceProducer;
+            _specializationProducer = specializationProducer;
+            _doctorProducer = doctorProducer;
         }
 
         public async Task Create(CreateSpecializationModel createModel, CancellationToken cancellationToken)
         {
-            await _unitOfWork.SpecializationRepository.CreateAsync(_mapper.Map<Specialization>(createModel), cancellationToken);
+            var createdSpecialization = await _unitOfWork.SpecializationRepository.CreateAsync(_mapper.Map<Specialization>(createModel), cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            await _specializationProducer.PublishSpecializationCreated(createdSpecialization, cancellationToken);
         }
 
         public async Task Delete(Guid id, CancellationToken cancellationToken)
@@ -43,19 +57,44 @@ namespace Services.Application.Services
 
                 foreach (var doctor in specializationToDelete.Doctors)
                 {
-                    doctor.Status = _mapper.Map<DoctorStatus>(DoctorStatusModel.Inactive);
-                    await _unitOfWork.DoctorRepository.UpdateAsync(doctor, cancellationToken);
+                    if (doctor.Status != DoctorStatus.AtWork)
+                    {
+                        doctor.Status = _mapper.Map<DoctorStatus>(DoctorStatusModel.Inactive);
+                        await _unitOfWork.DoctorRepository.UpdateAsync(doctor, cancellationToken);
+                    }
                 }
 
                 foreach (var service in specializationToDelete.Services)
                 {
-                    service.IsActive = false;
-                    await _unitOfWork.ServiceRepository.UpdateAsync(service, cancellationToken);
+                    if (service.IsActive)
+                    {
+                        service.IsActive = false;
+                        await _unitOfWork.ServiceRepository.UpdateAsync(service, cancellationToken);
+                    }
                 }
 
-                await _unitOfWork.SpecializationRepository.DeleteAsync(id, cancellationToken);
+                specializationToDelete.IsActive = false;
+                await _unitOfWork.SpecializationRepository.UpdateAsync(specializationToDelete, cancellationToken);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
                 await transaction.CommitAsync(cancellationToken);
+
+                foreach (var doctor in specializationToDelete.Doctors)
+                {
+                    if (doctor.Status != DoctorStatus.AtWork)
+                    {
+                        await _doctorProducer.PublishDoctorDeactivated(doctor.Id, cancellationToken);
+                    }
+                }
+
+                foreach (var service in specializationToDelete.Services)
+                {
+                    if (service.IsActive)
+                    {
+                        await _serviceProducer.PublishServiceUpdated(service, cancellationToken);
+                    }
+                }
+
+                await _specializationProducer.PublishSpecializationUpdated(specializationToDelete, cancellationToken);
             }
         }
 
@@ -71,14 +110,20 @@ namespace Services.Application.Services
 
         public async Task Update(UpdateSpecializationModel updateModel, CancellationToken cancellationToken)
         {
-            var specializationToUpdate = await _unitOfWork.SpecializationRepository.GetAsync(updateModel.Id, cancellationToken);
-            if (specializationToUpdate == null)
+            var specializationToUpdate = await _unitOfWork.SpecializationRepository.GetAsync(updateModel.Id, cancellationToken)
+                ?? throw new NotFoundException($"Specialization with id: {updateModel.Id} is not found. Can't update.");
+
+            if (updateModel.IsActive == false && specializationToUpdate.IsActive == true)
             {
-                throw new NotFoundException($"Specialization with id: {updateModel.Id} is not found. Can't update.");
+                await Delete(updateModel.Id, cancellationToken);
             }
 
-            await _unitOfWork.SpecializationRepository.UpdateAsync(_mapper.Map<Specialization>(updateModel), cancellationToken);
+            _mapper.Map(updateModel, specializationToUpdate);
+
+            await _unitOfWork.SpecializationRepository.UpdateAsync(specializationToUpdate, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            await _specializationProducer.PublishSpecializationUpdated(specializationToUpdate, cancellationToken);
         }
     }
 }
