@@ -11,5 +11,7 @@
         public required DateOnly Date { get; set; }
         public required TimeOnly Time { get; set; }
         public required bool IsApproved { get; set; } = false;
+        public Guid? ResultId { get; set; }
+        public Result? Result { get; set; }
     }
 }
