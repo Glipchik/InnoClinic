@@ -190,5 +190,15 @@ namespace Appointments.Application.Services
 
             return _mapper.Map<AppointmentModel>(appointment);
         }
+
+        public async Task<AppointmentModel> Delete(Guid id, CancellationToken cancellationToken)
+        {
+            var appointment = await _unitOfWork.AppointmentRepository.GetAsync(id, cancellationToken)
+                ?? throw new NotFoundException($"Appointment with id: {id} is not found.");
+            
+            await _unitOfWork.AppointmentRepository.DeleteAsync(id, cancellationToken);
+
+            return _mapper.Map<AppointmentModel>(appointment);
+        }
     }
 }
