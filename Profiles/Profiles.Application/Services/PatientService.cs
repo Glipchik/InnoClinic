@@ -104,8 +104,8 @@ namespace Profiles.Application.Services
                     await transaction.CommitAsync(cancellationToken);
                     await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                    await _patientProducer.PublishPatientCreated(patient, cancellationToken);
                     await _accountProducer.PublishAccountCreated(_mapper.Map<Account>(createdAccount), cancellationToken);
+                    await _patientProducer.PublishPatientCreated(patient, cancellationToken);
                 }
             }
             catch

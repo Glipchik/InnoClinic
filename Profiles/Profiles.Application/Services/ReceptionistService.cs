@@ -69,8 +69,8 @@ namespace Profiles.Application.Services
                     await transaction.CommitAsync(cancellationToken);
                     await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                    await _receptionistProducer.PublishReceptionistCreated(receptionist, cancellationToken);
                     await _accountProducer.PublishAccountCreated(_mapper.Map<Account>(createdAccount), cancellationToken);
+                    await _receptionistProducer.PublishReceptionistCreated(receptionist, cancellationToken);
                 }
             }
             catch
