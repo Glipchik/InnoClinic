@@ -1,12 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Events.Account;
+using MassTransit;
+using Microsoft.EntityFrameworkCore;
+using Minio.DataModel.Notification;
 using Profiles.Domain.Entities;
 using Profiles.Domain.Repositories.Abstractions;
 using Profiles.Infrastructure.Contexts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Profiles.Infrastructure.Repositories
 {
@@ -21,7 +20,10 @@ namespace Profiles.Infrastructure.Repositories
 
         public async Task CreateAsync(Account entity, Guid authorId, CancellationToken cancellationToken)
         {
-            ArgumentNullException.ThrowIfNull(entity);
+            if (entity.Id == Guid.Empty)
+            {
+                entity.Id = Guid.NewGuid();
+            }
 
             entity.CreatedAt = DateTime.UtcNow;
             entity.CreatedBy = authorId;
@@ -33,7 +35,9 @@ namespace Profiles.Infrastructure.Repositories
 
         public async Task DeleteAsync(Guid id, Guid authorId, CancellationToken cancellationToken)
         {
-            var entityToDelete = await _context.Set<Account>().FindAsync(id);
+            var entityToDelete = await GetAsync(id, cancellationToken)
+                ?? throw new ArgumentNullException($"Account with id {id} not found");
+
             _context.Set<Account>().Remove(entityToDelete);
         }
 

@@ -1,4 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Events.Account;
+using Events.Doctor;
+using MassTransit;
+using Microsoft.EntityFrameworkCore;
+using Minio.DataModel.Notification;
 using Profiles.Domain.Entities;
 using Profiles.Domain.Repositories.Abstractions;
 using Profiles.Infrastructure.Contexts;
@@ -19,11 +24,31 @@ namespace Profiles.Infrastructure.Repositories
             _context = context;
         }
 
+        public override async Task<Doctor> CreateAsync(Doctor entity, CancellationToken cancellationToken)
+        {
+            if (entity.Id == Guid.Empty)
+            {
+                entity.Id = Guid.NewGuid();
+            }
+
+            await _context.Set<Doctor>().AddAsync(entity, cancellationToken);
+
+            return entity;
+        }
+
         public async override Task DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
-            var doctorToDelete = await _context.Set<Doctor>().FindAsync(id);
+            var doctorToDelete = await GetAsync(id, cancellationToken)
+                ?? throw new ArgumentNullException($"Doctor with id {id} not found");
+
             doctorToDelete.Status = Domain.Enums.DoctorStatus.Inactive;
             _context.Set<Doctor>().Update(doctorToDelete);
+        }
+
+        public override async Task<Doctor> UpdateAsync(Doctor entity, CancellationToken cancellationToken)
+        {
+            _context.Set<Doctor>().Update(entity);
+            return entity;
         }
 
         public async override Task<IEnumerable<Doctor>> GetAllAsync(CancellationToken cancellationToken)

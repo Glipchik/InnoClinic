@@ -14,4 +14,4 @@ public record CreateAccountFromAuthDto(
 public record AccountDto(
     string Email,
     string PhoneNumber,
-    string PhotoFileName);
+    string? PhotoFileName);

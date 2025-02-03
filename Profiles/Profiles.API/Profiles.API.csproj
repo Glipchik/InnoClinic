@@ -32,6 +32,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Profiles.Application\Profiles.Application.csproj" />
     <ProjectReference Include="..\Profiles.Infrastructure\Profiles.Infrastructure.csproj" />
+    <ProjectReference Include="..\Profiles.MessageBroking\Profiles.MessageBroking.csproj" />
   </ItemGroup>
 
 </Project>

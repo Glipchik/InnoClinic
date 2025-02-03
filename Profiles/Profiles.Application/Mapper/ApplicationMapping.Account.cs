@@ -18,6 +18,7 @@ namespace Profiles.Application.Mapper
             CreateMap<CreateAccountModel, Account>();
             CreateMap<CreateAccountModel, CreateAccountAuthorizationServerModel>();
             CreateMap<CreateAccountFromAuthServerModel, Account>();
+            CreateMap<CreateAccountAuthorizationServerModel, Account>();
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Profiles.Infrastructure.EntityConfigurations
                 .IsRequired()
                 .HasMaxLength(255);
 
-            builder.Property(o => o.PhoneNumber)
+            builder.Property(o => o.RegistryPhoneNumber)
                 .IsRequired()
                 .HasMaxLength(20);
 

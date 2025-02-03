@@ -10,6 +10,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using Profiles.MessageBroking.Producers.Abstractions;
 
 namespace Profiles.Application.Services
 {
@@ -19,13 +20,19 @@ namespace Profiles.Application.Services
         private readonly IMapper _mapper;
         private readonly IAccountService _accountService;
         private readonly IFileService _fileService;
+        private readonly IDoctorProducer _doctorProducer;
+        private readonly IAccountProducer _accountProducer;
 
-        public DoctorService(IUnitOfWork unitOfWork, IMapper mapper, IAccountService accountService, IFileService fileService)
+        public DoctorService(IUnitOfWork unitOfWork, IMapper mapper, IAccountService accountService, IFileService fileService,
+            IDoctorProducer doctorProducer,
+            IAccountProducer accountProducer)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _accountService = accountService;
             _fileService = fileService;
+            _doctorProducer = doctorProducer;
+            _accountProducer = accountProducer;
         }
 
         public async Task Create(
@@ -57,7 +64,7 @@ namespace Profiles.Application.Services
 
                     doctor.AccountId = createdAccount.Id;
 
-                    await _unitOfWork.DoctorRepository.CreateAsync(doctor, cancellationToken);
+                    var createdDoctor = await _unitOfWork.DoctorRepository.CreateAsync(doctor, cancellationToken);
 
                     if (fileModel != null)
                     {
@@ -68,6 +75,9 @@ namespace Profiles.Application.Services
 
                     await transaction.CommitAsync(cancellationToken);
                     await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+                    await _accountProducer.PublishAccountCreated(_mapper.Map<Account>(createdAccount), cancellationToken);
+                    await _doctorProducer.PublishDoctorCreated(_mapper.Map<Doctor>(doctor), cancellationToken);
                 }
             }
             catch
@@ -90,10 +100,10 @@ namespace Profiles.Application.Services
             }
 
             doctorToDelete.Status = Domain.Enums.DoctorStatus.Inactive;
-
             await _unitOfWork.DoctorRepository.UpdateAsync(doctorToDelete, cancellationToken);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken: cancellationToken);
+            await _doctorProducer.PublishDoctorUpdated(doctorToDelete, cancellationToken);
         }
 
         public async Task<DoctorModel> Get(Guid id, CancellationToken cancellationToken)
@@ -152,6 +162,7 @@ namespace Profiles.Application.Services
 
             await _unitOfWork.DoctorRepository.UpdateAsync(doctorToUpdate, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _doctorProducer.PublishDoctorUpdated(doctorToUpdate, cancellationToken);
         }
     }
 }
