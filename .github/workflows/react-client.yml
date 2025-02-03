@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install packages
-        run: npm ci
+        run: npm install eslint prettier
       - name: Prettier
         run: npm run format
       - name: Lint
