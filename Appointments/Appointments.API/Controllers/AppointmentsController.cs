@@ -209,7 +209,7 @@ namespace Appointments.API.Controllers
         /// <response code="500">If there was an internal server error</response>
         [HttpDelete("{id}")]
         [Authorize(Roles = "Patient,Receptionist")]
-        public async Task Put(string id, CancellationToken cancellationToken)
+        public async Task Delete(string id, CancellationToken cancellationToken)
         {
             if (User.IsInRole("Patient"))
             {
