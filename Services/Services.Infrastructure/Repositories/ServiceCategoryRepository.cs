@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Services.Domain.Entities;
 using Services.Domain.Repositories.Abstractions;
 using Services.Infrastructure.Contexts;
@@ -17,6 +12,14 @@ namespace Services.Infrastructure.Repositories
         public ServiceCategoryRepository(AppDbContext context) : base(context)
         {
             _context = context;
+        }
+
+        public override async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
+        {
+            var entityToDelete = await GetAsync(id, cancellationToken)
+                ?? throw new ArgumentNullException($"Entity with id {id} to delete is null.");
+
+            _context.Set<ServiceCategory>().Remove(entityToDelete);
         }
 
         public async override Task<IEnumerable<ServiceCategory>> GetAllAsync(CancellationToken cancellationToken)
