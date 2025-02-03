@@ -1,0 +1,19 @@
+﻿@page
+@model Authorization.Presentation.Pages.Account.SendCode.IndexModel
+@{
+    ViewData["Title"] = "Send Reset Code";
+}
+
+<h2>Send Reset Code</h2>
+
+<form method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="form-group">
+        <label asp-for="Input.Email">Email</label>
+        <input asp-for="Input.Email" class="form-control" placeholder="Enter your email" />
+        <span asp-validation-for="Input.Email" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-2">Send Code</button>
+</form>

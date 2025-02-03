@@ -4,11 +4,6 @@ using Authorization.Application.Services.Abstractions;
 using Authorization.Data.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Authorization.Application.DependencyInjection
 {
@@ -23,6 +18,10 @@ namespace Authorization.Application.DependencyInjection
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IPasswordService, PasswordService>();
             services.AddScoped<IProfileService, ProfileService>();
+            services.AddScoped<IEmailService, EmailService>();
+
+            services.AddMemoryCache();
+            services.AddSingleton<IEmailTokenStoreService, EmailTokenStoreService>();
 
             return services;
         }

@@ -44,5 +44,7 @@ namespace Authorization.Application.Services.Abstractions
         Task<AccountModel> CreateAccount(CreateAccountModel createAccountModel, CancellationToken cancellationToken,
             CreatePatientModel? createPatientModel = null,
             bool isCreatingPatientRequired = true);
+
+        Task<AccountModel> ResetPassword(string email, string newPassword, CancellationToken cancellationToken);
     }
 }

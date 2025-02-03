@@ -128,5 +128,17 @@ namespace Authorization.Application.Services
 
             return false;
         }
+
+        public async Task<AccountModel> ResetPassword(string email, string newPassword, CancellationToken cancellationToken)
+        {
+            var account = await _repository.GetByEmailAsync(email, cancellationToken)
+                ?? throw new NotFoundException($"Account with email {email} is not found.");
+
+            account.PasswordHash = _passwordService.HashPassword(newPassword, account.PasswordSalt);
+
+            await _repository.UpdateAsync(account, cancellationToken);
+
+            return _mapper.Map<AccountModel>(account);
+        }
     }
 }
