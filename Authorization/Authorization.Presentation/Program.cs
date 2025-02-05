@@ -27,7 +27,7 @@ try
         app.UseDeveloperExceptionPage();
     }
 
-    app.UseCors("AllowLocalhost3000");
+    app.UseCors();
 
     app.UseStaticFiles();
 

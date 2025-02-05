@@ -55,6 +55,15 @@ namespace Services.API.DependencyInjection
 
             services.AddAuthorization();
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowLocalhost3000",
+                    builder => builder.WithOrigins("http://localhost:3000")
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod()
+                                      .AllowCredentials());
+            });
+
             return services;
         }
     }

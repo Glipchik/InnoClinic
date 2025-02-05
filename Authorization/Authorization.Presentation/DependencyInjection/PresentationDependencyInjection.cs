@@ -33,10 +33,13 @@ namespace Authorization.Presentation.DependencyInjection
 
             services.AddCors(options =>
             {
-                options.AddPolicy("AllowLocalhost3000",
-                    builder => builder.WithOrigins("http://localhost:3000")
-                                      .AllowAnyHeader()
-                                      .AllowAnyMethod());
+                options.AddDefaultPolicy(policy =>
+                {
+                    policy.AllowAnyHeader();
+                    policy.AllowAnyMethod();
+                    policy.WithOrigins("http://localhost:3000");
+                    policy.AllowCredentials();
+                });
             });
 
             var connectionString = configuration.GetConnectionString("DefaultConnection");

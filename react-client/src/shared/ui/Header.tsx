@@ -17,10 +17,10 @@ function Header() {
   const isUserAuthorized = useSelector((state: RootState) => state.isUserAuthorized);
 
   useEffect(() => {
-    if (userManager && isUserAuthorized) {
+    if (userManager) {
       async function fetchUser() {
-        const newUser = await userManager!.getUser();
-        setUser(newUser);
+        const user = await userManager!.getUser();
+        setUser(user);
       }
       fetchUser();
     }
