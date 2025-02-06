@@ -60,6 +60,14 @@ try
         await next();
     });
 
+    app.Use(async (context, next) =>
+    {
+        context.Response.Headers.Remove("X-Frame-Options");
+        context.Response.Headers.Add("X-Frame-Options", "SAMEORIGIN");
+        await next();
+    });
+
+
     app.Run();
 }
 catch (Exception ex) when (ex is not HostAbortedException)

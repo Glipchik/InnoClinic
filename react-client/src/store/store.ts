@@ -1,21 +1,16 @@
-import { createSlice, configureStore } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
+import authReducer from './slices/authSlice';
+import specializationsReducer from './slices/specializationsSlice';
+import servicesReducer from './slices/servicesSlice';
+import doctorScheduleReducer from './slices/doctorScheduleSlice';
 
-const authSlice = createSlice({
-    name: 'auth',
-    initialState: {
-      isUserAuthorized: false
-    },
-    reducers: {
-      authorized: state => {
-        state.isUserAuthorized = true
-      },
-      logout: state => {
-        state.isUserAuthorized = false
-      }
-    }
-  })
+const store = configureStore({
+  reducer: {
+    auth: authReducer,
+    specializations: specializationsReducer,
+    services: servicesReducer,
+    doctorSchedule: doctorScheduleReducer
+  }
+});
 
-const store = configureStore(authSlice);
-
-export const { authorized, logout } = authSlice.actions;
 export default store;

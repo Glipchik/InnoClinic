@@ -7,18 +7,12 @@ const api = axios.create({
   withCredentials: true,
 });
 
-async function GET(id: string | null, accessToken: string): Promise<AxiosResponse<Specialization | Specialization[]>> {
-  console.log(`accessToken - ${accessToken}`)
-  const config = {
-    headers: {
-      Authorization: `Bearer ${accessToken}`
-    },
-  };
+async function GET(id: string | null): Promise<AxiosResponse<Specialization | Specialization[]>> {
 
   if (id === null) {
-    return await api.get<{ data: Specialization[] }>(`${import.meta.env.VITE_SERVICES_BASE_URL}/api/Specializations`, config);
+    return await api.get<{ data: Specialization[] }>(`${import.meta.env.VITE_SERVICES_BASE_URL}/api/Specializations`);
   } else {
-    return await api.get<{ data: Specialization }>(`${import.meta.env.VITE_SERVICES_BASE_URL}/api/Specializations/${id}`, config);
+    return await api.get<{ data: Specialization }>(`${import.meta.env.VITE_SERVICES_BASE_URL}/api/Specializations/${id}`);
   }
 }
 

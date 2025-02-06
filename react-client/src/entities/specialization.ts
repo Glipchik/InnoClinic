@@ -1,5 +1,5 @@
 export default interface Specialization {
   id: string,
-  specializatioName: string,
+  specializationName: string,
   isActive: boolean
 }

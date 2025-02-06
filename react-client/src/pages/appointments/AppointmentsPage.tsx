@@ -1,7 +1,6 @@
 import { CreateAppointmentForm } from "../../features/appointments/CreateAppointmentForm";
 
-function AppointmentsPage()
-{
+function AppointmentsPage() {
   return (
     <>
       <h1>

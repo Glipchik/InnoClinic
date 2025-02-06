@@ -49,9 +49,9 @@ namespace Services.API.Controllers
         /// <response code="500">If there was an internal server error</response>
         [HttpGet]
         [Authorize]
-        public async Task<IEnumerable<ServiceDto>> Get(CancellationToken cancellationToken)
+        public async Task<IEnumerable<ServiceDto>> Get([FromQuery] ServiceQueryParametresDto serviceQueryParametresDto, CancellationToken cancellationToken)
         {
-            var services = await _serviceManager.GetAll(cancellationToken);
+            var services = await _serviceManager.GetAll(_mapper.Map<ServiceQueryParametresModel>(serviceQueryParametresDto), cancellationToken);
             _logger.LogInformation("Requested services list");
 
             var servicesDtos = _mapper.Map<IEnumerable<ServiceDto>>(services);

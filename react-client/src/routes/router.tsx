@@ -8,6 +8,7 @@ import { Register } from '../features/auth/Register';
 import { HomePage } from '../pages/home/HomePage'
 import Layout from '../shared/ui/Layout'
 import { AppointmentsPage } from "../pages/appointments/AppointmentsPage";
+import { SilentRenew } from "../features/auth/SilentRenew";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
           {
             path: "login",
             element: <Login />,
+          },
+          {
+            path: "silent-renew",
+            element: <SilentRenew />,
           },
           {
             path: "logout",

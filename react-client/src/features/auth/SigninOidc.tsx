@@ -1,38 +1,33 @@
-import { useContext, useEffect } from "react";
-import { UserManagerContext } from '../../shared/contexts/UserManagerContext';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { authorized } from "../../store/store";
+import { useContext, useEffect } from "react"
+import { UserManagerContext } from "../../shared/contexts/UserManagerContext"
+import { useNavigate } from "react-router-dom"
 
 function SigninOidc() {
-  const userManager = useContext(UserManagerContext);
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const userManager = useContext(UserManagerContext)
+  const navigate = useNavigate()
 
   useEffect(() => {
-    if (!userManager) return;
+    if (!userManager) return
 
     async function signinAsync() {
       try {
-        const urlParams = new URLSearchParams(window.location.search);
-        if (!urlParams.has("state")) {
-          console.warn("No state found");
-          return;
+        const user = await userManager!.signinRedirectCallback()
+        if (user) {
+          console.log("User signed in successfully", user)
+          navigate("/")
+        } else {
+          console.error("No user data received after sign-in")
+          navigate("/login")
         }
-
-        await userManager!.signinRedirectCallback();
-        dispatch(authorized())
-        console.log("dispatched authorize")
       } catch (error) {
-        console.error("Error while login:", error);
+        console.error("Error during sign-in:", error)
       }
-      navigate("/");
     }
 
-    signinAsync();
-  }, [userManager, navigate, dispatch]);
+    signinAsync()
+  }, [userManager, navigate])
 
-  return null;
+  return null
 }
 
-export { SigninOidc };
+export { SigninOidc }

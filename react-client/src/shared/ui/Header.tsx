@@ -3,7 +3,7 @@ import { UserManagerContext } from '../contexts/UserManagerContext';
 import { User } from 'oidc-client';
 import { Link } from "react-router-dom";
 import { useSelector } from 'react-redux';
-import Button from "./Button";
+import Button from "./controls/Button";
 import React from "react";
 
 function Header() {
