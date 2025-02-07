@@ -51,6 +51,8 @@ namespace Authorization.Presentation.DependencyInjection
                     options.Events.RaiseFailureEvents = true;
                     options.Events.RaiseSuccessEvents = true;
                     options.EmitStaticAudienceClaim = true;
+                    options.Authentication.CookieSameSiteMode = SameSiteMode.None;
+                    options.Authentication.CheckSessionCookieSameSiteMode = SameSiteMode.None;
                 })
                 .AddConfigurationStore(options =>
                 {

@@ -1,81 +1,57 @@
 "use client"
 
 import type React from "react"
-import { useEffect, useState } from "react"
+import { useState, useEffect, useContext } from "react"
 import { useFormik } from "formik"
-import { GET as specializationGET } from "../../shared/api/specializationApi"
-import { GET as serviceGET } from "../../shared/api/serviceApi"
-import { GET as doctorScheduleGET } from "../../shared/api/doctorScheduleApi"
-import type { AxiosResponse } from "axios"
-import type Specialization from "../../entities/specialization"
-import {
-  fetchSpecializationsDataFailure,
-  fetchSpecializationsDataSuccess,
-  fetchSpecializationsDataRequest
-} from "../../store/slices/specializationsSlice"
-
-import {
-  fetchDoctorScheduleDataDataRequest,
-  fetchDoctorScheduleDataFailure,
-  fetchDoctorScheduleDataSuccess
-} from "../../store/slices/doctorScheduleSlice"
-
-import { useDispatch, useSelector } from "react-redux"
-import Button from "../../shared/ui/controls/Button"
-import type { RootState } from "../../store/store"
+import { useSelector } from "react-redux"
+import { UserManagerContext } from "../../shared/contexts/UserManagerContext"
+import { validationSchema } from "./validationSchema"
+import { MIN_APPOINTMENT_DATE } from "./helpers/dateUtils"
+import { useSpecializations } from "../hooks/useSpecializations"
+import { useServices } from "../hooks/useServices"
+import { useDoctors } from "../hooks/useDoctors"
+import { useDoctorSchedule } from "../hooks/useDoctorSchedule"
 import Select from "../../shared/ui/forms/Select"
-import type Service from "../../entities/service"
-import {
-  fetchServicesDataFailure,
-  fetchServicesDataSuccess,
-  fetchServicesDataRequest
-  } from "../../store/slices/servicesSlice"
 import DatePicker from "../../shared/ui/forms/DatePicker"
-import * as Yup from "yup"
-import TimeSlot from "../../entities/timeSlot"
+import Button from "../../shared/ui/controls/Button"
+import type Specialization from "../../entities/specialization"
+import type Service from "../../entities/service"
+import type Doctor from "../../entities/doctor"
+import type TimeSlot from "../../entities/timeSlot"
 
-function addDays(date: Date, days: number) {
-  const newDate = new Date(date)
-  newDate.setDate(date.getDate() + days)
-  return newDate
-}
-
-const validationSchema = Yup.object({
-  service: Yup.string().required("Service is required"),
-  specialization: Yup.string().required("Specialization is required"),
-  date: Yup.date().required("Date is required").min(addDays(new Date(), 2), "Date must be at least 2 days from today"),
-})
-
-function CreateAppointmentForm() {
-  const dispatch = useDispatch()
-  const { specializationsLoading, specializationsError, specializationsData } = useSelector(
-    (state: RootState) => state.specializations,
-  )
-  const { servicesLoading, servicesError, servicesData } = useSelector((state: RootState) => state.services)
-  const { doctorScheduleLoading, doctorScheduleError, doctorScheduleData } = useSelector((state: RootState) => state.doctorSchedule)
+export function CreateAppointmentForm() {
+  const [token, setToken] = useState<string | null>(null)
+  const [date, setDate] = useState<string | null>(null)
   const [isServiceSelectDisabled, setIsServiceSelectDisabled] = useState<boolean>(true)
+  const [isDoctorSelectDisabled, setIsDoctorSelectDisabled] = useState<boolean>(true)
   const [isTimeSlotSelectDisabled, setIsTimeSlotSelectDisabled] = useState<boolean>(true)
 
-  useEffect(() => {
-    const fetchSpecializations = async () => {
-      try {
-        dispatch(fetchSpecializationsDataRequest())
-        const response: AxiosResponse<Specialization[]> = await specializationGET(null)
-        dispatch(fetchSpecializationsDataSuccess(response.data))
-      } catch (error) {
-        dispatch(fetchSpecializationsDataFailure(error instanceof Error ? error.message : "An unknown error occurred"))
-      }
-    }
+  const userManager = useContext(UserManagerContext)
+  const isUserAuthorized = useSelector((state) => state.isUserAuthorized)
 
-    fetchSpecializations()
-  }, [dispatch])
+  const { specializationsLoading, specializationsError, specializationsData } = useSpecializations(token)
+  const { servicesLoading, servicesError, servicesData, fetchServices } = useServices(token)
+  const { doctorsLoading, doctorsError, doctorsData, fetchDoctors } = useDoctors(token)
+  const { doctorScheduleLoading, doctorScheduleError, doctorScheduleData, fetchDoctorSchedule } =
+    useDoctorSchedule(token)
+
+  useEffect(() => {
+    if (userManager) {
+      async function fetchUser() {
+        const user = await userManager!.getUser()
+        setToken(user?.access_token ?? null)
+      }
+      fetchUser()
+    }
+  }, [userManager, isUserAuthorized])
 
   const formik = useFormik({
     initialValues: {
       service: "",
       specialization: "",
-      date: addDays(new Date(), 2).toISOString().split("T")[0],
-      timeSlot: ""
+      date: MIN_APPOINTMENT_DATE.toISOString().split("T")[0],
+      timeSlot: "",
+      doctor: "",
     },
     validationSchema,
     onSubmit: (values) => {
@@ -89,29 +65,23 @@ function CreateAppointmentForm() {
 
     if (specializationId) {
       setIsServiceSelectDisabled(false)
+      setIsDoctorSelectDisabled(false)
       fetchServices(specializationId)
+      fetchDoctors(specializationId)
     } else {
       setIsServiceSelectDisabled(true)
     }
   }
 
-  const fetchServices = async (specializationId: string) => {
-    try {
-      dispatch(fetchServicesDataRequest())
-      const response: AxiosResponse<Service[]> = await serviceGET(null, specializationId)
-      dispatch(fetchServicesDataSuccess(response.data))
-    } catch (error) {
-      dispatch(fetchServicesDataFailure(error instanceof Error ? error.message : "An unknown error occurred"))
-    }
-  }
+  const handleDoctorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const doctorId = e.target.value
+    formik.setFieldValue("doctor", doctorId)
 
-  const fetchDoctorSchedule = async (doctorId: string, date: Date) => {
-    try {
-      dispatch(fetchDoctorScheduleDataDataRequest())
-      const response: AxiosResponse<Service[]> = await doctorScheduleGET(doctorId, date)
-      dispatch(fetchDoctorScheduleDataSuccess(response.data))
-    } catch (error) {
-      dispatch(fetchDoctorScheduleDataFailure(error instanceof Error ? error.message : "An unknown error occurred"))
+    if (doctorId && date) {
+      setIsTimeSlotSelectDisabled(false)
+      fetchDoctorSchedule(doctorId, new Date(date))
+    } else {
+      setIsTimeSlotSelectDisabled(true)
     }
   }
 
@@ -166,25 +136,25 @@ function CreateAppointmentForm() {
 
       {/* Doctor Select */}
       <div className="flex flex-col">
-        {servicesLoading && <p className="text-blue-500">Loading doctor...</p>}
-        {servicesError && <p className="text-red-500">Error: {servicesError}</p>}
+        {doctorsLoading && <p className="text-blue-500">Loading doctors...</p>}
+        {doctorsError && <p className="text-red-500">Error: {doctorsError}</p>}
         <Select
-          disabled={isServiceSelectDisabled}
-          label="Service"
-          id="service"
-          name="service"
-          onChange={formik.handleChange}
-          value={formik.values.service}
-          className={isServiceSelectDisabled ? "opacity-50 cursor-not-allowed" : ""}
+          disabled={isDoctorSelectDisabled}
+          label="Doctor"
+          id="doctor"
+          name="doctor"
+          onChange={handleDoctorChange}
+          value={formik.values.doctor}
+          className={isDoctorSelectDisabled ? "opacity-50 cursor-not-allowed" : ""}
         >
-          <option value="" label="Select service" />
-          {servicesData &&
-            servicesData.map((service: Service) => (
-              <option key={service.id} value={service.id} label={service.serviceName} />
+          <option value="" label="Select doctor" />
+          {doctorsData &&
+            doctorsData.map((doctor: Doctor) => (
+              <option key={doctor.id} value={doctor.id} label={`${doctor.firstName} ${doctor.lastName}`} />
             ))}
         </Select>
-        {formik.touched.service && formik.errors.service ? (
-          <div className="text-red-500">{formik.errors.service}</div>
+        {formik.touched.doctor && formik.errors.doctor ? (
+          <div className="text-red-500">{formik.errors.doctor}</div>
         ) : null}
       </div>
 
@@ -194,17 +164,21 @@ function CreateAppointmentForm() {
         id="date"
         name="date"
         value={formik.values.date}
-        onChange={formik.handleChange}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          const value = e.target.value
+          setDate(value)
+          formik.setFieldValue("date", value)
+        }}
         onBlur={formik.handleBlur}
         disabled={false}
         className="bg-gray-100"
       />
       {formik.touched.date && formik.errors.date ? <div className="text-red-500">{formik.errors.date}</div> : null}
 
-      {/* Time Slol Select */}
+      {/* Time Slot Select */}
       <div className="flex flex-col">
         {doctorScheduleLoading && <p className="text-blue-500">Loading Doctor Schedule...</p>}
-        {doctorScheduleError && <p className="text-red-500">Error: {servicesError}</p>}
+        {doctorScheduleError && <p className="text-red-500">Error: {doctorScheduleError}</p>}
         <Select
           disabled={isTimeSlotSelectDisabled}
           label="Time Slots"
@@ -232,6 +206,3 @@ function CreateAppointmentForm() {
     </form>
   )
 }
-
-export { CreateAppointmentForm }
-

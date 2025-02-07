@@ -50,10 +50,23 @@ public static class ApiDependencyInjection
 
         services.AddAuthentication(options =>
         {
-            options.DefaultScheme = "Cookies";
+            options.DefaultScheme = "Bearer";
             options.DefaultChallengeScheme = "oidc";
         })
-        .AddCookie("Cookies")
+        .AddCookie("Cookies", options =>
+        {
+            options.Cookie.SameSite = SameSiteMode.None;
+            options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        })
+        .AddJwtBearer("Bearer", options =>
+        {
+            options.Authority = configuration.GetSection("Authorization")["ServerUrl"];
+            options.RequireHttpsMetadata = false;
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateAudience = false
+            };
+        })
         .AddOpenIdConnect("oidc", options =>
         {
             options.Authority = configuration.GetSection("Authorization")["ServerUrl"];
@@ -68,15 +81,6 @@ public static class ApiDependencyInjection
             options.GetClaimsFromUserInfoEndpoint = true;
             options.ClaimActions.MapJsonKey(JwtClaimTypes.Role, JwtClaimTypes.Role);
             options.ClaimActions.MapJsonKey(JwtClaimTypes.Email, JwtClaimTypes.Email);
-        })
-        .AddJwtBearer("Bearer", options =>
-        {
-            options.Authority = configuration.GetSection("Authorization")["ServerUrl"];
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateAudience = false,
-                ValidateIssuer = false
-            };
         });
 
         services.AddAuthorization(options =>

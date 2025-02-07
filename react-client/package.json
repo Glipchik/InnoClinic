@@ -42,6 +42,7 @@
     "eslint-plugin-react-refresh": "^0.4.16",
     "formik": "^2.4.6",
     "globals": "^15.14.0",
+    "oidc-client": "^1.11.5",
     "prettier": "^3.4.2",
     "react-redux": "^9.2.0",
     "redux": "^5.0.1",

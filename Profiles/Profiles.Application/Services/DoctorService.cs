@@ -11,6 +11,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using Profiles.MessageBroking.Producers.Abstractions;
+using Profiles.Domain.Enums;
 
 namespace Profiles.Application.Services
 {
@@ -114,6 +115,14 @@ namespace Profiles.Application.Services
         public async Task<IEnumerable<DoctorModel>> GetAll(CancellationToken cancellationToken)
         {
             return _mapper.Map<IEnumerable<DoctorModel>>(await _unitOfWork.DoctorRepository.GetAllAsync(cancellationToken: cancellationToken));
+        }
+
+        public async Task<IEnumerable<DoctorModel>> GetAll(DoctorQueryParametresModel doctorQueryParametresModel, CancellationToken cancellationToken)
+        {
+            return _mapper.Map<IEnumerable<DoctorModel>>(await _unitOfWork.DoctorRepository.GetAllAsync(
+                doctorQueryParametresModel.SpecializationId,
+                _mapper.Map<DoctorStatus>(doctorQueryParametresModel.Status),
+                cancellationToken: cancellationToken));
         }
 
         public async Task<DoctorModel> GetByAccountId(Guid id, CancellationToken cancellationToken)

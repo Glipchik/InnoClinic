@@ -10,6 +10,7 @@ using Services.API.Validators;
 using FluentValidation;
 using IdentityModel;
 using Services.Consumers.Consumers.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Services.API.DependencyInjection
 {
@@ -33,10 +34,23 @@ namespace Services.API.DependencyInjection
 
             services.AddAuthentication(options =>
             {
-                options.DefaultScheme = "Cookies";
+                options.DefaultScheme = "Bearer";
                 options.DefaultChallengeScheme = "oidc";
             })
-            .AddCookie("Cookies")
+            .AddCookie("Cookies", options =>
+            {
+                options.Cookie.SameSite = SameSiteMode.None;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            })
+            .AddJwtBearer("Bearer", options =>
+            {
+                options.Authority = "https://localhost:5001";
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateAudience = false
+                };
+            })
             .AddOpenIdConnect("oidc", options =>
             {
                 options.Authority = configuration.GetSection("Authorization")["ServerUrl"];

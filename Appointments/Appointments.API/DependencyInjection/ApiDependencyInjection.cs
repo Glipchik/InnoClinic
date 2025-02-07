@@ -8,6 +8,7 @@ using Appointments.API.Infrastructure;
 using Appointments.API.DTOs;
 using Appointments.API.Validators;
 using Appointments.API.Mapper;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Appointments.API.DependencyInjection
 {
@@ -35,10 +36,23 @@ namespace Appointments.API.DependencyInjection
 
             services.AddAuthentication(options =>
             {
-                options.DefaultScheme = "Cookies";
+                options.DefaultScheme = "Bearer";
                 options.DefaultChallengeScheme = "oidc";
             })
-            .AddCookie("Cookies")
+            .AddCookie("Cookies", options =>
+            {
+                options.Cookie.SameSite = SameSiteMode.None;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            })
+            .AddJwtBearer("Bearer", options =>
+            {
+                options.Authority = configuration.GetSection("Authorization")["ServerUrl"];
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateAudience = false
+                };
+            })
             .AddOpenIdConnect("oidc", options =>
             {
                 options.Authority = configuration.GetSection("Authorization")["ServerUrl"];

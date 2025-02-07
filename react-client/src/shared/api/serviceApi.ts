@@ -3,17 +3,11 @@ import Specialization from '../../entities/specialization';
 import { AxiosResponse } from 'axios';
 import Service from '../../entities/service';
 
-const api = axios.create({
-  baseURL: import.meta.env.VITE_SERVICES_BASE_URL,
-  withCredentials: true,
-});
-
-async function GET(id: string | null, specializationId: string | null): Promise<AxiosResponse<Specialization | Specialization[]>> {
-
+async function GET(id: string | null, specializationId: string | null, token: string): Promise<AxiosResponse<Specialization | Specialization[]>> {
   if (id === null) {
-    return await api.get<{ data: Service[] }>(`${import.meta.env.VITE_SERVICES_BASE_URL}/api/Services?SpecializationId=${specializationId}`);
+    return await axios.get<{ data: Service[] }>(`${import.meta.env.VITE_SERVICES_BASE_URL}/api/Services?SpecializationId=${specializationId}`, { headers: { Authorization: `Bearer ${token}` } });
   } else {
-    return await api.get<{ data: Service }>(`${import.meta.env.VITE_SERVICES_BASE_URL}/api/Services/${id}`);
+    return await axios.get<{ data: Service }>(`${import.meta.env.VITE_SERVICES_BASE_URL}/api/Services/${id}`, { headers: { Authorization: `Bearer ${token}` } });
   }
 }
 
