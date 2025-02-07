@@ -3,7 +3,7 @@ import { UserManagerContext } from './shared/contexts/UserManagerContext';
 import { RouterProvider } from "react-router-dom";
 import { Log, UserManager, WebStorageStateStore } from 'oidc-client';
 import router from "./routes/router";
-import store from './store/store';
+import { store } from './store/store';
 import { Provider } from 'react-redux';
 
 Log.logger = console

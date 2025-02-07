@@ -8,12 +8,13 @@ import {
   fetchSpecializationsDataSuccess,
   fetchSpecializationsDataRequest,
 } from "../../store/slices/specializationsSlice"
+import { RootState } from "../../store/store";
 
 export const useSpecializations = (token: string | null) => {
   const dispatch = useDispatch()
-  const { specializationsLoading, specializationsError, specializationsData } = useSelector(
-    (state) => state.specializations,
-  )
+  const { loading, error, specializationsData } = useSelector(
+    (state: RootState) => state.specializations
+  );
 
   useEffect(() => {
     const fetchSpecializations = async () => {
@@ -33,6 +34,6 @@ export const useSpecializations = (token: string | null) => {
     fetchSpecializations()
   }, [dispatch, token])
 
-  return { specializationsLoading, specializationsError, specializationsData }
+  return { loading, error, specializationsData }
 }
 

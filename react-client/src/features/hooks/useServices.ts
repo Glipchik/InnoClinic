@@ -5,11 +5,14 @@ import {
   fetchServicesDataSuccess,
   fetchServicesDataRequest,
 } from "../../store/slices/servicesSlice"
+import { RootState } from "../../store/store";
 
 export const useServices = (token: string | null) => {
   const dispatch = useDispatch()
-  const { servicesLoading, servicesError, servicesData } = useSelector((state) => state.services)
-
+  const { loading, error, servicesData } = useSelector(
+    (state: RootState) => state.services
+  );
+  
   const fetchServices = async (specializationId: string) => {
     if (token) {
       try {
@@ -22,6 +25,6 @@ export const useServices = (token: string | null) => {
     }
   }
 
-  return { servicesLoading, servicesError, servicesData, fetchServices }
+  return { loading, error, servicesData, fetchServices }
 }
 

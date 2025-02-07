@@ -18,21 +18,25 @@ import type Specialization from "../../entities/specialization"
 import type Service from "../../entities/service"
 import type Doctor from "../../entities/doctor"
 import type TimeSlot from "../../entities/timeSlot"
+import { RootState } from "../../store/store";
 
 export function CreateAppointmentForm() {
   const [token, setToken] = useState<string | null>(null)
   const [date, setDate] = useState<string | null>(null)
+  const [doctorId, setDoctorId] = useState<string | null>(null)
   const [isServiceSelectDisabled, setIsServiceSelectDisabled] = useState<boolean>(true)
   const [isDoctorSelectDisabled, setIsDoctorSelectDisabled] = useState<boolean>(true)
   const [isTimeSlotSelectDisabled, setIsTimeSlotSelectDisabled] = useState<boolean>(true)
 
   const userManager = useContext(UserManagerContext)
-  const isUserAuthorized = useSelector((state) => state.isUserAuthorized)
+  const { isUserAuthorized } = useSelector(
+    (state: RootState) => state.auth
+  );
 
-  const { specializationsLoading, specializationsError, specializationsData } = useSpecializations(token)
-  const { servicesLoading, servicesError, servicesData, fetchServices } = useServices(token)
-  const { doctorsLoading, doctorsError, doctorsData, fetchDoctors } = useDoctors(token)
-  const { doctorScheduleLoading, doctorScheduleError, doctorScheduleData, fetchDoctorSchedule } =
+  const { loading: specializationsLoading, error: specializationsError, specializationsData } = useSpecializations(token)
+  const { loading: servicesLoading, error: servicesError, servicesData, fetchServices } = useServices(token)
+  const { loading: doctorsLoading, error: doctorsError, doctorsData, fetchDoctors } = useDoctors(token)
+  const { loading: doctorScheduleLoading, error: doctorScheduleError, doctorScheduleData, fetchDoctorSchedule } =
     useDoctorSchedule(token)
 
   useEffect(() => {
@@ -77,6 +81,8 @@ export function CreateAppointmentForm() {
   const handleDoctorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const doctorId = e.target.value
     formik.setFieldValue("doctor", doctorId)
+    console.log(doctorId)
+    setDoctorId(e.target.value)
 
     if (doctorId && date) {
       setIsTimeSlotSelectDisabled(false)
@@ -169,6 +175,13 @@ export function CreateAppointmentForm() {
           const value = e.target.value
           setDate(value)
           formik.setFieldValue("date", value)
+          console.log(date)
+          if (doctorId && date) {
+            setIsTimeSlotSelectDisabled(false)
+            fetchDoctorSchedule(doctorId, new Date(date))
+          } else {
+            setIsTimeSlotSelectDisabled(true)
+          }
         }}
         onBlur={formik.handleBlur}
         disabled={false}

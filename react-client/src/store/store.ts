@@ -5,7 +5,7 @@ import servicesReducer from './slices/servicesSlice';
 import doctorsReducer from './slices/doctorsSlice';
 import doctorScheduleReducer from './slices/doctorScheduleSlice';
 
-const store = configureStore({
+export const store = configureStore({
   reducer: {
     auth: authReducer,
     specializations: specializationsReducer,
@@ -15,4 +15,5 @@ const store = configureStore({
   }
 });
 
-export default store;
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

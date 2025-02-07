@@ -1,10 +1,13 @@
 import { useDispatch, useSelector } from "react-redux"
 import { GET as doctorGET } from "../../shared/api/doctorApi"
 import { fetchDoctorsDataFailure, fetchDoctorsDataSuccess, fetchDoctorsDataRequest } from "../../store/slices/doctorsSlice"
+import { RootState } from "../../store/store";
 
 export const useDoctors = (token: string | null) => {
   const dispatch = useDispatch()
-  const { doctorsLoading, doctorsError, doctorsData } = useSelector((state) => state.doctors)
+  const { loading, error, doctorsData } = useSelector(
+    (state: RootState) => state.doctors
+  );
 
   const fetchDoctors = async (specializationId: string) => {
     if (token) {
@@ -18,5 +21,5 @@ export const useDoctors = (token: string | null) => {
     }
   }
 
-  return { doctorsLoading, doctorsError, doctorsData, fetchDoctors }
+  return { loading, error, doctorsData, fetchDoctors }
 }

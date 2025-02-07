@@ -5,12 +5,13 @@ import {
   fetchDoctorScheduleDataFailure,
   fetchDoctorScheduleDataSuccess,
 } from "../../store/slices/doctorScheduleSlice"
+import { RootState } from "../../store/store";
 
 export const useDoctorSchedule = (token: string | null) => {
   const dispatch = useDispatch()
-  const { doctorScheduleLoading, doctorScheduleError, doctorScheduleData } = useSelector(
-    (state) => state.doctorSchedule,
-  )
+  const { loading, error, doctorScheduleData } = useSelector(
+    (state: RootState) => state.doctorSchedule
+  );
 
   const fetchDoctorSchedule = async (doctorId: string, date: Date) => {
     if (token) {
@@ -24,6 +25,6 @@ export const useDoctorSchedule = (token: string | null) => {
     }
   }
 
-  return { doctorScheduleLoading, doctorScheduleError, doctorScheduleData, fetchDoctorSchedule }
+  return { loading, error, doctorScheduleData, fetchDoctorSchedule }
 }
 
