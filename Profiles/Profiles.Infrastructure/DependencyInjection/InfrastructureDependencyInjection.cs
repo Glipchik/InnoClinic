@@ -4,11 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Profiles.Domain.Repositories.Abstractions;
 using Profiles.Infrastructure.Contexts;
 using Profiles.Infrastructure.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Profiles.Infrastructure.DependencyInjection
 {
