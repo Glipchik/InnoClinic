@@ -12,7 +12,7 @@ using Profiles.Infrastructure.Contexts;
 namespace Profiles.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250122095459_InitialCreate")]
+    [Migration("20250130114246_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -133,7 +133,7 @@ namespace Profiles.Infrastructure.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<string>("PhoneNumber")
+                    b.Property<string>("RegistryPhoneNumber")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");

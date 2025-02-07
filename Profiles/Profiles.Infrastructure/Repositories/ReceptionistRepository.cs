@@ -1,22 +1,49 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Events.Receptionist;
+using MassTransit;
+using Microsoft.EntityFrameworkCore;
 using Profiles.Domain.Entities;
 using Profiles.Domain.Repositories.Abstractions;
 using Profiles.Infrastructure.Contexts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Profiles.Infrastructure.Repositories
 {
     public class ReceptionistRepository : GenericRepository<Receptionist>, IReceptionistRepository
     {
         private readonly AppDbContext _context;
+        private IAccountRepository _accountRepository;
 
-        public ReceptionistRepository(AppDbContext context) : base(context)
+        public ReceptionistRepository(AppDbContext context, IAccountRepository accountRepository) : base(context)
         {
             _context = context;
+            _accountRepository = accountRepository;
+        }
+
+        public override async Task<Receptionist> CreateAsync(Receptionist entity, CancellationToken cancellationToken)
+        {
+            if (entity.Id == Guid.Empty)
+            {
+                entity.Id = Guid.NewGuid();
+            }
+
+            await _context.Set<Receptionist>().AddAsync(entity, cancellationToken);
+            return entity;
+        }
+
+        public override async Task<Receptionist> UpdateAsync(Receptionist entity, CancellationToken cancellationToken)
+        {
+            _context.Set<Receptionist>().Update(entity);
+            return entity;
+        }
+
+        public async override Task DeleteAsync(Guid id, CancellationToken cancellationToken)
+        {
+            var receptionist = await GetAsync(id, cancellationToken)
+                ?? throw new ArgumentNullException($"Receptionist with id {id} not found");
+
+            _context.Set<Receptionist>().Remove(receptionist);
+
+            await _accountRepository.DeleteAsync(receptionist.AccountId, id, cancellationToken);
         }
 
         public async override Task<IEnumerable<Receptionist>> GetAllAsync(CancellationToken cancellationToken)

@@ -3,13 +3,7 @@ using Profiles.Application.Models;
 using Profiles.Application.Services.Abstractions;
 using Profiles.Domain.Entities;
 using Profiles.Domain.Repositories.Abstractions;
-using System.Net.Http.Json;
-using Microsoft.Extensions.Configuration;
-using System.Net;
-using Profiles.Application.Exceptions;
-using System.Net.Http.Headers;
-using IdentityModel.Client;
-using System.Security.Principal;
+using Profiles.MessageBroking.Producers.Abstractions;
 
 namespace Profiles.Application.Services
 {
