@@ -203,8 +203,8 @@ namespace Appointments.API.Controllers
         /// <summary>
         /// Delete an appointment.
         /// </summary>
-        /// <param name="updateAppointmentDto">The appointment object fields containing details.</param>
-        /// <response code="200">If the appointment is updated</response>
+        /// <param name="id">The appointment id to delete.</param>
+        /// <response code="200">If the appointment is deleted</response>
         /// <response code="400">If validation errors occured</response>
         /// <response code="500">If there was an internal server error</response>
         [HttpDelete("{id}")]
