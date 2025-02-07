@@ -70,6 +70,7 @@ export function CreateAppointmentForm() {
       fetchDoctors(specializationId)
     } else {
       setIsServiceSelectDisabled(true)
+      setIsDoctorSelectDisabled(true)
     }
   }
 

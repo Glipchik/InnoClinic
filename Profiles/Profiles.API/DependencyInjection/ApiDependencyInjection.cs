@@ -94,7 +94,16 @@ public static class ApiDependencyInjection
         });
 
         services.AddHttpClient();
-            
+
+        services.AddCors(options =>
+        {
+            options.AddPolicy("AllowLocalhost3000",
+                builder => builder.WithOrigins("http://localhost:3000")
+                                  .AllowAnyHeader()
+                                  .AllowAnyMethod()
+                                  .AllowCredentials());
+        });
+
         return services;
     }
 }

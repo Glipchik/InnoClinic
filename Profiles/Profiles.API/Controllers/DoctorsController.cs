@@ -64,7 +64,7 @@ public class DoctorsController : ControllerBase
     /// <response code="500">If there was an internal server error</response>
     [HttpGet]
     [Authorize]
-    public async Task<IEnumerable<DoctorDto>> Get(DoctorQueryParametresDto doctorQueryParametresDto, CancellationToken cancellationToken)
+    public async Task<IEnumerable<DoctorDto>> Get([FromQuery] DoctorQueryParametresDto doctorQueryParametresDto, CancellationToken cancellationToken)
     {
         var doctors = await _doctorService.GetAll(_mapper.Map<DoctorQueryParametresModel>(doctorQueryParametresDto), cancellationToken);
         _logger.LogInformation("Requested doctors list");

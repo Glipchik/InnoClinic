@@ -43,4 +43,6 @@ app.UseExceptionHandler();
 
 app.MapControllers();
 
+app.UseCors("AllowLocalhost3000");
+
 app.Run();

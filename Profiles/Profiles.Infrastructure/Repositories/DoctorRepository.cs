@@ -94,7 +94,7 @@ namespace Profiles.Infrastructure.Repositories
                 query = query.Where(d => d.SpecializationId == specializationId.Value);
             }
 
-            if (status.HasValue)
+            if (status.HasValue && status != Domain.Enums.DoctorStatus.None)
             {
                 query = query.Where(d => d.Status.Equals(status.Value));
             }

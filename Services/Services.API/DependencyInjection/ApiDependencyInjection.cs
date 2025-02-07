@@ -44,7 +44,7 @@ namespace Services.API.DependencyInjection
             })
             .AddJwtBearer("Bearer", options =>
             {
-                options.Authority = "https://localhost:5001";
+                options.Authority = configuration.GetSection("Authorization")["ServerUrl"];
                 options.RequireHttpsMetadata = false;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
