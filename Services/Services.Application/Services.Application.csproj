@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Services.Domain\Services.Domain.csproj" />
+    <ProjectReference Include="..\Services.MessageBroking\Services.MessageBroking.csproj" />
   </ItemGroup>
 
 </Project>

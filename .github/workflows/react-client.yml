@@ -1,0 +1,25 @@
+name: CI for React client
+on:
+  push:
+    paths:
+      - "react-client/**"
+
+jobs:
+  test:
+    name: Check the source code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        working-directory: react-client
+        run: npm ci
+
+      - name: Run Prettier
+        working-directory: react-client
+        run: npm run format
+
+      - name: Run ESLint
+        working-directory: react-client
+        run: npm run lint

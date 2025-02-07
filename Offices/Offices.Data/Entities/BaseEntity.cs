@@ -10,8 +10,8 @@ namespace Offices.Data.Entities
 {
     public class BaseEntity
     {
-        [BsonId] 
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; } = ObjectId.GenerateNewId().ToString();
+        [BsonId]
+        [BsonRepresentation(BsonType.String)]
+        public Guid Id { get; set; }
     }
 }

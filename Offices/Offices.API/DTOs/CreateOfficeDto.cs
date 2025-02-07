@@ -1,4 +1,4 @@
 ﻿namespace Offices.API.DTOs
 {
-    public record CreateOfficeDto(string Address, string PhotoURL, string RegistryPhoneNumber, bool IsActive);
+    public record CreateOfficeDto(string Address, string RegistryPhoneNumber, bool IsActive);
 }

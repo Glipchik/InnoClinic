@@ -89,7 +89,7 @@ namespace Offices.API.Controllers
                 throw new Domain.Exceptions.ValidationException(validationErrors);
             }
 
-            var receptionist = await _receptionistService.Get(id, cancellationToken);
+            var receptionist = await _receptionistService.Get(Guid.Parse(id), cancellationToken);
             _logger.LogInformation("Requested receptionist with id {id}", id);
             return _mapper.Map<ReceptionistDto>(receptionist);
         }
@@ -181,7 +181,7 @@ namespace Offices.API.Controllers
                 throw new Domain.Exceptions.ValidationException(validationErrors);
             }
 
-            await _receptionistService.Delete(id, cancellationToken);
+            await _receptionistService.Delete(Guid.Parse(id), cancellationToken);
             _logger.LogInformation("Receptionist with id {id} was successfully deleted", id);
         }
     }

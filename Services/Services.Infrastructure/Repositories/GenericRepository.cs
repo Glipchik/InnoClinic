@@ -19,16 +19,23 @@ namespace Services.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task CreateAsync(T entity, CancellationToken cancellationToken)
+        public virtual async Task<T> CreateAsync(T entity, CancellationToken cancellationToken)
         {
-            ArgumentNullException.ThrowIfNull(entity);
+            if (entity.Id == Guid.Empty)
+            {
+                entity.Id = Guid.NewGuid();
+            }
 
             await _context.Set<T>().AddAsync(entity, cancellationToken);
+
+            return entity;
         }
 
         public virtual async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
-            var entityToDelete = await _context.Set<T>().FindAsync(id);
+            var entityToDelete = await GetAsync(id, cancellationToken)
+                ?? throw new ArgumentNullException($"Entity with id {id} to delete is null.");
+
             _context.Set<T>().Remove(entityToDelete);
         }
 
@@ -42,9 +49,10 @@ namespace Services.Infrastructure.Repositories
             return await _context.Set<T>().FindAsync(id);
         }
 
-        public async Task UpdateAsync(T entity, CancellationToken cancellationToken)
+        public virtual async Task<T> UpdateAsync(T entity, CancellationToken cancellationToken)
         {
             _context.Set<T>().Update(entity);
+            return entity;
         }
     }
 }

@@ -9,6 +9,6 @@ namespace Offices.Data.Repositories.Abstractions
 {
     public interface IReceptionistRepository: IGenericRepository<Receptionist>
     {
-        Task<IEnumerable<Receptionist>> GetActiveReceptionistsFromOffice(string officeId, CancellationToken cancellationToken);
+        Task<IEnumerable<Receptionist>> GetActiveReceptionistsFromOffice(Guid officeId, CancellationToken cancellationToken);
     }
 }

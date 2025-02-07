@@ -1,11 +1,10 @@
-﻿using System.Threading;
-using AutoMapper;
-using DnsClient.Internal;
+﻿using AutoMapper;
 using Offices.Application.Models;
 using Offices.Application.Services.Abstractions;
 using Offices.Data.Entities;
 using Offices.Data.Repositories.Abstractions;
 using Offices.Domain.Exceptions;
+using Offices.MessageBroking.Producers.Abstractions;
 
 namespace Offices.Application.Services
 {
@@ -15,29 +14,44 @@ namespace Offices.Application.Services
         private readonly IDoctorRepository _doctorRepository;
         private readonly IReceptionistRepository _receptionistsRepository;
         private readonly IMapper _mapper;
+        private readonly IOfficeProducer _officeProducer;
 
-        public OfficeService(IOfficeRepository officeRepository, IDoctorRepository doctorRepository, IReceptionistRepository receptionistRepository, IMapper mapper)
+        public OfficeService(
+            IOfficeRepository officeRepository,
+            IDoctorRepository doctorRepository,
+            IReceptionistRepository receptionistRepository,
+            IMapper mapper,
+            IOfficeProducer officeProducer)
         {
             _receptionistsRepository = receptionistRepository;
             _doctorRepository = doctorRepository;
             _officeRepository = officeRepository;
             _mapper = mapper;
+            _officeProducer = officeProducer;
         }
 
         public async Task Create(CreateOfficeModel createOfficeModel, CancellationToken cancellationToken)
         {
-            await _officeRepository.CreateAsync(_mapper.Map<Office>(createOfficeModel), cancellationToken);
+            var officeToCreate = _mapper.Map<Office>(createOfficeModel);
+            await _officeRepository.CreateAsync(officeToCreate, cancellationToken);
+            await _officeProducer.PublishOfficeCreated(officeToCreate, cancellationToken);
         }
 
         public async Task Update(UpdateOfficeModel updateOfficeModel, CancellationToken cancellationToken)
         {
+            var officeToUpdate = await _officeRepository.GetAsync(updateOfficeModel.Id, cancellationToken)
+                ?? throw new NotFoundException($"Office not found: {updateOfficeModel.Id}");
+
             var office = _mapper.Map<Office>(updateOfficeModel);
             await _officeRepository.UpdateAsync(office, cancellationToken);
+            await _officeProducer.PublishOfficeUpdated(office, cancellationToken);
         }
 
-        public async Task<OfficeModel> Get(string id, CancellationToken cancellationToken)
+        public async Task<OfficeModel> Get(Guid id, CancellationToken cancellationToken)
         {
-            var office = await _officeRepository.GetAsync(id, cancellationToken);
+            var office = await _officeRepository.GetAsync(id, cancellationToken)
+                ?? throw new NotFoundException($"Office not found: {id}");
+
             return _mapper.Map<OfficeModel>(office);
         }
 
@@ -46,8 +60,11 @@ namespace Offices.Application.Services
             return _mapper.Map<IEnumerable<OfficeModel>>(await _officeRepository.GetAllAsync(cancellationToken));
         }
 
-        public async Task Delete(string id, CancellationToken cancellationToken)
+        public async Task Delete(Guid id, CancellationToken cancellationToken)
         {
+            var officeToDelete = await _officeRepository.GetAsync(id, cancellationToken)
+                ?? throw new NotFoundException($"Office not found: {id}");
+
             // If there are doctors or receptionists found in this office, can't make this office inactive
             if (await CheckIfThereAreActiveDoctorsOrReceptionistsInOffice(id, cancellationToken))
             {
@@ -56,11 +73,13 @@ namespace Offices.Application.Services
             }
             else
             {
-                await _officeRepository.DeleteAsync(id, cancellationToken);
+                officeToDelete.IsActive = false;
+                await _officeRepository.UpdateAsync(officeToDelete, cancellationToken);
+                await _officeProducer.PublishOfficeUpdated(officeToDelete, cancellationToken);
             }
         }
 
-        private async Task<bool> CheckIfThereAreActiveDoctorsOrReceptionistsInOffice(string officeId, CancellationToken cancellationToken)
+        private async Task<bool> CheckIfThereAreActiveDoctorsOrReceptionistsInOffice(Guid officeId, CancellationToken cancellationToken)
         {
             var doctorsInOfficeCount = (await _doctorRepository.GetActiveDoctorsFromOffice(officeId, cancellationToken)).Count();
             var receptionistsInOfficeCount = (await _receptionistsRepository.GetActiveReceptionistsFromOffice(officeId, cancellationToken)).Count();
