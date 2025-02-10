@@ -23,9 +23,16 @@ export const useSpecializations = (token: string | null) => {
           dispatch(fetchSpecializationsDataRequest())
           const response = await specializationGET(null, token)
           dispatch(fetchSpecializationsDataSuccess(response.data))
-        } catch (error) {
+        } catch (error: unknown) {
+          let errorMessage = "An unknown error occurred";
+  
+          if (error.response && error.response.data) {
+            const problemDetails = error.response.data;
+            errorMessage = problemDetails.detail || problemDetails.title || errorMessage;
+          }
+
           dispatch(
-            fetchSpecializationsDataFailure(error instanceof Error ? error.message : "An unknown error occurred"),
+            fetchSpecializationsDataFailure(errorMessage),
           )
         }
       }

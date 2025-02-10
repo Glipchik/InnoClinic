@@ -19,8 +19,15 @@ export const useServices = (token: string | null) => {
         dispatch(fetchServicesDataRequest())
         const response = await serviceGET(null, specializationId, token)
         dispatch(fetchServicesDataSuccess(response.data))
-      } catch (error) {
-        dispatch(fetchServicesDataFailure(error instanceof Error ? error.message : "An unknown error occurred"))
+      } catch (error: unknown) {
+        let errorMessage = "An unknown error occurred";
+
+        if (error.response && error.response.data) {
+          const problemDetails = error.response.data;
+          errorMessage = problemDetails.detail || problemDetails.title || errorMessage;
+        }
+
+        dispatch(fetchServicesDataFailure(errorMessage))
       }
     }
   }

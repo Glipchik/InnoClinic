@@ -12,8 +12,10 @@ function Layout() {
 
   useEffect(() => {
     if (userManager) {
-      userManager.events.addUserLoaded(() => dispatch(authorized()))
-      console.log("event authorize is dispatched")
+      userManager.events.addUserLoaded(() => {
+        dispatch(authorized())
+        console.log("event authorize is dispatched")
+      })
     }
   }, [dispatch, userManager])
 

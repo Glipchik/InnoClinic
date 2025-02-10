@@ -15,8 +15,15 @@ export const useDoctors = (token: string | null) => {
         dispatch(fetchDoctorsDataRequest())
         const response = await doctorGET(null, specializationId, token)
         dispatch(fetchDoctorsDataSuccess(response.data))
-      } catch (error) {
-        dispatch(fetchDoctorsDataFailure(error instanceof Error ? error.message : "An unknown error occurred"))
+      } catch (error: unknown) {
+        let errorMessage = "An unknown error occurred";
+
+        if (error.response && error.response.data) {
+          const problemDetails = error.response.data;
+          errorMessage = problemDetails.detail || problemDetails.title || errorMessage;
+        }
+          
+        dispatch(fetchDoctorsDataFailure(errorMessage))
       }
     }
   }

@@ -3,7 +3,6 @@
 import type React from "react"
 import { useState, useEffect, useContext } from "react"
 import { useFormik } from "formik"
-import { useSelector } from "react-redux"
 import { UserManagerContext } from "../../shared/contexts/UserManagerContext"
 import { validationSchema } from "./validationSchema"
 import { MIN_APPOINTMENT_DATE } from "./helpers/dateUtils"
@@ -19,6 +18,10 @@ import type Service from "../../entities/service"
 import type Doctor from "../../entities/doctor"
 import type TimeSlot from "../../entities/timeSlot"
 import { RootState } from "../../store/store";
+import CreateAppointmentModel from "./models/CreateAppointmentModel"
+import { fetchAppointmentsDataFailure, fetchAppointmentsDataRequest, fetchAppointmentsDataSuccess } from "../../store/slices/appointmentsSlice"
+import { POST as appointmentPOST } from "../../shared/api/appointmentApi"
+import { useDispatch, useSelector } from "react-redux"
 
 export function CreateAppointmentForm() {
   const [token, setToken] = useState<string | null>(null)
@@ -27,6 +30,8 @@ export function CreateAppointmentForm() {
   const [isServiceSelectDisabled, setIsServiceSelectDisabled] = useState<boolean>(true)
   const [isDoctorSelectDisabled, setIsDoctorSelectDisabled] = useState<boolean>(true)
   const [isTimeSlotSelectDisabled, setIsTimeSlotSelectDisabled] = useState<boolean>(true)
+  
+  const dispatch = useDispatch()
 
   const userManager = useContext(UserManagerContext)
   const { isUserAuthorized } = useSelector(
@@ -38,6 +43,10 @@ export function CreateAppointmentForm() {
   const { loading: doctorsLoading, error: doctorsError, doctorsData, fetchDoctors } = useDoctors(token)
   const { loading: doctorScheduleLoading, error: doctorScheduleError, doctorScheduleData, fetchDoctorSchedule } =
     useDoctorSchedule(token)
+
+  const { loading: appointmentLoading, error: appointmentError } = useSelector(
+    (state: RootState) => state.appointments
+  );
 
   useEffect(() => {
     if (userManager) {
@@ -51,21 +60,19 @@ export function CreateAppointmentForm() {
 
   const formik = useFormik({
     initialValues: {
-      service: "",
-      specialization: "",
+      serviceId: "",
+      specializationId: "",
       date: MIN_APPOINTMENT_DATE.toISOString().split("T")[0],
-      timeSlot: "",
-      doctor: "",
+      timeSlotId: -1,
+      doctorId: "",
     },
     validationSchema,
-    onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2))
-    },
+    onSubmit: (values) => handleSubmit(values),
   })
 
   const handleSpecializationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const specializationId = e.target.value
-    formik.setFieldValue("specialization", specializationId)
+    formik.setFieldValue("specializationId", specializationId)
 
     if (specializationId) {
       setIsServiceSelectDisabled(false)
@@ -80,7 +87,7 @@ export function CreateAppointmentForm() {
 
   const handleDoctorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const doctorId = e.target.value
-    formik.setFieldValue("doctor", doctorId)
+    formik.setFieldValue("doctorId", doctorId)
     console.log(doctorId)
     setDoctorId(e.target.value)
 
@@ -89,6 +96,26 @@ export function CreateAppointmentForm() {
       fetchDoctorSchedule(doctorId, new Date(date))
     } else {
       setIsTimeSlotSelectDisabled(true)
+    }
+  }
+
+  const handleSubmit = async (values: CreateAppointmentModel) => {
+    alert(JSON.stringify(values, null, 2))
+    if (token) {
+      try {
+        dispatch(fetchAppointmentsDataRequest())
+        const response = await appointmentPOST(values, token)
+        dispatch(fetchAppointmentsDataSuccess(response.data))
+      } catch (error: unknown) {
+        let errorMessage = "An unknown error occurred";
+
+        if (error.response && error.response.data) {
+          const problemDetails = error.response.data;
+          errorMessage = problemDetails.detail || problemDetails.title || errorMessage;
+        }
+  
+        dispatch(fetchAppointmentsDataFailure(errorMessage));      
+      }
     }
   }
 
@@ -101,10 +128,10 @@ export function CreateAppointmentForm() {
         <Select
           disabled={false}
           label="Specialization"
-          id="specialization"
-          name="specialization"
+          id="specializationId"
+          name="specializationId"
           onChange={handleSpecializationChange}
-          value={formik.values.specialization}
+          value={formik.values.specializationId}
         >
           <option value="" label="Select specialization" />
           {specializationsData &&
@@ -112,8 +139,8 @@ export function CreateAppointmentForm() {
               <option key={spec.id} value={spec.id} label={spec.specializationName} />
             ))}
         </Select>
-        {formik.touched.specialization && formik.errors.specialization ? (
-          <div className="text-red-500">{formik.errors.specialization}</div>
+        {formik.touched.specializationId && formik.errors.specializationId ? (
+          <div className="text-red-500">{formik.errors.specializationId}</div>
         ) : null}
       </div>
 
@@ -124,10 +151,10 @@ export function CreateAppointmentForm() {
         <Select
           disabled={isServiceSelectDisabled}
           label="Service"
-          id="service"
-          name="service"
+          id="serviceId"
+          name="serviceId"
           onChange={formik.handleChange}
-          value={formik.values.service}
+          value={formik.values.serviceId}
           className={isServiceSelectDisabled ? "opacity-50 cursor-not-allowed" : ""}
         >
           <option value="" label="Select service" />
@@ -136,8 +163,8 @@ export function CreateAppointmentForm() {
               <option key={service.id} value={service.id} label={service.serviceName} />
             ))}
         </Select>
-        {formik.touched.service && formik.errors.service ? (
-          <div className="text-red-500">{formik.errors.service}</div>
+        {formik.touched.serviceId && formik.errors.serviceId ? (
+          <div className="text-red-500">{formik.errors.serviceId}</div>
         ) : null}
       </div>
 
@@ -148,10 +175,10 @@ export function CreateAppointmentForm() {
         <Select
           disabled={isDoctorSelectDisabled}
           label="Doctor"
-          id="doctor"
-          name="doctor"
+          id="doctorId"
+          name="doctorId"
           onChange={handleDoctorChange}
-          value={formik.values.doctor}
+          value={formik.values.doctorId}
           className={isDoctorSelectDisabled ? "opacity-50 cursor-not-allowed" : ""}
         >
           <option value="" label="Select doctor" />
@@ -160,8 +187,8 @@ export function CreateAppointmentForm() {
               <option key={doctor.id} value={doctor.id} label={`${doctor.firstName} ${doctor.lastName}`} />
             ))}
         </Select>
-        {formik.touched.doctor && formik.errors.doctor ? (
-          <div className="text-red-500">{formik.errors.doctor}</div>
+        {formik.touched.doctorId && formik.errors.doctorId ? (
+          <div className="text-red-500">{formik.errors.doctorId}</div>
         ) : null}
       </div>
 
@@ -172,15 +199,18 @@ export function CreateAppointmentForm() {
         name="date"
         value={formik.values.date}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          const value = e.target.value
-          setDate(value)
-          formik.setFieldValue("date", value)
-          console.log(date)
-          if (doctorId && date) {
-            setIsTimeSlotSelectDisabled(false)
-            fetchDoctorSchedule(doctorId, new Date(date))
+          const selectedDate = e.target.value;
+
+          setDate(selectedDate); // Обновляем локальное состояние
+          formik.setFieldValue("date", selectedDate); // Уведомляем Formik
+
+          console.log("Выбранная дата:", selectedDate);
+
+          if (doctorId && selectedDate) {
+            setIsTimeSlotSelectDisabled(false);
+            fetchDoctorSchedule(doctorId, new Date(selectedDate)); // Используем новое значение сразу
           } else {
-            setIsTimeSlotSelectDisabled(true)
+            setIsTimeSlotSelectDisabled(true);
           }
         }}
         onBlur={formik.handleBlur}
@@ -196,10 +226,10 @@ export function CreateAppointmentForm() {
         <Select
           disabled={isTimeSlotSelectDisabled}
           label="Time Slots"
-          id="timeSlot"
-          name="timeSlot"
+          id="timeSlotId"
+          name="timeSlotId"
           onChange={formik.handleChange}
-          value={formik.values.timeSlot}
+          value={formik.values.timeSlotId}
           className={isTimeSlotSelectDisabled ? "opacity-50 cursor-not-allowed" : ""}
         >
           <option value="" label="Select Time Slot" />
@@ -208,8 +238,8 @@ export function CreateAppointmentForm() {
               <option key={timeSlot.id} value={timeSlot.id} label={timeSlot.start} />
             ))}
         </Select>
-        {formik.touched.timeSlot && formik.errors.timeSlot ? (
-          <div className="text-red-500">{formik.errors.timeSlot}</div>
+        {formik.touched.timeSlotId && formik.errors.timeSlotId ? (
+          <div className="text-red-500">{formik.errors.timeSlotId}</div>
         ) : null}
       </div>
 
@@ -217,6 +247,9 @@ export function CreateAppointmentForm() {
       <Button type="submit" className="w-full">
         Submit
       </Button>
+      
+      {appointmentLoading && <p className="text-blue-500">Creating appointment...</p>}
+      {appointmentError && <p className="text-red-500">Error: {appointmentError}</p>}
     </form>
   )
 }

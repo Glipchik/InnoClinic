@@ -5,16 +5,15 @@ import { Link } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import Button from "./controls/Button";
 import React from "react";
+import { RootState } from "../../store/store";
 
 function Header() {
   const userManager = useContext(UserManagerContext);
   const [user, setUser] = useState<User | null>(null);
 
-  interface RootState {
-    isUserAuthorized: boolean;
-  }
-
-  const isUserAuthorized = useSelector((state: RootState) => state.isUserAuthorized);
+  const { isUserAuthorized } = useSelector(
+    (state: RootState) => state.auth
+  );
 
   useEffect(() => {
     if (userManager) {
