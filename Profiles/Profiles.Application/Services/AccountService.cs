@@ -36,7 +36,6 @@ namespace Profiles.Application.Services
             await _unitOfWork.AccountRepository.CreateAsync(account, createAccountModel.AuthorId, cancellationToken);
 
             var authorizationAccountModel = _mapper.Map<AuthorizationAccountModel>(account);
-            authorizationAccountModel.PhotoFileName = String.Empty;
             authorizationAccountModel.Role = createAccountModel.Role;
 
             return authorizationAccountModel;
