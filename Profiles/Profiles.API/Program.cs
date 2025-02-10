@@ -14,8 +14,6 @@ var app = builder.Build();
 
 app.UseExceptionHandler();
 
-app.UseAuthorization();
-
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -33,5 +31,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapControllers();
+
+app.UseCors("AllowLocalhost3000");
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.Run();

@@ -44,3 +44,7 @@ public record UpdateDoctorByReceptionistDto(
     Guid OfficeId,
     DateTime DateOfBirth,
     DoctorStatusDto Status);
+
+public record DoctorQueryParametresDto(
+    Guid? SpecializationId,
+    DoctorStatusDto? Status);

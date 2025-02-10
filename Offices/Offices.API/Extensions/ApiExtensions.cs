@@ -52,10 +52,23 @@ namespace Offices.API.Extensions
 
             services.AddAuthentication(options =>
             {
-                options.DefaultScheme = "Cookies";
+                options.DefaultScheme = "Bearer";
                 options.DefaultChallengeScheme = "oidc";
             })
-            .AddCookie("Cookies")
+            .AddCookie("Cookies", options =>
+            {
+                options.Cookie.SameSite = SameSiteMode.None;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            })
+            .AddJwtBearer("Bearer", options =>
+            {
+                options.Authority = configuration.GetSection("Authorization")["ServerUrl"];
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateAudience = false
+                };
+            })
             .AddOpenIdConnect("oidc", options =>
             {
                 options.Authority = configuration.GetSection("Authorization")["ServerUrl"];
@@ -73,6 +86,15 @@ namespace Offices.API.Extensions
             });
 
             services.AddAuthorization();
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowLocalhost3000",
+                    builder => builder.WithOrigins("http://localhost:3000")
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod()
+                                      .AllowCredentials());
+            });
 
             return services;
         }

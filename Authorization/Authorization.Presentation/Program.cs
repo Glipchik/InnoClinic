@@ -27,6 +27,8 @@ try
         app.UseDeveloperExceptionPage();
     }
 
+    app.UseCors();
+
     app.UseStaticFiles();
 
     app.UseRouting();
@@ -57,6 +59,14 @@ try
             "style-src 'self' 'unsafe-inline';");
         await next();
     });
+
+    app.Use(async (context, next) =>
+    {
+        context.Response.Headers.Remove("X-Frame-Options");
+        context.Response.Headers.Add("X-Frame-Options", "SAMEORIGIN");
+        await next();
+    });
+
 
     app.Run();
 }
