@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Offices.Application.Models
+﻿namespace Offices.Application.Models
 {
-    public record OfficeModel(Guid Id, string Address, string RegistryPhoneNumber, bool IsActive);
+    public class OfficeModel
+    {
+        public required Guid Id { get; set; }
+        public required string Address { get; set; }
+        public required string RegistryPhoneNumber { get; set; }
+        public required bool IsActive { get; set; }
+        public required IEnumerable<DoctorModel> Doctors { get; set; }
+        public required IEnumerable<ReceptionistModel> Receptionists { get; set; }
+    }
 }

@@ -8,7 +8,8 @@ using Offices.Data.Entities;
 namespace Offices.Data.Repositories.Abstractions
 {
     public interface IDoctorRepository: IGenericRepository<Doctor>
-    {
+    {   
         Task<IEnumerable<Doctor>> GetActiveDoctorsFromOffice(Guid officeId, CancellationToken cancellationToken);
+        Task<IEnumerable<Doctor>> GetDoctorsFromOffice(Guid officeId, CancellationToken cancellationToken);
     }
 }

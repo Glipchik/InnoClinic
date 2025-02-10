@@ -18,17 +18,13 @@ namespace Profiles.Infrastructure.Repositories
     public class DoctorRepository : GenericRepository<Doctor>, IDoctorRepository
     {
         private readonly AppDbContext _context;
-        private readonly IPublishEndpoint _publishEndpoint;
-        private readonly IMapper _mapper;
 
-        public DoctorRepository(AppDbContext context, IPublishEndpoint publishEndpoint, IMapper mapper) : base(context)
+        public DoctorRepository(AppDbContext context) : base(context)
         {
             _context = context;
-            _publishEndpoint = publishEndpoint;
-            _mapper = mapper;
         }
 
-        public override async Task CreateAsync(Doctor entity, CancellationToken cancellationToken)
+        public override async Task<Doctor> CreateAsync(Doctor entity, CancellationToken cancellationToken)
         {
             if (entity.Id == Guid.Empty)
             {
@@ -37,7 +33,7 @@ namespace Profiles.Infrastructure.Repositories
 
             await _context.Set<Doctor>().AddAsync(entity, cancellationToken);
 
-            await _publishEndpoint.Publish(_mapper.Map<DoctorCreated>(entity), cancellationToken);
+            return entity;
         }
 
         public async override Task DeleteAsync(Guid id, CancellationToken cancellationToken)
@@ -47,15 +43,12 @@ namespace Profiles.Infrastructure.Repositories
 
             doctorToDelete.Status = Domain.Enums.DoctorStatus.Inactive;
             _context.Set<Doctor>().Update(doctorToDelete);
-
-            await _publishEndpoint.Publish(_mapper.Map<DoctorUpdated>(doctorToDelete), cancellationToken);
         }
 
-        public override async Task UpdateAsync(Doctor entity, CancellationToken cancellationToken)
+        public override async Task<Doctor> UpdateAsync(Doctor entity, CancellationToken cancellationToken)
         {
             _context.Set<Doctor>().Update(entity);
-
-            await _publishEndpoint.Publish(_mapper.Map<DoctorUpdated>(entity), cancellationToken);
+            return entity;
         }
 
         public async override Task<IEnumerable<Doctor>> GetAllAsync(CancellationToken cancellationToken)
