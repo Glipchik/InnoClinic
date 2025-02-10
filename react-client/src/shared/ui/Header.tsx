@@ -31,7 +31,11 @@ function Header() {
         <h1 className="text-5xl font-bold">InnoClinic</h1>
       </div>
       <div className="w-[45%] h-full">
-
+        {user?.profile.role === "Receptionist" && (
+          <>
+            <li className="list-none"> <Link to="/offices"> <a> Offices </a> </Link> </li>
+          </>
+        )}
       </div>
       <div className="w-[30%] h-full">
         <div className="flex w-full h-full items items-center space-x-3 justify-end">

@@ -5,6 +5,7 @@ import servicesReducer from './slices/servicesSlice';
 import doctorsReducer from './slices/doctorsSlice';
 import appointmentsReducer from './slices/appointmentsSlice';
 import doctorScheduleReducer from './slices/doctorScheduleSlice';
+import officesReducer from './slices/officesSlice';
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     doctorSchedule: doctorScheduleReducer,
     doctors: doctorsReducer,
     appointments: appointmentsReducer,
+    offices: officesReducer,
   }
 });
 

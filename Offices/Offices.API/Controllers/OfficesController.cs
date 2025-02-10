@@ -11,6 +11,7 @@ using Offices.API.Validators;
 using Offices.Application.Models;
 using Offices.Application.Services.Abstractions;
 using Offices.Data.Entities;
+using Offices.Domain.Models;
 
 namespace Offices.API.Controllers
 {
@@ -28,19 +29,16 @@ namespace Offices.API.Controllers
         // Validators
         private readonly IValidator<CreateOfficeDto> _createOfficeDtoValidator;
         private readonly IValidator<UpdateOfficeDto> _updateOfficeDtoValidator;
-        private readonly IValidator<ObjectIdDto> _objectIdDtoValidator;
 
         public OfficesController(IOfficeService officeService, ILogger<OfficesController> logger, IMapper mapper,
             IValidator<CreateOfficeDto> createOfficeDtoValidator,
-            IValidator<UpdateOfficeDto> updateOfficeDtoValidator,
-            IValidator<ObjectIdDto> objectIdDtoValidator)
+            IValidator<UpdateOfficeDto> updateOfficeDtoValidator)
         {
             _officeService = officeService;
             _logger = logger;
             _mapper = mapper;
             _createOfficeDtoValidator = createOfficeDtoValidator;
             _updateOfficeDtoValidator = updateOfficeDtoValidator;
-            _objectIdDtoValidator = objectIdDtoValidator;
         }
 
         /// <summary>
@@ -57,13 +55,13 @@ namespace Offices.API.Controllers
         /// <response code="500">If there was an internal server error</response>
         [HttpGet]
         [Authorize]
-        public async Task<IEnumerable<OfficeDto>> Get(CancellationToken cancellationToken, int pageIndex = 1, int pageSize = 10)
+        public async Task<PaginatedList<OfficeDto>> Get(CancellationToken cancellationToken, int pageIndex = 1, int pageSize = 10)
         {
             var offices = await _officeService.GetAll(pageIndex, pageSize, cancellationToken);
             _logger.LogInformation("Requested offices list");
 
-            var officeDtos = _mapper.Map<IEnumerable<OfficeDto>>(offices);
-            return officeDtos;
+            List<OfficeDto> officeDtos = _mapper.Map<List<OfficeDto>>(offices.Items);
+            return new PaginatedList<OfficeDto>(officeDtos, offices.PageIndex, offices.TotalPages);
         }
 
         /// <summary>
@@ -79,20 +77,6 @@ namespace Offices.API.Controllers
         [Authorize]
         public async Task<OfficeDto> Get(string id, CancellationToken cancellationToken)
         {
-            // Validation
-            var objectIdDtoValidation = await _objectIdDtoValidator.ValidateAsync(new ObjectIdDto(id), cancellationToken);
-            if (!objectIdDtoValidation.IsValid)
-            {
-                var validationErrors = objectIdDtoValidation.Errors
-                    .GroupBy(e => e.PropertyName)
-                    .ToDictionary(
-                        g => g.Key,
-                        g => g.Select(e => e.ErrorMessage).ToArray()
-                    );
-
-                throw new Domain.Exceptions.ValidationException(validationErrors);
-            }
-
             var office = await _officeService.Get(Guid.Parse(id), cancellationToken);
             _logger.LogInformation("Requested office with id {id}", id);
             return _mapper.Map<OfficeDto>(office);
@@ -171,20 +155,6 @@ namespace Offices.API.Controllers
         [Authorize(Roles = "Receptionist")]
         public async Task Delete(string id, CancellationToken cancellationToken)
         {
-            // Validation
-            var objectIdDtoValidation = await _objectIdDtoValidator.ValidateAsync(new ObjectIdDto(id), cancellationToken);
-            if (!objectIdDtoValidation.IsValid)
-            {
-                var validationErrors = objectIdDtoValidation.Errors
-                    .GroupBy(e => e.PropertyName)
-                    .ToDictionary(
-                        g => g.Key,
-                        g => g.Select(e => e.ErrorMessage).ToArray()
-                    );
-
-                throw new Domain.Exceptions.ValidationException(validationErrors);
-            }
-
             await _officeService.Delete(Guid.Parse(id), cancellationToken);
             _logger.LogInformation("Office with id {id} was successfully deleted", id);
         }

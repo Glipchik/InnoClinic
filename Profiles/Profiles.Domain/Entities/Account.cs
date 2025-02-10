@@ -11,7 +11,7 @@ namespace Profiles.Domain.Entities
         public string Email { get; set; } = null!;
         public string PhoneNumber { get; set; } = null!;
         public bool IsEmailVerified { get; set; } 
-        public string PhotoFileName { get; set; } = null!;
+        public string? PhotoFileName { get; set; }
         public DateTime CreatedAt { get; set; }
         public Guid CreatedBy { get; set; }
         public DateTime UpdatedAt { get; set; }

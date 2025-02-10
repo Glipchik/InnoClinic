@@ -100,7 +100,6 @@ export function CreateAppointmentForm() {
   }
 
   const handleSubmit = async (values: CreateAppointmentModel) => {
-    alert(JSON.stringify(values, null, 2))
     if (token) {
       try {
         dispatch(fetchAppointmentsDataRequest())

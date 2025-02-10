@@ -19,7 +19,7 @@ namespace Profiles.Infrastructure.Migrations
                     Email = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     IsEmailVerified = table.Column<bool>(type: "bit", nullable: false),
-                    PhotoFileName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    PhotoFileName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
