@@ -2,30 +2,45 @@
 using Profiles.Domain.Entities;
 using Profiles.Domain.Repositories.Abstractions;
 using Profiles.Infrastructure.Contexts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Profiles.Infrastructure.Repositories
 {
     public class PatientRepository : GenericRepository<Patient>, IPatientRepository
     {
         private readonly AppDbContext _context;
+        private readonly IAccountRepository _accountRepository;
 
-        public PatientRepository(AppDbContext context) : base(context)
+        public PatientRepository(AppDbContext context, IAccountRepository accountRepository) : base(context)
         {
             _context = context;
+            _accountRepository = accountRepository;
         }
 
         public async override Task DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
-            var patient = await _context.Set<Patient>().FirstOrDefaultAsync(p => p.Id == id, cancellationToken: cancellationToken);
+            var patient = await  GetAsync(id, cancellationToken)
+                ?? throw new ArgumentNullException($"Patient with id {id} not found");
+
             _context.Set<Patient>().Remove(patient);
             
-            var relatedAccount = await _context.Set<Account>().FirstOrDefaultAsync(a => a.Id == patient.AccountId, cancellationToken: cancellationToken);
-            _context.Set<Account>().Remove(relatedAccount);
+            await _accountRepository.DeleteAsync(patient.AccountId, id, cancellationToken);
+        }
+
+        public override async Task<Patient> CreateAsync(Patient entity, CancellationToken cancellationToken)
+        {
+            if (entity.Id == Guid.Empty)
+            {
+                entity.Id = Guid.NewGuid();
+            }
+
+            await _context.Set<Patient>().AddAsync(entity, cancellationToken);
+            return entity;
+        }
+
+        public override async Task<Patient> UpdateAsync(Patient entity, CancellationToken cancellationToken)
+        {
+            _context.Set<Patient>().Update(entity);
+            return entity;
         }
 
         public async override Task<IEnumerable<Patient>> GetAllAsync(CancellationToken cancellationToken)
