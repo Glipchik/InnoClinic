@@ -63,10 +63,10 @@ public class DoctorsController : ControllerBase
     /// <response code="200">Returns the list of doctors</response>
     /// <response code="500">If there was an internal server error</response>
     [HttpGet]
-    [Authorize(Roles = "Receptionist")]
-    public async Task<IEnumerable<DoctorDto>> Get(CancellationToken cancellationToken)
+    [Authorize]
+    public async Task<IEnumerable<DoctorDto>> Get([FromQuery] DoctorQueryParametresDto doctorQueryParametresDto, CancellationToken cancellationToken)
     {
-        var doctors = await _doctorService.GetAll(cancellationToken);
+        var doctors = await _doctorService.GetAll(_mapper.Map<DoctorQueryParametresModel>(doctorQueryParametresDto), cancellationToken);
         _logger.LogInformation("Requested doctors list");
 
         var doctorDtos = _mapper.Map<IEnumerable<DoctorDto>>(doctors);

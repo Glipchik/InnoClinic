@@ -17,6 +17,7 @@ namespace Profiles.Application.Services.Abstractions
         Task<DoctorModel> Get(Guid id, CancellationToken cancellationToken);
         Task<DoctorModel> GetByAccountId(Guid id, CancellationToken cancellationToken);
         Task<IEnumerable<DoctorModel>> GetAll(CancellationToken cancellationToken);
+        Task<IEnumerable<DoctorModel>> GetAll(DoctorQueryParametresModel doctorQueryParametresModel, CancellationToken cancellationToken);
         Task Update(
             UpdateDoctorModel updateDoctorModel, 
             FileModel? fileModel,

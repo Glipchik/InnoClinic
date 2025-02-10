@@ -6,8 +6,8 @@ namespace Appointments.Domain.Repositories.Abstractions
     {
         Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken);
         Task<T?> GetAsync(Guid id, CancellationToken cancellationToken);
-        T Update(T entity, CancellationToken cancellationToken);
         Task<T> DeleteAsync(Guid id, CancellationToken cancellationToken);
         Task<T> CreateAsync(T entity, CancellationToken cancellationToken);
+        Task<T> UpdateAsync(T entity, CancellationToken cancellationToken);
     }
 }

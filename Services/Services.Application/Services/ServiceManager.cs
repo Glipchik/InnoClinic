@@ -72,6 +72,11 @@ namespace Services.Application.Services
             return _mapper.Map<IEnumerable<ServiceModel>>(await _unitOfWork.ServiceRepository.GetAllAsync(cancellationToken));
         }
 
+        public async Task<IEnumerable<ServiceModel>> GetAll(ServiceQueryParametresModel serviceQueryParametresModel, CancellationToken cancellationToken)
+        {
+            return _mapper.Map<IEnumerable<ServiceModel>>(await _unitOfWork.ServiceRepository.GetAllAsync(serviceQueryParametresModel.ServiceCategoryId, serviceQueryParametresModel.SpecializationId, serviceQueryParametresModel.IsActive, cancellationToken));
+        }
+
         public async Task Update(UpdateServiceModel updateModel, CancellationToken cancellationToken)
         {
             var serviceToUpdate = await _unitOfWork.ServiceRepository.GetAsync(updateModel.Id, cancellationToken);

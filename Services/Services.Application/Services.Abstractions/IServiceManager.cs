@@ -10,5 +10,6 @@ namespace Services.Application.Services.Abstractions
 {
     public interface IServiceManager : IGenericService<CreateServiceModel, ServiceModel, UpdateServiceModel>
     {
+        Task<IEnumerable<ServiceModel>> GetAll(ServiceQueryParametresModel serviceQueryParametresModel, CancellationToken cancellationToken);
     }
 }

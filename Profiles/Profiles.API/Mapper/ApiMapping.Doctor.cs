@@ -14,5 +14,6 @@ public partial class ApiMapping
         CreateMap<DoctorModel, UpdateDoctorModel>();
         CreateMap<UpdateDoctorDto, DoctorModel>();
         CreateMap<UpdateDoctorByReceptionistDto, DoctorModel>();
+        CreateMap<DoctorQueryParametresDto, DoctorQueryParametresModel>();
     }
 }

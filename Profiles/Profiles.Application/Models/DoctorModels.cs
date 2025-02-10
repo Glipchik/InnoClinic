@@ -46,4 +46,8 @@ namespace Profiles.Application.Models
         public DoctorStatusModel Status { get; set; }
         public Guid AuthorId { get; set; }
     }
+
+    public record DoctorQueryParametresModel(
+        Guid? SpecializationId,
+        DoctorStatusModel? Status);
 }

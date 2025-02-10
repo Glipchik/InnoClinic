@@ -80,5 +80,26 @@ namespace Profiles.Infrastructure.Repositories
             return await _context.Set<Doctor>().AsNoTracking()
                 .FirstOrDefaultAsync(d => d.AccountId == accountId, cancellationToken: cancellationToken);
         }
+
+        public async Task<IEnumerable<Doctor>> GetAllAsync(Guid? specializationId, Domain.Enums.DoctorStatus? status, CancellationToken cancellationToken)
+        {
+            var query = _context.Set<Doctor>().AsNoTracking()
+                .Include(d => d.Specialization)
+                .Include(d => d.Account)
+                .Include(d => d.Office)
+                .AsQueryable();
+
+            if (specializationId.HasValue)
+            {
+                query = query.Where(d => d.SpecializationId == specializationId.Value);
+            }
+
+            if (status.HasValue && status != Domain.Enums.DoctorStatus.None)
+            {
+                query = query.Where(d => d.Status.Equals(status.Value));
+            }
+
+            return await query.ToListAsync(cancellationToken);
+        }
     }
 }
