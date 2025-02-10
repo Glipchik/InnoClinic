@@ -25,6 +25,7 @@
     <ProjectReference Include="..\Documents.Application\Documents.Application.csproj" />
     <ProjectReference Include="..\Documents.Domain\Documents.Domain.csproj" />
     <ProjectReference Include="..\Documents.Infrastructure\Documents.Infrastructure.csproj" />
+    <ProjectReference Include="..\Documents.MessageBroking\Documents.MessageBroking.csproj" />
   </ItemGroup>
 
 </Project>

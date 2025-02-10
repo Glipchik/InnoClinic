@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Appointments.Infrastructure
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Appointments.API", "Appointments.API\Appointments.API.csproj", "{C0415CD1-D21F-4369-98A9-EB5493E91FF7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Events", "..\Events\Events.csproj", "{F310E2A3-CBC8-474B-BF8A-876779A4FEAA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Appointments.MessageBroking", "Appointments.MessageBroking\Appointments.MessageBroking.csproj", "{7356C189-245A-4801-82BD-5ED356C8583B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{C0415CD1-D21F-4369-98A9-EB5493E91FF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0415CD1-D21F-4369-98A9-EB5493E91FF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C0415CD1-D21F-4369-98A9-EB5493E91FF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F310E2A3-CBC8-474B-BF8A-876779A4FEAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F310E2A3-CBC8-474B-BF8A-876779A4FEAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F310E2A3-CBC8-474B-BF8A-876779A4FEAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F310E2A3-CBC8-474B-BF8A-876779A4FEAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7356C189-245A-4801-82BD-5ED356C8583B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7356C189-245A-4801-82BD-5ED356C8583B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7356C189-245A-4801-82BD-5ED356C8583B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7356C189-245A-4801-82BD-5ED356C8583B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
