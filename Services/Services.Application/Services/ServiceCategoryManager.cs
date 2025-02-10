@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Services.MessageBroking.Producers.Abstractions;
 
 namespace Services.Application.Services
 {
@@ -16,17 +17,21 @@ namespace Services.Application.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IServiceCategoryProducer _serviceCategoryProducer;
 
-        public ServiceCategoryManager(IUnitOfWork unitOfWork, IMapper mapper)
+        public ServiceCategoryManager(IUnitOfWork unitOfWork, IMapper mapper, IServiceCategoryProducer serviceCategoryProducer)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _serviceCategoryProducer = serviceCategoryProducer;
         }
 
         public async Task Create(CreateServiceCategoryModel createModel, CancellationToken cancellationToken)
         {
-            await _unitOfWork.ServiceCategoryRepository.CreateAsync(_mapper.Map<ServiceCategory>(createModel), cancellationToken);
+            var createdServiceCategory = await _unitOfWork.ServiceCategoryRepository.CreateAsync(_mapper.Map<ServiceCategory>(createModel), cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            await _serviceCategoryProducer.PublishServiceCategoryCreated(createdServiceCategory, cancellationToken);
         }
 
         public async Task Delete(Guid id, CancellationToken cancellationToken)
@@ -45,6 +50,7 @@ namespace Services.Application.Services
 
             await _unitOfWork.ServiceCategoryRepository.DeleteAsync(id, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _serviceCategoryProducer.PublishServiceCategoryDeleted(id, cancellationToken);
         }
 
         public async Task<ServiceCategoryModel> Get(Guid id, CancellationToken cancellationToken)
@@ -65,8 +71,9 @@ namespace Services.Application.Services
                 throw new NotFoundException($"Service category with id: {updateModel.Id} is not found. Can't update.");
             }
 
-            await _unitOfWork.ServiceCategoryRepository.UpdateAsync(_mapper.Map<ServiceCategory>(updateModel), cancellationToken);
+            var updatedServiceCategory = await _unitOfWork.ServiceCategoryRepository.UpdateAsync(_mapper.Map<ServiceCategory>(updateModel), cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _serviceCategoryProducer.PublishServiceCategoryUpdated(updatedServiceCategory, cancellationToken);
         }
     }
 }

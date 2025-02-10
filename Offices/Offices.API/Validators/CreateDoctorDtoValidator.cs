@@ -14,11 +14,7 @@ namespace Offices.API.Validators
             RuleFor(doctor => doctor.OfficeId).NotEmpty().WithMessage("Id must not be empty")
                 .Must(id => ObjectId.TryParse(id, out _))
                 .WithMessage("Invalid ObjectId format");
-            RuleFor(doctor => doctor.Status).NotEmpty().MaximumLength(20)
-                .Must(status => AllowedStatuses.Contains(status))
-                .WithMessage("Status must be one of the following: " + string.Join(", ", AllowedStatuses));
+            RuleFor(doctor => doctor.Status).NotEmpty();
         }
-
-        private static readonly string[] AllowedStatuses = { "At work", "On vacation", "Sick Day", "Sick Leave", "Self-isolation", "Leave without pay", "Inactive" };
     }
 }

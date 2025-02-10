@@ -4,9 +4,11 @@ using Profiles.Application.Models;
 using Profiles.Application.Services.Abstractions;
 using Profiles.Domain.Entities;
 using Profiles.Domain.Repositories.Abstractions;
+using Profiles.MessageBroking.Producers.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,13 +20,19 @@ namespace Profiles.Application.Services
         private readonly IMapper _mapper;
         private readonly IAccountService _accountService;
         private readonly IFileService _fileService;
+        private readonly IPatientProducer _patientProducer;
+        private readonly IAccountProducer _accountProducer;
 
-        public PatientService(IUnitOfWork unitOfWork, IMapper mapper, IAccountService accountService, IFileService fileService)
+        public PatientService(IUnitOfWork unitOfWork, IMapper mapper, IAccountService accountService, IFileService fileService,
+            IPatientProducer patientProducer,
+            IAccountProducer accountProducer)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _accountService = accountService;
             _fileService = fileService;
+            _patientProducer = patientProducer;
+            _accountProducer = accountProducer;
         }
 
         public async Task Create(
@@ -44,7 +52,7 @@ namespace Profiles.Application.Services
                     patient.IsLinkedToAccount = true;
                     patient.AccountId = createdAccount.Id;
 
-                    await _unitOfWork.PatientRepository.CreateAsync(patient, cancellationToken);
+                    var createdPatient = await _unitOfWork.PatientRepository.CreateAsync(patient, cancellationToken);
 
                     if (fileModel != null)
                     {
@@ -55,6 +63,9 @@ namespace Profiles.Application.Services
 
                     await _unitOfWork.SaveChangesAsync(cancellationToken);
                     await transaction.CommitAsync(cancellationToken);
+
+                    await _accountProducer.PublishAccountCreated(_mapper.Map<Account>(createdAccount), cancellationToken);
+                    await _patientProducer.PublishPatientCreated(createdPatient, cancellationToken);
                 }
             }
             catch
@@ -92,6 +103,9 @@ namespace Profiles.Application.Services
 
                     await transaction.CommitAsync(cancellationToken);
                     await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+                    await _accountProducer.PublishAccountCreated(_mapper.Map<Account>(createdAccount), cancellationToken);
+                    await _patientProducer.PublishPatientCreated(patient, cancellationToken);
                 }
             }
             catch
@@ -107,17 +121,35 @@ namespace Profiles.Application.Services
 
         public async Task Delete(Guid id, CancellationToken cancellationToken)
         {
-            var patientToDelete = await _unitOfWork.PatientRepository.GetAsync(id, cancellationToken: cancellationToken);
-            if (patientToDelete == null)
+            var patientToDelete = await _unitOfWork.PatientRepository.GetAsync(id, cancellationToken: cancellationToken)
+                ?? throw new NotFoundException($"Patient with id: {id} is not found. Can't delete.");
+
+            try
             {
-                throw new NotFoundException($"Patient with id: {id} is not found. Can't delete.");
+                using (var transaction = _unitOfWork.BeginTransaction(cancellationToken: cancellationToken))
+                {
+                    await _unitOfWork.PatientRepository.DeleteAsync(id, cancellationToken);
+
+                    await _unitOfWork.AccountRepository.DeleteAsync(patientToDelete.AccountId, patientToDelete.Id, cancellationToken);
+
+                    await _fileService.Remove(patientToDelete.Account.PhotoFileName);
+
+                    await transaction.CommitAsync(cancellationToken);
+                    await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+                    await _patientProducer.PublishPatientDeleted(patientToDelete.Id, cancellationToken);
+                    await _accountProducer.PublishAccountDeleted(patientToDelete.AccountId, cancellationToken);
+                }
             }
+            catch
+            {
+                if (await _fileService.DoesFileExist(patientToDelete.Account.PhotoFileName))
+                {
+                    await _fileService.Remove(patientToDelete.Account.PhotoFileName);
+                }
 
-            await _unitOfWork.PatientRepository.DeleteAsync(id, cancellationToken);
-
-            await _fileService.Remove(patientToDelete.Account.PhotoFileName);
-
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+                throw;
+            }
         }
 
         public async Task<PatientModel> Get(Guid id, CancellationToken cancellationToken)
@@ -163,6 +195,8 @@ namespace Profiles.Application.Services
 
             await _unitOfWork.PatientRepository.UpdateAsync(patientToUpdate, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            await _patientProducer.PublishPatientUpdated(patientToUpdate, cancellationToken);
         }
     }
 }

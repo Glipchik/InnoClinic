@@ -8,8 +8,8 @@ namespace Profiles.Domain.Entities
 {
     public class Office : BaseEntity
     {
-        public string Address { get; set; }
-        public string PhoneNumber { get; set; }
+        public string Address { get; set; } = null!;
+        public string RegistryPhoneNumber { get; set; } = null!;
         public bool IsActive { get; set; }
     }
 }

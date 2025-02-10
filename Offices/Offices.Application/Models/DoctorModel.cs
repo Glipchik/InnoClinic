@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Offices.Application.Models
 {
-    public record DoctorModel(string Id, string FirstName, string LastName, string MiddleName, string OfficeId, string Status);
+    public record DoctorModel(Guid Id, string FirstName, string LastName, string? MiddleName, Guid OfficeId, string Status);
 }

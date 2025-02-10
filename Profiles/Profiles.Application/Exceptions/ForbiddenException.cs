@@ -2,7 +2,7 @@ using System;
 
 namespace Profiles.Application.Exceptions;
 
-public class ForbiddenException : Exception
+public class ForbiddenException : BadRequestException
 {
     public ForbiddenException()
         : base("Forbidden.")

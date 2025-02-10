@@ -10,6 +10,7 @@ using Authorization.Presentation.Validators;
 using FluentValidation.AspNetCore;
 using Microsoft.IdentityModel.Tokens;
 using Authorization.Presentation.Infrastructure;
+using Authorization.MessageBroking.DependencyInjection;
 
 namespace Authorization.Presentation.DependencyInjection
 {
@@ -23,6 +24,8 @@ namespace Authorization.Presentation.DependencyInjection
             services.AddExceptionHandler<GlobalExceptionHandler>();
 
             services.AddApplicationDependencyInjection(configuration);
+
+            services.AddMessageBrokingDependencyInjection();
 
             services.AddControllersWithViews();
 
@@ -115,6 +118,7 @@ namespace Authorization.Presentation.DependencyInjection
                 GetClient(configuration, "OfficesApi"),
                 GetClient(configuration, "ProfilesApi"),
                 GetClient(configuration, "DocumentsApi"),
+                GetClient(configuration, "AppointmentsApi"),
                 new Client
                 {
                     ClientId = configuration.GetSection("AuthorizationClients").GetSection("ProfilesAuthM2M")["ClientId"]!,

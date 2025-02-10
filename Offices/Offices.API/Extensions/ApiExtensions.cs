@@ -25,6 +25,7 @@ using Offices.Data.Extensions;
 using Offices.Data.Providers;
 using Offices.Data.Repositories;
 using Offices.Data.Repositories.Abstractions;
+using Offices.MessageBroking.DependencyInjection;
 
 namespace Offices.API.Extensions
 {
@@ -37,6 +38,8 @@ namespace Offices.API.Extensions
 
             // Adding application extensions
             services.AddApplicationExtensions();
+
+            services.AddMessageBrokingDependencyInjection();
 
             // Global exception handler
             services.AddExceptionHandler<GlobalExceptionHandler>();

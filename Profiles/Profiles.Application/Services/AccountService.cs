@@ -3,13 +3,7 @@ using Profiles.Application.Models;
 using Profiles.Application.Services.Abstractions;
 using Profiles.Domain.Entities;
 using Profiles.Domain.Repositories.Abstractions;
-using System.Net.Http.Json;
-using Microsoft.Extensions.Configuration;
-using System.Net;
-using Profiles.Application.Exceptions;
-using System.Net.Http.Headers;
-using IdentityModel.Client;
-using System.Security.Principal;
+using Profiles.MessageBroking.Producers.Abstractions;
 
 namespace Profiles.Application.Services
 {
@@ -17,13 +11,13 @@ namespace Profiles.Application.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        private readonly IAuthorizationService _authorizationService;
+        private readonly IAuthorizationServerManager _authorizationServerManager;
 
-        public AccountService(IUnitOfWork unitOfWork, IMapper mapper, IAuthorizationService authorizationService)
+        public AccountService(IUnitOfWork unitOfWork, IMapper mapper, IAuthorizationServerManager authorizationServerManager)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
-            _authorizationService = authorizationService;
+            _authorizationServerManager = authorizationServerManager;
         }
 
         public async Task<AuthorizationAccountModel> Create(CreateAccountModel createAccountModel, CancellationToken cancellationToken)
@@ -35,14 +29,13 @@ namespace Profiles.Application.Services
                 PhoneNumber = createAccountModel.PhoneNumber
             };
 
-            var response = await _authorizationService.CreateAccount(createAccountAuthorizationServerModel, cancellationToken);
+            var response = await _authorizationServerManager.CreateAccount(createAccountAuthorizationServerModel, cancellationToken);
 
             var account = _mapper.Map<Account>(response);
 
             await _unitOfWork.AccountRepository.CreateAsync(account, createAccountModel.AuthorId, cancellationToken);
 
             var authorizationAccountModel = _mapper.Map<AuthorizationAccountModel>(account);
-            authorizationAccountModel.PhotoFileName = String.Empty;
             authorizationAccountModel.Role = createAccountModel.Role;
 
             return authorizationAccountModel;
