@@ -13,7 +13,7 @@ interface SelectProps {
 
 const Select: React.FC<SelectProps> = ({ label, id, name, onChange, value, children, disabled, className }) => (
   <div className="form-group flex flex-col">
-    {label && <label htmlFor={id} className="text-gray-700 font-medium">{label}</label>}
+    {label && <label htmlFor={id} className="font-medium">{label}</label>}
     <select
       id={id}
       value={value}

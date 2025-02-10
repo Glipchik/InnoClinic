@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux"
-import { GET as doctorGET } from "../../shared/api/doctorApi"
+import { GET as doctorGET } from "../api/doctorApi"
 import { fetchDoctorsDataFailure, fetchDoctorsDataSuccess, fetchDoctorsDataRequest } from "../../store/slices/doctorsSlice"
 import { RootState } from "../../store/store";
 

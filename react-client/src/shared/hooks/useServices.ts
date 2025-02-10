@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux"
-import { GET as serviceGET } from "../../shared/api/serviceApi"
+import { GET as serviceGET } from "../api/serviceApi"
 import {
   fetchServicesDataFailure,
   fetchServicesDataSuccess,

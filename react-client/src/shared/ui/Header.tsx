@@ -4,7 +4,6 @@ import { User } from 'oidc-client';
 import { Link } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import Button from "./controls/Button";
-import React from "react";
 import { RootState } from "../../store/store";
 
 function Header() {
@@ -26,7 +25,7 @@ function Header() {
   }, [userManager, isUserAuthorized]);
 
   return (
-    <header className="w-full inline-flex py-7 px-3 items-center bg-gray-700 text-white">
+    <header className="w-full inline-flex py-7 px-3 items-center bg-gray-100 text-black">
       <div className="w-[25%] h-full">
         <h1 className="text-5xl font-bold">InnoClinic</h1>
       </div>
@@ -41,11 +40,11 @@ function Header() {
                 <p className="text-xl">
                   {user.profile.email}
                 </p>
-                <p className="text-sm text-gray-300">
+                <p className="text-sm text-gray-800">
                   {user.profile.role}
                 </p>
               </div>
-              <li className="list-none"> <Link to="/logout"> <Button className="bg-red-800 hover:bg-red-900"> Logout </Button> </Link> </li>
+              <li className="list-none"> <Link to="/logout"> <Button className="bg-red-600 hover:bg-red-700"> Logout </Button> </Link> </li>
             </>
           ) : (
             <>

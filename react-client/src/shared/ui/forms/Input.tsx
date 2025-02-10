@@ -18,7 +18,7 @@ const Input: React.FC<InputProps> = ({ value, label, name, placeholder, type, on
       type={type}
       value={value}
       name={name}
-      className="form-control mt-1 p-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+      className="form-control mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
       placeholder={placeholder}
       onChange={onChange}
     />

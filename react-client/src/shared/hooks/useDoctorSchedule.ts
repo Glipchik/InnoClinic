@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux"
-import { GET as doctorScheduleGET } from "../../shared/api/doctorScheduleApi"
+import { GET as doctorScheduleGET } from "../api/doctorScheduleApi"
 import {
   fetchDoctorScheduleDataDataRequest,
   fetchDoctorScheduleDataFailure,
