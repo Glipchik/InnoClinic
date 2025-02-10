@@ -3,12 +3,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Profiles.Consumers.Consumers.OfficeConsumers;
 using Profiles.Consumers.Consumers.SpecializationConsumers;
 using Profiles.Consumers.Mapper;
+using Profiles.MessageBroking.Mapper;
+using Profiles.MessageBroking.Producers;
+using Profiles.MessageBroking.Producers.Abstractions;
 
 namespace Services.Consumers.Consumers.DependencyInjection
 {
-    public static class ConsumersDependencyInjection
+    public static class MessageBrokingDependencyInjection
     {
-        public static IServiceCollection AddConsumersDependencyInjection(this IServiceCollection services)
+        public static IServiceCollection AddMessageBrokingDependencyInjection(this IServiceCollection services)
         {
             services.AddMassTransit(x =>
             {
@@ -23,6 +26,12 @@ namespace Services.Consumers.Consumers.DependencyInjection
             });
 
             services.AddAutoMapper(typeof(ConsumersMapping));
+            services.AddAutoMapper(typeof(ProducersMapping));
+
+            services.AddScoped<IAccountProducer, AccountProducer>();
+            services.AddScoped<IPatientProducer, PatientProducer>();
+            services.AddScoped<IDoctorProducer, DoctorProducer>();
+            services.AddScoped<IReceptioinistProducer, ReceptionistProducer>();
 
             return services;
         }

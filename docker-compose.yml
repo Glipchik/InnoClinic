@@ -33,19 +33,18 @@ services:
     volumes:
       - mssql_data_authorization:/var/opt/mssql
 
-  postgressql-db-appointments-api:
-    image: postgres:15
-    container_name: postgresql_appointments_container
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: mypassword123!
-      POSTGRES_DB: appointmentsdb
+  mssql-db-documents-api:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql_documents_container
     ports:
-      - "5433:5432"
+      - "1436:1433"
+    environment:
+      SA_PASSWORD: "mypassword123!"
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Express"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-    restart: always
-
+      - mssql_data_documents:/var/opt/mssql
+      
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
@@ -58,17 +57,18 @@ services:
       RABBITMQ_DEFAULT_PASS: guest
     restart: unless-stopped
     
-  mssql-db-documents-api:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: mssql_documents_container
-    ports:
-      - "1436:1433"
+  postgressql-db-appointments-api:
+    image: postgres:15
+    container_name: postgresql_appointments_container
     environment:
-      SA_PASSWORD: "mypassword123!"
-      ACCEPT_EULA: "Y"
-      MSSQL_PID: "Express"
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mypassword123!
+      POSTGRES_DB: appointmentsdb
+    ports:
+      - "5433:5432"
     volumes:
-      - mssql_data_documents:/var/opt/mssql
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
 
   mssql-db-profiles-api:
     image: mcr.microsoft.com/mssql/server:2022-latest

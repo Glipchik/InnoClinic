@@ -2,11 +2,11 @@
 using Events.Receptionist;
 using Profiles.Domain.Entities;
 
-namespace Profiles.Infrastructure.Mapper
+namespace Profiles.MessageBroking.Mapper
 {
-    public partial class EventMapping : Profile
+    public partial class ProducersMapping : Profile
     {
-        partial void AddReceptionistEventMapping()
+        partial void AddReceptionistMapping()
         {
             CreateMap<Receptionist, ReceptionistCreated>();
             CreateMap<Receptionist, ReceptionistUpdated>();

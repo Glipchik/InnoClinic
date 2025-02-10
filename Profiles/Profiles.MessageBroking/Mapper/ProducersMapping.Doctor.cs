@@ -2,11 +2,11 @@
 using Events.Doctor;
 using Profiles.Domain.Entities;
 
-namespace Profiles.Infrastructure.Mapper
+namespace Profiles.MessageBroking.Mapper
 {
-    public partial class EventMapping : Profile
+    public partial class ProducersMapping : Profile
     {
-        partial void AddDoctorEventMapping()
+        partial void AddDoctorMapping()
         {
             CreateMap<Doctor, DoctorCreated>();
             CreateMap<Doctor, DoctorUpdated>();

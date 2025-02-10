@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Profiles.Domain.Repositories.Abstractions;
 using Profiles.Infrastructure.Contexts;
-using Profiles.Infrastructure.Mapper;
 using Profiles.Infrastructure.Repositories;
 
 namespace Profiles.Infrastructure.DependencyInjection
@@ -24,8 +23,6 @@ namespace Profiles.Infrastructure.DependencyInjection
             services.AddScoped<IFileRepository, FileRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-            services.AddAutoMapper(typeof(EventMapping));
 
             return services;
         }

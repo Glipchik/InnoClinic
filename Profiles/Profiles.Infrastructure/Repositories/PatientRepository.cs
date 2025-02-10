@@ -1,32 +1,18 @@
-﻿using AutoMapper;
-using Events.Doctor;
-using Events.Patient;
-using MassTransit;
-using MassTransit.Transports;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Profiles.Domain.Entities;
 using Profiles.Domain.Repositories.Abstractions;
 using Profiles.Infrastructure.Contexts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Profiles.Infrastructure.Repositories
 {
     public class PatientRepository : GenericRepository<Patient>, IPatientRepository
     {
         private readonly AppDbContext _context;
-        private readonly IPublishEndpoint _publishEndpoint;
-        private readonly IMapper _mapper;
         private readonly IAccountRepository _accountRepository;
 
-        public PatientRepository(AppDbContext context, IPublishEndpoint publishEndpoint, IMapper mapper, IAccountRepository accountRepository) : base(context)
+        public PatientRepository(AppDbContext context, IAccountRepository accountRepository) : base(context)
         {
             _context = context;
-            _publishEndpoint = publishEndpoint;
-            _mapper = mapper;
             _accountRepository = accountRepository;
         }
 
@@ -38,11 +24,9 @@ namespace Profiles.Infrastructure.Repositories
             _context.Set<Patient>().Remove(patient);
             
             await _accountRepository.DeleteAsync(patient.AccountId, id, cancellationToken);
-
-            await _publishEndpoint.Publish(new PatientDeleted() { Id = id }, cancellationToken);
         }
 
-        public override async Task CreateAsync(Patient entity, CancellationToken cancellationToken)
+        public override async Task<Patient> CreateAsync(Patient entity, CancellationToken cancellationToken)
         {
             if (entity.Id == Guid.Empty)
             {
@@ -50,15 +34,13 @@ namespace Profiles.Infrastructure.Repositories
             }
 
             await _context.Set<Patient>().AddAsync(entity, cancellationToken);
-
-            await _publishEndpoint.Publish(_mapper.Map<PatientCreated>(entity), cancellationToken);
+            return entity;
         }
 
-        public override async Task UpdateAsync(Patient entity, CancellationToken cancellationToken)
+        public override async Task<Patient> UpdateAsync(Patient entity, CancellationToken cancellationToken)
         {
             _context.Set<Patient>().Update(entity);
-
-            await _publishEndpoint.Publish(_mapper.Map<PatientUpdated>(entity), cancellationToken);
+            return entity;
         }
 
         public async override Task<IEnumerable<Patient>> GetAllAsync(CancellationToken cancellationToken)
