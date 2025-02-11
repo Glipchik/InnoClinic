@@ -1,4 +1,5 @@
 ﻿using Services.Application.Models;
+using Services.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,5 +10,6 @@ namespace Services.Application.Services.Abstractions
 {
     public interface ISpecializationService : IGenericService<CreateSpecializationModel, SpecializationModel, UpdateSpecializationModel>
     {
+        Task<PaginatedList<SpecializationModel>> GetAll(int pageIndex, int pageSize, CancellationToken cancellationToken);
     }
 }

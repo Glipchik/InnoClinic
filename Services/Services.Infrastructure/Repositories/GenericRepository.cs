@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Services.Domain.Repositories.Abstractions;
 using Services.Domain.Entities;
 using Services.Infrastructure.Contexts;
+using Services.Domain.Models;
 
 namespace Services.Infrastructure.Repositories
 {
@@ -42,6 +43,21 @@ namespace Services.Infrastructure.Repositories
         public virtual async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken)
         {
             return await _context.Set<T>().AsNoTracking().ToListAsync(cancellationToken);
+        }
+
+        public async Task<PaginatedList<T>> GetAllAsync(int pageIndex, int pageSize, CancellationToken cancellationToken)
+        {
+            var paginatedEntities = await _context.Set<T>()
+                .AsNoTracking()
+                .OrderBy(b => b.Id)
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(cancellationToken);
+
+            var count = await _context.Set<T>().CountAsync(cancellationToken);
+            var totalPages = (int)Math.Ceiling(count / (double)pageSize);
+
+            return new PaginatedList<T>(paginatedEntities, pageIndex, totalPages);
         }
 
         public virtual async Task<T> GetAsync(Guid id, CancellationToken cancellationToken)

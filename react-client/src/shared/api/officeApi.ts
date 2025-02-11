@@ -4,15 +4,15 @@ import axios from 'axios';
 import Office from '../../entities/office';
 import PaginatedList from '../../models/paginatedList';
 
-async function GET(pageIndex: number | null, padeSize: number | null, token: string): Promise<AxiosResponse<PaginatedList<Office>>> {
+async function GET(pageIndex: number | null, pageSize: number | null, token: string): Promise<AxiosResponse<PaginatedList<Office>>> {
   let url = `${import.meta.env.VITE_OFFICES_BASE_URL}/api/Offices?`
 
   if (pageIndex) {
     url += `pageIndex=${pageIndex}&`
   }
 
-  if (padeSize) {
-    url += `pageSize=${padeSize}`
+  if (pageSize) {
+    url += `pageSize=${pageSize}`
   }
 
   return await axios.get<{ data: PaginatedList<Office> }>(url, { headers: { Authorization: `Bearer ${token}` } });

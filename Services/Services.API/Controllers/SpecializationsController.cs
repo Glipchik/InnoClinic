@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Services.API.DTOs;
 using Services.Application.Models;
 using Services.Application.Services.Abstractions;
+using Services.Domain.Models;
 
 namespace Services.API.Controllers
 {
@@ -55,6 +56,29 @@ namespace Services.API.Controllers
 
             var specializationDtos = _mapper.Map<IEnumerable<SpecializationDto>>(specializations);
             return specializationDtos;
+        }
+
+        /// <summary>
+        /// Gets the list of all specializations with pagination.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     GET /api/Specializations/with-pagination
+        ///
+        /// </remarks>
+        /// <returns>Returns a list of specializations objects.</returns>
+        /// <response code="200">Returns the list of specializations</response>
+        /// <response code="500">If there was an internal server error</response>
+        [HttpGet("with-pagination")]
+        [Authorize]
+        public async Task<PaginatedList<SpecializationDto>> Get(CancellationToken cancellationToken, int pageIndex = 1, int pageSize = 10)
+        {
+            var specializations = await _specializationService.GetAll(pageIndex, pageSize, cancellationToken);
+            _logger.LogInformation("Requested specializations list");
+
+            List<SpecializationDto> specializationDtos = _mapper.Map<List<SpecializationDto>>(specializations.Items);
+            return new PaginatedList<SpecializationDto>(specializationDtos, specializations.PageIndex, specializations.TotalPages);
         }
 
         /// <summary>

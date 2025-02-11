@@ -10,6 +10,7 @@ import Layout from '../shared/ui/Layout'
 import { AppointmentsPage } from "../pages/appointments/AppointmentsPage";
 import { SilentRenew } from "../features/auth/SilentRenew";
 import { OfficesPage } from "../pages/offices/OfficesPage";
+import { SpecializationsPage } from "../pages/specializations/SpecializationsPage";
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
       {
         path: "offices",
         element: <OfficesPage />,
+      },
+      {
+        path: "specializations",
+        element: <SpecializationsPage />,
       },
       {
         path: "",

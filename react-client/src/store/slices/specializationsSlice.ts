@@ -1,16 +1,19 @@
 import { createSlice } from '@reduxjs/toolkit';
 import Specialization from '../../entities/specialization';
+import PaginatedList from '../../models/paginatedList';
 
 interface SpecializationsState {
   loading: boolean;
   error: string | null;
   specializationsData: Specialization | Specialization[] | null 
+  paginatedSpecializationsData: PaginatedList<Specialization> | null,
 }
 
 const initialState : SpecializationsState = {
   loading: false,
   error: null,
-  specializationsData: null
+  specializationsData: null,
+  paginatedSpecializationsData: null,
 };
 
 const specializationsSlice = createSlice({
@@ -25,6 +28,10 @@ const specializationsSlice = createSlice({
       state.loading = false;
       state.specializationsData = action.payload;
     },
+    fetchPaginatedSpecializationsDataSuccess: (state, action) => {
+      state.loading = false;
+      state.paginatedSpecializationsData = action.payload;
+    },
     fetchSpecializationsDataFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
@@ -32,5 +39,5 @@ const specializationsSlice = createSlice({
   }
 });
 
-export const { fetchSpecializationsDataRequest, fetchSpecializationsDataSuccess, fetchSpecializationsDataFailure } = specializationsSlice.actions;
+export const { fetchSpecializationsDataRequest, fetchSpecializationsDataSuccess, fetchPaginatedSpecializationsDataSuccess, fetchSpecializationsDataFailure } = specializationsSlice.actions;
 export default specializationsSlice.reducer;

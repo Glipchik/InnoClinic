@@ -31,9 +31,10 @@ function Header() {
       </div>
       <div className="w-[45%] h-full">
         {user?.profile.role === "Receptionist" && (
-          <>
+          <ul className="flex flex-row space-x-4">
             <li className="list-none"> <Link to="/offices" className="text-2xl"> Offices </Link> </li>
-          </>
+            <li className="list-none"> <Link to="/specializations" className="text-2xl"> Specializations </Link> </li>
+          </ul>
         )}
       </div>
       <div className="w-[30%] h-full">
