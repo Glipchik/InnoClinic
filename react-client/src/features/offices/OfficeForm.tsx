@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import Office from "../../entities/office";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { UserManagerContext } from "../../shared/contexts/UserManagerContext";
 import { RootState } from "../../store/store";
 import { useOffices } from "../../shared/hooks/useOffices";
@@ -11,15 +11,14 @@ import Button from "../../shared/ui/controls/Button";
 import Loading from "../../shared/ui/controls/Loading";
 import ErrorBox from "../../shared/ui/containers/ErrorBox";
 
-interface EditOfficeFormProps {
+interface OfficeFormProps {
   office: Office;
   onSubmit: (office: Office) => void;
   onCancel: () => void;
 }
 
-export function EditOfficeForm({ office, onSubmit, onCancel }: EditOfficeFormProps) {
+export function OfficeForm({ office, onSubmit, onCancel }: OfficeFormProps) {
   const [token, setToken] = useState<string | null>(null)
-  const dispatch = useDispatch();
   const userManager = useContext(UserManagerContext);
   const { isUserAuthorized } = useSelector((state: RootState) => state.auth);
 

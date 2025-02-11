@@ -8,13 +8,15 @@ import { fetchOfficesDataFailure, fetchOfficesDataRequest, fetchOfficesDataSucce
 import { DELETE } from '../../shared/api/officeApi';
 import Loading from "../../shared/ui/controls/Loading";
 import ErrorBox from "../../shared/ui/containers/ErrorBox";
-import { EditOfficeForm } from "./EditOfficeForm";
+import { OfficeForm } from "./OfficeForm";
 import Office from "../../entities/office";
 import { Pagination } from "../../shared/ui/controls/Pagination";
+import CreateOfficeModel from "./models/CreateOfficeModel";
 
 export function OfficesList() {
   const [token, setToken] = useState<string | null>(null);
   const [pageIndex, setPageIndex] = useState<number>(1);
+  const [isCreating, setIsCreating] = useState<boolean>(false);
   const pageSize = 2;
 
   const dispatch = useDispatch();
@@ -23,7 +25,7 @@ export function OfficesList() {
 
   const [editingOfficeId, setEditingOfficeId] = useState<string | null>(null);
 
-  const { loading: officesLoading, error: officesError, officesData, fetchOffices, editOffice } = useOffices(token);
+  const { loading: officesLoading, error: officesError, officesData, fetchOffices, editOffice, createOffice } = useOffices(token);
 
   useEffect(() => {
     if (userManager) {
@@ -64,16 +66,36 @@ export function OfficesList() {
   };
 
   return (
-    <div>
-      <h1>Offices</h1>
+    <div className="my-auto">
+      <h1 className="text-3xl my-4">Offices</h1>
+      
+      <div className="flex justify-end mb-4">
+        <Button onClick={() => setIsCreating(true)}>
+          Create New Office
+        </Button>
+      </div>
+
+      {isCreating && (
+        <OfficeForm
+          office={{ id: "", address: "", registryPhoneNumber: "", isActive: true }}
+          onCancel={() => setIsCreating(false)}
+          onSubmit={async (createOfficeModel: CreateOfficeModel) => {
+            await createOffice(createOfficeModel);
+            setIsCreating(false);
+            fetchOffices(pageIndex, pageSize);
+          }}
+        />
+      )}
+
       {officesLoading && <Loading label="Loading offices..." />}
       {officesError && <ErrorBox value={officesError} />}
+      
       {officesData && (
-        <ul className="w-full flex flex-col justify-center items-center space-y-4">
+        <ul className="w-full flex flex-row justify-center items-center space-x-4">
           {officesData.items.map((office) => (
             <li key={office.id} className="p-4 w-[40%] flex flex-col rounded-xl space-y-3 bg-gray-200 justify-between items-center">
               {editingOfficeId === office.id ? (
-                <EditOfficeForm
+                <OfficeForm
                   office={office}
                   onCancel={() => setEditingOfficeId(null)}
                   onSubmit={async (office: Office) => {
@@ -103,13 +125,15 @@ export function OfficesList() {
       )}
 
       {/* Pagination */}
-      {officesData && <Pagination
-        pageIndex={pageIndex}
-        totalPages={officesData.totalPages}
-        hasPreviousPage={officesData.hasPreviousPage}
-        hasNextPage={officesData.hasNextPage}
-        onPageChange={setPageIndex}
-      />}
+      {officesData && (
+        <Pagination
+          pageIndex={pageIndex}
+          totalPages={officesData.totalPages}
+          hasPreviousPage={officesData.hasPreviousPage}
+          hasNextPage={officesData.hasNextPage}
+          onPageChange={setPageIndex}
+        />
+      )}
     </div>
   );
 }

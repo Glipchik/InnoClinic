@@ -1,8 +1,9 @@
 import { useDispatch, useSelector } from "react-redux"
-import { GET as officeGET, PUT } from "../api/officeApi"
+import { GET as officeGET, PUT, POST } from "../api/officeApi"
 import { fetchOfficesDataFailure, fetchOfficesDataSuccess, fetchOfficesDataRequest } from "../../store/slices/officesSlice"
 import { RootState } from "../../store/store";
 import Office from "../../entities/office";
+import CreateOfficeModel from "../../features/offices/models/CreateOfficeModel";
 
 export const useOffices = (token: string | null) => {
   const dispatch = useDispatch()
@@ -16,6 +17,25 @@ export const useOffices = (token: string | null) => {
         dispatch(fetchOfficesDataRequest())
         const response = await officeGET(pageIndex, padeSize, token)
         dispatch(fetchOfficesDataSuccess(response.data))
+      } catch (error: unknown) {
+        let errorMessage = "An unknown error occurred";
+
+        if (error.response && error.response.data) {
+          const problemDetails = error.response.data;
+          errorMessage = problemDetails.detail || problemDetails.title || errorMessage;
+        }
+          
+        dispatch(fetchOfficesDataFailure(errorMessage))
+      }
+    }
+  }
+
+  const createOffice = async (createOfficeModel: CreateOfficeModel) => {
+    if (token) {
+      try {
+        dispatch(fetchOfficesDataRequest())
+        await POST(createOfficeModel, token)
+        dispatch(fetchOfficesDataSuccess(null))
       } catch (error: unknown) {
         let errorMessage = "An unknown error occurred";
 
@@ -48,5 +68,5 @@ export const useOffices = (token: string | null) => {
     }
   }
 
-  return { loading, error, officesData, fetchOffices, editOffice }
+  return { loading, error, officesData, fetchOffices, editOffice, createOffice }
 }
