@@ -46,7 +46,7 @@ export function CreateAppointmentForm() {
 
   useEffect(() => {
     fetchSpecializations()
-  }, [token, fetchSpecializations])
+  }, [token])
 
   useEffect(() => {
     if (userManager) {
