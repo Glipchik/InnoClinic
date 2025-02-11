@@ -1,24 +1,24 @@
 import { useDispatch, useSelector } from "react-redux"
 import { GET as doctorScheduleGET } from "../api/doctorScheduleApi"
 import {
-  fetchDoctorScheduleDataDataRequest,
-  fetchDoctorScheduleDataFailure,
-  fetchDoctorScheduleDataSuccess,
-} from "../../store/slices/doctorScheduleSlice"
+  fetchDoctorScheduleFailure,
+  fetchDoctorScheduleRequest,
+  fetchDoctorScheduleSuccess,
+} from "../../store/slices/appointments/fetchDoctorSchedule"
 import { RootState } from "../../store/store";
 
 export const useDoctorSchedule = (token: string | null) => {
   const dispatch = useDispatch()
-  const { loading, error, doctorScheduleData } = useSelector(
-    (state: RootState) => state.doctorSchedule
+  const { loading : fetchDoctorScheduleLoading, error : fetchDoctorScheduleError, data : fetchDoctorScheduleData } = useSelector(
+    (state: RootState) => state.fetchDoctorScheduleReducer
   );
 
   const fetchDoctorSchedule = async (doctorId: string, date: Date) => {
     if (token) {
       try {
-        dispatch(fetchDoctorScheduleDataDataRequest())
+        dispatch(fetchDoctorScheduleRequest())
         const response = await doctorScheduleGET(doctorId, date, token)
-        dispatch(fetchDoctorScheduleDataSuccess(response.data))
+        dispatch(fetchDoctorScheduleSuccess(response.data))
       } catch (error: unknown) {
         let errorMessage = "An unknown error occurred";
 
@@ -27,11 +27,10 @@ export const useDoctorSchedule = (token: string | null) => {
           errorMessage = problemDetails.detail || problemDetails.title || errorMessage;
         }
 
-        dispatch(fetchDoctorScheduleDataFailure(errorMessage))
+        dispatch(fetchDoctorScheduleFailure(errorMessage))
       }
     }
   }
 
-  return { loading, error, doctorScheduleData, fetchDoctorSchedule }
+  return { fetchDoctorScheduleLoading, fetchDoctorScheduleError, fetchDoctorScheduleData, fetchDoctorSchedule }
 }
-

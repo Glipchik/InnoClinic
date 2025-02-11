@@ -1,24 +1,24 @@
 import { useDispatch, useSelector } from "react-redux"
-import { GET as serviceGET } from "../api/serviceApi"
+import { GET } from "../api/serviceApi"
 import {
-  fetchServicesDataFailure,
-  fetchServicesDataSuccess,
-  fetchServicesDataRequest,
-} from "../../store/slices/servicesSlice"
+  fetchServicesFailure,
+  fetchServicesSuccess,
+  fetchServicesRequest,
+} from "../../store/slices/services/fetchServicesSlice"
 import { RootState } from "../../store/store";
 
 export const useServices = (token: string | null) => {
   const dispatch = useDispatch()
-  const { loading, error, servicesData } = useSelector(
-    (state: RootState) => state.services
+  const { loading : fetchServicesLoading, error : fetchServicesError, data : fetchServicesData } = useSelector(
+    (state: RootState) => state.fetchServicesReducer
   );
   
   const fetchServices = async (specializationId: string) => {
     if (token) {
       try {
-        dispatch(fetchServicesDataRequest())
-        const response = await serviceGET(null, specializationId, token)
-        dispatch(fetchServicesDataSuccess(response.data))
+        dispatch(fetchServicesRequest())
+        const response = await GET(null, specializationId, token)
+        dispatch(fetchServicesSuccess(response.data))
       } catch (error: unknown) {
         let errorMessage = "An unknown error occurred";
 
@@ -27,11 +27,10 @@ export const useServices = (token: string | null) => {
           errorMessage = problemDetails.detail || problemDetails.title || errorMessage;
         }
 
-        dispatch(fetchServicesDataFailure(errorMessage))
+        dispatch(fetchServicesFailure(errorMessage))
       }
     }
   }
 
-  return { loading, error, servicesData, fetchServices }
+  return { fetchServicesLoading, fetchServicesError, fetchServicesData, fetchServices }
 }
-
