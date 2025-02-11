@@ -22,8 +22,12 @@ async function POST(createOfficeModel: CreateOfficeModel, token: string): Promis
   return await axios.post<CreateOfficeModel>(`${import.meta.env.VITE_OFFICES_BASE_URL}/api/Offices`, createOfficeModel, { headers: { Authorization: `Bearer ${token}` } });
 }
 
+async function PUT(office: Office, token: string): Promise<AxiosResponse> {
+  return await axios.put<Office>(`${import.meta.env.VITE_OFFICES_BASE_URL}/api/Offices`, office, { headers: { Authorization: `Bearer ${token}` } });
+}
+
 async function DELETE(id: string, token: string): Promise<AxiosResponse> {
   return await axios.delete(`${import.meta.env.VITE_OFFICES_BASE_URL}/api/Offices/${id}`, { headers: { Authorization: `Bearer ${token}` } });
 }
 
-export { GET, POST, DELETE }
+export { GET, POST, DELETE, PUT }

@@ -32,7 +32,7 @@ function Header() {
       <div className="w-[45%] h-full">
         {user?.profile.role === "Receptionist" && (
           <>
-            <li className="list-none"> <Link to="/offices"> <a> Offices </a> </Link> </li>
+            <li className="list-none"> <Link to="/offices" className="text-2xl"> Offices </Link> </li>
           </>
         )}
       </div>

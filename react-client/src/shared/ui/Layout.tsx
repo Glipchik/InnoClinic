@@ -22,7 +22,7 @@ function Layout() {
   return (
     <div>
       <Header />
-      <main>
+      <main className="w-[80%] mx-auto">
         <Outlet />
       </main>
       <Footer />
