@@ -17,7 +17,6 @@ import type Doctor from "../../entities/doctor"
 import type TimeSlot from "../../entities/timeSlot"
 import { RootState } from "../../store/store";
 import CreateAppointmentModel from "./models/CreateAppointmentModel"
-import { useDispatch, useSelector } from "react-redux"
 import { useAppointments } from "../../shared/hooks/useAppointments"
 import ErrorBox from "../../shared/ui/containers/ErrorBox"
 import Loading from "../../shared/ui/controls/Loading"
@@ -29,8 +28,6 @@ export function CreateAppointmentForm() {
   const [isServiceSelectDisabled, setIsServiceSelectDisabled] = useState<boolean>(true)
   const [isDoctorSelectDisabled, setIsDoctorSelectDisabled] = useState<boolean>(true)
   const [isTimeSlotSelectDisabled, setIsTimeSlotSelectDisabled] = useState<boolean>(true)
-  
-  const dispatch = useDispatch()
 
   const userManager = useContext(UserManagerContext)
   const { isUserAuthorized } = useSelector(
