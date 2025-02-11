@@ -1,15 +1,13 @@
-"use client"
-
 import type React from "react"
 import { useState, useEffect, useContext } from "react"
 import { useFormik } from "formik"
 import { UserManagerContext } from "../../shared/contexts/UserManagerContext"
 import { validationSchema } from "./validationSchema"
 import { MIN_APPOINTMENT_DATE } from "./helpers/dateUtils"
-import { useSpecializations } from "../hooks/useSpecializations"
-import { useServices } from "../hooks/useServices"
-import { useDoctors } from "../hooks/useDoctors"
-import { useDoctorSchedule } from "../hooks/useDoctorSchedule"
+import { useSpecializations } from "../../shared/hooks/useSpecializations"
+import { useServices } from "../../shared/hooks/useServices"
+import { useDoctors } from "../../shared/hooks/useDoctors"
+import { useDoctorSchedule } from "../../shared/hooks/useDoctorSchedule"
 import Select from "../../shared/ui/forms/Select"
 import DatePicker from "../../shared/ui/forms/DatePicker"
 import Button from "../../shared/ui/controls/Button"
@@ -19,9 +17,10 @@ import type Doctor from "../../entities/doctor"
 import type TimeSlot from "../../entities/timeSlot"
 import { RootState } from "../../store/store";
 import CreateAppointmentModel from "./models/CreateAppointmentModel"
-import { fetchAppointmentsDataFailure, fetchAppointmentsDataRequest, fetchAppointmentsDataSuccess } from "../../store/slices/appointmentsSlice"
-import { POST as appointmentPOST } from "../../shared/api/appointmentApi"
-import { useDispatch, useSelector } from "react-redux"
+import { useSelector } from "react-redux"
+import { useAppointments } from "../../shared/hooks/useAppointments"
+import ErrorBox from "../../shared/ui/containers/ErrorBox"
+import Loading from "../../shared/ui/controls/Loading"
 
 export function CreateAppointmentForm() {
   const [token, setToken] = useState<string | null>(null)
@@ -30,23 +29,22 @@ export function CreateAppointmentForm() {
   const [isServiceSelectDisabled, setIsServiceSelectDisabled] = useState<boolean>(true)
   const [isDoctorSelectDisabled, setIsDoctorSelectDisabled] = useState<boolean>(true)
   const [isTimeSlotSelectDisabled, setIsTimeSlotSelectDisabled] = useState<boolean>(true)
-  
-  const dispatch = useDispatch()
 
   const userManager = useContext(UserManagerContext)
   const { isUserAuthorized } = useSelector(
     (state: RootState) => state.auth
   );
 
-  const { loading: specializationsLoading, error: specializationsError, specializationsData } = useSpecializations(token)
+  const { loading: specializationsLoading, error: specializationsError, specializationsData, fetchSpecializations } = useSpecializations(token)
   const { loading: servicesLoading, error: servicesError, servicesData, fetchServices } = useServices(token)
   const { loading: doctorsLoading, error: doctorsError, doctorsData, fetchDoctors } = useDoctors(token)
   const { loading: doctorScheduleLoading, error: doctorScheduleError, doctorScheduleData, fetchDoctorSchedule } =
     useDoctorSchedule(token)
+  const { loading: appointmentsLoading, error: appointmentsError, createAppointment } = useAppointments(token)
 
-  const { loading: appointmentLoading, error: appointmentError } = useSelector(
-    (state: RootState) => state.appointments
-  );
+  useEffect(() => {
+    fetchSpecializations()
+  }, [token])
 
   useEffect(() => {
     if (userManager) {
@@ -99,22 +97,9 @@ export function CreateAppointmentForm() {
     }
   }
 
-  const handleSubmit = async (values: CreateAppointmentModel) => {
+  const handleSubmit = async (createAppointmentModel: CreateAppointmentModel) => {
     if (token) {
-      try {
-        dispatch(fetchAppointmentsDataRequest())
-        const response = await appointmentPOST(values, token)
-        dispatch(fetchAppointmentsDataSuccess(response.data))
-      } catch (error: unknown) {
-        let errorMessage = "An unknown error occurred";
-
-        if (error.response && error.response.data) {
-          const problemDetails = error.response.data;
-          errorMessage = problemDetails.detail || problemDetails.title || errorMessage;
-        }
-  
-        dispatch(fetchAppointmentsDataFailure(errorMessage));      
-      }
+      createAppointment(createAppointmentModel);
     }
   }
 
@@ -122,7 +107,7 @@ export function CreateAppointmentForm() {
     <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4 p-4 bg-gray-200 shadow-md rounded-lg w-[50%]">
       {/* Specialization Select */}
       <div className="flex flex-col">
-        {specializationsLoading && <p className="text-blue-500">Loading specializations...</p>}
+        {specializationsLoading && <Loading label="Loading specializations..." />}
         {specializationsError && <p className="text-red-500">Error: {specializationsError}</p>}
         <Select
           disabled={false}
@@ -145,8 +130,8 @@ export function CreateAppointmentForm() {
 
       {/* Service Select */}
       <div className="flex flex-col">
-        {servicesLoading && <p className="text-blue-500">Loading services...</p>}
-        {servicesError && <p className="text-red-500">Error: {servicesError}</p>}
+        {servicesLoading && <Loading label="Loading services..." />}
+        {servicesError && <ErrorBox value={servicesError} />}
         <Select
           disabled={isServiceSelectDisabled}
           label="Service"
@@ -169,8 +154,8 @@ export function CreateAppointmentForm() {
 
       {/* Doctor Select */}
       <div className="flex flex-col">
-        {doctorsLoading && <p className="text-blue-500">Loading doctors...</p>}
-        {doctorsError && <p className="text-red-500">Error: {doctorsError}</p>}
+        {doctorsLoading && <Loading label="Loading doctors..." />}
+        {doctorsError && <ErrorBox value={doctorsError} />}
         <Select
           disabled={isDoctorSelectDisabled}
           label="Doctor"
@@ -220,8 +205,8 @@ export function CreateAppointmentForm() {
 
       {/* Time Slot Select */}
       <div className="flex flex-col">
-        {doctorScheduleLoading && <p className="text-blue-500">Loading Doctor Schedule...</p>}
-        {doctorScheduleError && <p className="text-red-500">Error: {doctorScheduleError}</p>}
+        {doctorScheduleLoading && <Loading label="Loading doctor schedule..." />}
+        {doctorScheduleError && <ErrorBox value={doctorScheduleError} />}
         <Select
           disabled={isTimeSlotSelectDisabled}
           label="Time Slots"
@@ -247,8 +232,8 @@ export function CreateAppointmentForm() {
         Submit
       </Button>
       
-      {appointmentLoading && <p className="text-blue-500">Creating appointment...</p>}
-      {appointmentError && <p className="text-red-500">Error: {appointmentError}</p>}
+      {appointmentsLoading && <Loading label="Creating appointment..." />}
+      {appointmentsError && <ErrorBox value={appointmentsError} />}
     </form>
   )
 }
