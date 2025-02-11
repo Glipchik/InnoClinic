@@ -4,7 +4,6 @@ import { useContext, useEffect, useState } from "react";
 import { RootState } from "../../store/store";
 import { UserManagerContext } from "../../shared/contexts/UserManagerContext";
 import Button from "../../shared/ui/controls/Button";
-import { fetchOfficesDataFailure, fetchOfficesDataRequest, fetchOfficesDataSuccess } from "../../store/slices/officesSlice";
 import { DELETE } from '../../shared/api/officeApi';
 import Loading from "../../shared/ui/controls/Loading";
 import ErrorBox from "../../shared/ui/containers/ErrorBox";
@@ -18,14 +17,18 @@ export function OfficesList() {
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [isCreating, setIsCreating] = useState<boolean>(false);
   const pageSize = 2;
-
-  const dispatch = useDispatch();
+  
   const userManager = useContext(UserManagerContext);
   const { isUserAuthorized } = useSelector((state: RootState) => state.auth);
 
   const [editingOfficeId, setEditingOfficeId] = useState<string | null>(null);
 
-  const { loading: officesLoading, error: officesError, officesData, fetchOffices, editOffice, createOffice } = useOffices(token);
+  const {
+    fetchOfficesData, fetchOfficesError, fetchOfficesLoading,
+    createOfficeError, createOfficeLoading,
+    editOfficeError, editOfficeLoading,
+    deleteOfficeLoading, deleteOfficeError,
+    fetchOffices, editOffice, createOffice, deleteOffice } = useOffices(token);
 
   useEffect(() => {
     if (userManager) {
@@ -47,33 +50,27 @@ export function OfficesList() {
     setEditingOfficeId(id);
   };
 
-  const handleDelete = async (id: string) => {
-    if (token) {
-      try {
-        dispatch(fetchOfficesDataRequest());
-        await DELETE(id, token);
-        fetchOffices(pageIndex, pageSize);
-        dispatch(fetchOfficesDataSuccess(null))
-      } catch (error: unknown) {
-        let errorMessage = "An unknown error occurred";
-        if (error.response && error.response.data) {
-          const problemDetails = error.response.data;
-          errorMessage = problemDetails.detail || problemDetails.title || errorMessage;
-        }
-        dispatch(fetchOfficesDataFailure(errorMessage));
-      }
-    }
-  };
-
   return (
     <div className="my-auto">
       <h1 className="text-3xl my-4">Offices</h1>
-      
+
       <div className="flex justify-end mb-4">
         <Button onClick={() => setIsCreating(true)}>
           Create New Office
         </Button>
       </div>
+
+      {createOfficeLoading && <Loading label="Creating: Creating office..." />}
+      {createOfficeError && <ErrorBox value={`Creating Error: ${createOfficeError}`} />}
+
+      {fetchOfficesLoading && <Loading label="Fetching: Loading offices..." />}
+      {fetchOfficesError && <ErrorBox value={`Fetching Error: ${fetchOfficesError}`} />}
+      
+      {editOfficeLoading && <Loading label="Editing: Editing office..." />}
+      {editOfficeError && <ErrorBox value={`Editing Error: ${editOfficeError}`} />}
+      
+      {deleteOfficeLoading && <Loading label="Editing: Editing office..." />}
+      {deleteOfficeError && <ErrorBox value={`Editing Error: ${deleteOfficeError}`} />}
 
       {isCreating && (
         <OfficeForm
@@ -87,12 +84,9 @@ export function OfficesList() {
         />
       )}
 
-      {officesLoading && <Loading label="Loading offices..." />}
-      {officesError && <ErrorBox value={officesError} />}
-      
-      {officesData && (
+      {fetchOfficesData && (
         <ul className="w-full flex flex-row justify-center items-center space-x-4">
-          {officesData.items.map((office) => (
+          {fetchOfficesData.items.map((office) => (
             <li key={office.id} className="p-4 w-[40%] flex flex-col rounded-xl space-y-3 bg-gray-200 justify-between items-center">
               {editingOfficeId === office.id ? (
                 <OfficeForm
@@ -112,7 +106,10 @@ export function OfficesList() {
                   <div className="flex space-x-4">
                     <Button onClick={() => handleEdit(office.id)}>Edit</Button>
                     {office.isActive && (
-                      <Button onClick={() => handleDelete(office.id)} className="bg-red-600 hover:bg-red-700">
+                      <Button onClick={async () => {
+                        await deleteOffice(office.id);
+                        fetchOffices(pageIndex, pageSize);
+                      }} className="bg-red-600 hover:bg-red-700">
                         Delete
                       </Button>
                     )}
@@ -125,12 +122,12 @@ export function OfficesList() {
       )}
 
       {/* Pagination */}
-      {officesData && (
+      {fetchOfficesData && (
         <Pagination
           pageIndex={pageIndex}
-          totalPages={officesData.totalPages}
-          hasPreviousPage={officesData.hasPreviousPage}
-          hasNextPage={officesData.hasNextPage}
+          totalPages={fetchOfficesData.totalPages}
+          hasPreviousPage={fetchOfficesData.hasPreviousPage}
+          hasNextPage={fetchOfficesData.hasNextPage}
           onPageChange={setPageIndex}
         />
       )}
