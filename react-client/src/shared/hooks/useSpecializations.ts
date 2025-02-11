@@ -1,24 +1,24 @@
 import { useDispatch, useSelector } from "react-redux"
-import { GET as specializationGET } from "../api/specializationApi"
+import { GET } from "../api/specializationApi"
 import {
-  fetchSpecializationsDataFailure,
-  fetchSpecializationsDataSuccess,
-  fetchSpecializationsDataRequest,
-} from "../../store/slices/specializationsSlice"
+  fetchSpecializationsFailure,
+  fetchSpecializationsSuccess,
+  fetchSpecializationsRequest,
+} from "../../store/slices/specializations/fetchSpecializationsSlice"
 import { RootState } from "../../store/store";
 
 export const useSpecializations = (token: string | null) => {
   const dispatch = useDispatch()
-  const { loading, error, specializationsData } = useSelector(
-    (state: RootState) => state.specializations
+  const { loading : fetchSpecializationsLoading, error : fetchSpecializationsError, data : fetchSpecializationsData } = useSelector(
+    (state: RootState) => state.fetchSpecializationsReducer
   );
 
   const fetchSpecializations = async () => {
     if (token) {
       try {
-        dispatch(fetchSpecializationsDataRequest())
-        const response = await specializationGET(null, token)
-        dispatch(fetchSpecializationsDataSuccess(response.data))
+        dispatch(fetchSpecializationsRequest())
+        const response = await GET(null, token)
+        dispatch(fetchSpecializationsSuccess(response.data))
       } catch (error: unknown) {
         let errorMessage = "An unknown error occurred";
 
@@ -27,13 +27,10 @@ export const useSpecializations = (token: string | null) => {
           errorMessage = problemDetails.detail || problemDetails.title || errorMessage;
         }
 
-        dispatch(
-          fetchSpecializationsDataFailure(errorMessage),
-        )
+        dispatch(fetchSpecializationsFailure(errorMessage))
       }
     }
   }
 
-  return { loading, error, specializationsData, fetchSpecializations }
+  return { fetchSpecializationsLoading, fetchSpecializationsError, fetchSpecializationsData, fetchSpecializations }
 }
-

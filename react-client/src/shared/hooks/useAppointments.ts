@@ -1,21 +1,22 @@
 import { useDispatch, useSelector } from "react-redux"
 import { POST } from "../api/appointmentApi"
-import { fetchAppointmentsDataFailure, fetchAppointmentsDataSuccess, fetchAppointmentsDataRequest } from "../../store/slices/appointmentsSlice"
+import { createAppointmentFailure, createAppointmentRequest, createAppointmentSuccess } from "../../store/slices/appointments/createAppointmentSlice"
 import { RootState } from "../../store/store";
 import CreateAppointmentModel from "../../features/appointments/models/CreateAppointmentModel";
 
 export const useAppointments = (token: string | null) => {
   const dispatch = useDispatch()
-  const { loading, error, appointmentsData } = useSelector(
-    (state: RootState) => state.appointments
+
+  const { loading : createAppointmentLoading, error : createAppointmentError } = useSelector(
+    (state: RootState) => state.createAppointmentReducer
   );
 
   const createAppointment = async (createAppointmentModel: CreateAppointmentModel) => {
     if (token) {
       try {
-        dispatch(fetchAppointmentsDataRequest())
+        dispatch(createAppointmentRequest())
         await POST(createAppointmentModel, token)
-        dispatch(fetchAppointmentsDataSuccess(null))
+        dispatch(createAppointmentSuccess())
       } catch (error: unknown) {
         let errorMessage = "An unknown error occurred";
 
@@ -24,10 +25,11 @@ export const useAppointments = (token: string | null) => {
           errorMessage = problemDetails.detail || problemDetails.title || errorMessage;
         }
           
-        dispatch(fetchAppointmentsDataFailure(errorMessage))
+        dispatch(createAppointmentFailure(errorMessage))
       }
     }
   }
 
-  return { loading, error, appointmentsData, createAppointment }
+  return { createAppointmentLoading, createAppointmentError,
+    createAppointment }
 }
