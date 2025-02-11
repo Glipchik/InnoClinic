@@ -15,6 +15,11 @@ import createSpecializationReducer from './slices/specializations/createSpeciali
 import editSpecializationReducer from './slices/specializations/editSpecializationSlice';
 import deleteSpecializationReducer from './slices/specializations/deleteSpecializationSlice';
 
+import fetchServiceCategoriesReducer from './slices/serviceCategories/fetchServiceCategoriesSlice';
+import editServiceCategoriesReducer from './slices/serviceCategories/editServiceCategorySlice';
+import deleteServiceCategoriesReducer from './slices/serviceCategories/deleteServiceCategorySlice';
+import createServiceCategoriesReducer from './slices/serviceCategories/createServiceCategorySlice';
+
 export const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -35,6 +40,11 @@ export const store = configureStore({
 
     createAppointmentReducer: createAppointmentReducer,
     fetchDoctorScheduleReducer: fetchDoctorScheduleReducer,
+
+    fetchServiceCategoriesReducer: fetchServiceCategoriesReducer,
+    editServiceCategoriesReducer: editServiceCategoriesReducer,
+    deleteServiceCategoriesReducer: deleteServiceCategoriesReducer,
+    createServiceCategoriesReducer: createServiceCategoriesReducer,
   }
 });
 

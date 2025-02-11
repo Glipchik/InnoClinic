@@ -34,6 +34,7 @@ function Header() {
           <ul className="flex flex-row space-x-4">
             <li className="list-none"> <Link to="/offices" className="text-2xl"> Offices </Link> </li>
             <li className="list-none"> <Link to="/specializations" className="text-2xl"> Specializations </Link> </li>
+            <li className="list-none"> <Link to="/service-categories" className="text-2xl"> Service Categories </Link> </li>
           </ul>
         )}
       </div>

@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Services.API.DTOs;
 using Services.Application.Models;
 using Services.Application.Services.Abstractions;
+using Services.Domain.Entities;
+using Services.Domain.Models;
 
 namespace Services.API.Controllers
 {
@@ -55,6 +57,29 @@ namespace Services.API.Controllers
 
             var serviceCategoriesDtos = _mapper.Map<IEnumerable<ServiceCategoryDto>>(serviceCategories);
             return serviceCategoriesDtos;
+        }
+
+        /// <summary>
+        /// Gets the list of all service categories with pagination.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     GET /api/ServiceCategories/with-pagination
+        ///
+        /// </remarks>
+        /// <returns>Returns a list of service categories objects.</returns>
+        /// <response code="200">Returns the list of service categories</response>
+        /// <response code="500">If there was an internal server error</response>
+        [HttpGet("with-pagination")]
+        [Authorize]
+        public async Task<PaginatedList<ServiceCategoryDto>> Get(CancellationToken cancellationToken, int pageIndex = 1, int pageSize = 10)
+        {
+            var serviceCategories = await _serviceCategoryManager.GetAll(pageIndex, pageSize, cancellationToken);
+            _logger.LogInformation("Requested service categories list");
+
+            List<ServiceCategoryDto> serviceCategoryDtos = _mapper.Map<List<ServiceCategoryDto>>(serviceCategories.Items);
+            return new PaginatedList<ServiceCategoryDto>(serviceCategoryDtos, serviceCategories.PageIndex, serviceCategories.TotalPages);
         }
 
         /// <summary>
