@@ -124,6 +124,20 @@ namespace Offices.API.Controllers
         [Authorize(Roles = "Receptionist")]
         public async Task Put([FromBody] UpdateOfficeDto updateOfficeDto, CancellationToken cancellationToken)
         {
+            // Validation
+            var officeValidation = await _updateOfficeDtoValidator.ValidateAsync(updateOfficeDto, cancellationToken);
+            if (!officeValidation.IsValid)
+            {
+                var validationErrors = officeValidation.Errors
+                    .GroupBy(e => e.PropertyName)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Select(e => e.ErrorMessage).ToArray()
+                    );
+
+                throw new Domain.Exceptions.ValidationException(validationErrors);
+            }
+
             var updateOfficeModel = _mapper.Map<UpdateOfficeModel>(updateOfficeDto);
             await _officeService.Update(updateOfficeModel, cancellationToken);
             _logger.LogInformation("Office with id {id} was successfully updated", updateOfficeDto.Id);
