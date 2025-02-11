@@ -35,12 +35,13 @@ export function CreateAppointmentForm() {
     (state: RootState) => state.auth
   );
 
-  const { loading: specializationsLoading, error: specializationsError, specializationsData, fetchSpecializations } = useSpecializations(token)
-  const { loading: servicesLoading, error: servicesError, servicesData, fetchServices } = useServices(token)
-  const { loading: doctorsLoading, error: doctorsError, doctorsData, fetchDoctors } = useDoctors(token)
-  const { loading: doctorScheduleLoading, error: doctorScheduleError, doctorScheduleData, fetchDoctorSchedule } =
+  const { fetchSpecializationsLoading, fetchSpecializationsError, fetchSpecializationsData, fetchSpecializations } = useSpecializations(token)
+  const { fetchServicesLoading, fetchServicesError, fetchServicesData, fetchServices } = useServices(token)
+  const { fetchDoctorsLoading, fetchDoctorsData, fetchDoctorsError, fetchDoctors } = useDoctors(token)
+  const { fetchDoctorScheduleData, fetchDoctorScheduleError, fetchDoctorScheduleLoading, fetchDoctorSchedule } =
     useDoctorSchedule(token)
-  const { loading: appointmentsLoading, error: appointmentsError, createAppointment } = useAppointments(token)
+
+  const { createAppointmentError, createAppointmentLoading, createAppointment } = useAppointments(token)
 
   useEffect(() => {
     fetchSpecializations()
@@ -107,8 +108,8 @@ export function CreateAppointmentForm() {
     <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4 p-4 bg-gray-200 shadow-md rounded-lg w-[50%]">
       {/* Specialization Select */}
       <div className="flex flex-col">
-        {specializationsLoading && <Loading label="Loading specializations..." />}
-        {specializationsError && <p className="text-red-500">Error: {specializationsError}</p>}
+        {fetchSpecializationsLoading && <Loading label="Loading specializations..." />}
+        {fetchSpecializationsError && <p className="text-red-500">Error: {fetchSpecializationsError}</p>}
         <Select
           disabled={false}
           label="Specialization"
@@ -118,8 +119,8 @@ export function CreateAppointmentForm() {
           value={formik.values.specializationId}
         >
           <option value="" label="Select specialization" />
-          {specializationsData &&
-            specializationsData.map((spec: Specialization) => (
+          {fetchSpecializationsData &&
+            fetchSpecializationsData.map((spec: Specialization) => (
               <option key={spec.id} value={spec.id} label={spec.specializationName} />
             ))}
         </Select>
@@ -130,8 +131,8 @@ export function CreateAppointmentForm() {
 
       {/* Service Select */}
       <div className="flex flex-col">
-        {servicesLoading && <Loading label="Loading services..." />}
-        {servicesError && <ErrorBox value={servicesError} />}
+        {fetchServicesLoading && <Loading label="Loading services..." />}
+        {fetchServicesError && <ErrorBox value={fetchServicesError} />}
         <Select
           disabled={isServiceSelectDisabled}
           label="Service"
@@ -142,8 +143,8 @@ export function CreateAppointmentForm() {
           className={isServiceSelectDisabled ? "opacity-50 cursor-not-allowed" : ""}
         >
           <option value="" label="Select service" />
-          {servicesData &&
-            servicesData.map((service: Service) => (
+          {fetchServicesData &&
+            fetchServicesData.map((service: Service) => (
               <option key={service.id} value={service.id} label={service.serviceName} />
             ))}
         </Select>
@@ -154,8 +155,8 @@ export function CreateAppointmentForm() {
 
       {/* Doctor Select */}
       <div className="flex flex-col">
-        {doctorsLoading && <Loading label="Loading doctors..." />}
-        {doctorsError && <ErrorBox value={doctorsError} />}
+        {fetchDoctorsLoading && <Loading label="Loading doctors..." />}
+        {fetchDoctorsError && <ErrorBox value={fetchDoctorsError} />}
         <Select
           disabled={isDoctorSelectDisabled}
           label="Doctor"
@@ -166,8 +167,8 @@ export function CreateAppointmentForm() {
           className={isDoctorSelectDisabled ? "opacity-50 cursor-not-allowed" : ""}
         >
           <option value="" label="Select doctor" />
-          {doctorsData &&
-            doctorsData.map((doctor: Doctor) => (
+          {fetchDoctorsData &&
+            fetchDoctorsData.map((doctor: Doctor) => (
               <option key={doctor.id} value={doctor.id} label={`${doctor.firstName} ${doctor.lastName}`} />
             ))}
         </Select>
@@ -205,8 +206,8 @@ export function CreateAppointmentForm() {
 
       {/* Time Slot Select */}
       <div className="flex flex-col">
-        {doctorScheduleLoading && <Loading label="Loading doctor schedule..." />}
-        {doctorScheduleError && <ErrorBox value={doctorScheduleError} />}
+        {fetchDoctorScheduleLoading && <Loading label="Loading doctor schedule..." />}
+        {fetchDoctorScheduleError && <ErrorBox value={fetchDoctorScheduleError} />}
         <Select
           disabled={isTimeSlotSelectDisabled}
           label="Time Slots"
@@ -217,8 +218,8 @@ export function CreateAppointmentForm() {
           className={isTimeSlotSelectDisabled ? "opacity-50 cursor-not-allowed" : ""}
         >
           <option value="" label="Select Time Slot" />
-          {doctorScheduleData &&
-            doctorScheduleData.map((timeSlot: TimeSlot) => (
+          {fetchDoctorScheduleData && 
+            fetchDoctorScheduleData.map((timeSlot: TimeSlot) => (
               <option key={timeSlot.id} value={timeSlot.id} label={timeSlot.start} />
             ))}
         </Select>
@@ -232,8 +233,8 @@ export function CreateAppointmentForm() {
         Submit
       </Button>
       
-      {appointmentsLoading && <Loading label="Creating appointment..." />}
-      {appointmentsError && <ErrorBox value={appointmentsError} />}
+      {createAppointmentLoading && <Loading label="Creating Appointment: Loading..." />}
+      {createAppointmentError && <ErrorBox value={createAppointmentError} />}
     </form>
   )
 }

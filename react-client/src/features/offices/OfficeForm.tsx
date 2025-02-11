@@ -1,15 +1,8 @@
-import { useContext, useEffect, useState } from "react";
 import Office from "../../entities/office";
-import { useSelector } from "react-redux";
-import { UserManagerContext } from "../../shared/contexts/UserManagerContext";
-import { RootState } from "../../store/store";
-import { useOffices } from "../../shared/hooks/useOffices";
 import { useFormik } from "formik";
 import { validationSchema } from "./validationSchema";
 import Input from "../../shared/ui/forms/Input";
 import Button from "../../shared/ui/controls/Button";
-import Loading from "../../shared/ui/controls/Loading";
-import ErrorBox from "../../shared/ui/containers/ErrorBox";
 
 interface OfficeFormProps {
   office: Office;
@@ -18,21 +11,6 @@ interface OfficeFormProps {
 }
 
 export function OfficeForm({ office, onSubmit, onCancel }: OfficeFormProps) {
-  const [token, setToken] = useState<string | null>(null)
-  const userManager = useContext(UserManagerContext);
-  const { isUserAuthorized } = useSelector((state: RootState) => state.auth);
-
-  const { loading: officesLoading, error: officesError } = useOffices(token);
-
-  useEffect(() => {
-    if (userManager) {
-      async function fetchUser() {
-        const user = await userManager!.getUser();
-        setToken(user?.access_token ?? null);
-      }
-      fetchUser();
-    }
-  }, [userManager, isUserAuthorized]);
 
   const formik = useFormik({
     initialValues: {
@@ -101,9 +79,6 @@ export function OfficeForm({ office, onSubmit, onCancel }: OfficeFormProps) {
           Cancel
         </Button>
       </div>
-
-      {officesLoading && <Loading label="Editing office..." />}
-      {officesError && <ErrorBox value={officesError} />}
     </form>
   )
 }
