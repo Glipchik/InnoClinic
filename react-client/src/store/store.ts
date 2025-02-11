@@ -1,6 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from './slices/authSlice';
-import fetchSpecializationsReducer from './slices/specializations/fetchSpecializationsSlice';
 import fetchServicesReducer from './slices/services/fetchServicesSlice';
 import fetchDoctorsReducer from './slices/doctors/fetchDoctorsSlice';
 import createAppointmentReducer from './slices/appointments/createAppointmentSlice';
@@ -10,6 +9,11 @@ import fetchOfficesReducer from './slices/offices/fetchOfficesSlice';
 import editOfficeReducer from './slices/offices/editOfficeSlice';
 import deleteOfficeReducer from './slices/offices/deleteOfficeSlice';
 import createOfficeReducer from './slices/offices/createOfficeSlice';
+
+import fetchSpecializationsReducer from './slices/specializations/fetchSpecializationsSlice';
+import createSpecializationReducer from './slices/specializations/createSpecializationSlice';
+import editSpecializationReducer from './slices/specializations/editSpecializationSlice';
+import deleteSpecializationReducer from './slices/specializations/deleteSpecializationSlice';
 
 export const store = configureStore({
   reducer: {
@@ -21,6 +25,9 @@ export const store = configureStore({
     deleteOfficeReducer: deleteOfficeReducer,
 
     fetchSpecializationsReducer: fetchSpecializationsReducer,
+    createSpecializationReducer: createSpecializationReducer,
+    editSpecializationReducer: editSpecializationReducer,
+    deleteSpecializationReducer: deleteSpecializationReducer,
 
     fetchServicesReducer: fetchServicesReducer,
 

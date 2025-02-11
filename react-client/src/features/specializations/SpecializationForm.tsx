@@ -1,15 +1,8 @@
-import { useContext, useEffect, useState } from "react";
 import Specialization from "../../entities/specialization";
-import { useSelector } from "react-redux";
-import { UserManagerContext } from "../../shared/contexts/UserManagerContext";
-import { RootState } from "../../store/store";
-import { useSpecializations } from "../../shared/hooks/useSpecializations";
 import { useFormik } from "formik";
 import { validationSchema } from "./validationSchema";
 import Input from "../../shared/ui/forms/Input";
 import Button from "../../shared/ui/controls/Button";
-import Loading from "../../shared/ui/controls/Loading";
-import ErrorBox from "../../shared/ui/containers/ErrorBox";
 
 interface SpecializationFormProps {
   specialization: Specialization;
@@ -18,21 +11,6 @@ interface SpecializationFormProps {
 }
 
 export function SpecializationForm({ specialization, onSubmit, onCancel }: SpecializationFormProps) {
-  const [token, setToken] = useState<string | null>(null)
-  const userManager = useContext(UserManagerContext);
-  const { isUserAuthorized } = useSelector((state: RootState) => state.auth);
-
-  const { loading: specializationsLoading, error: specializationsError } = useSpecializations(token);
-
-  useEffect(() => {
-    if (userManager) {
-      async function fetchUser() {
-        const user = await userManager!.getUser();
-        setToken(user?.access_token ?? null);
-      }
-      fetchUser();
-    }
-  }, [userManager, isUserAuthorized]);
 
   const formik = useFormik({
     initialValues: {
@@ -85,9 +63,6 @@ export function SpecializationForm({ specialization, onSubmit, onCancel }: Speci
           Cancel
         </Button>
       </div>
-
-      {specializationsLoading && <Loading label="Editing specialization..." />}
-      {specializationsError && <ErrorBox value={specializationsError} />}
     </form>
   )
 }

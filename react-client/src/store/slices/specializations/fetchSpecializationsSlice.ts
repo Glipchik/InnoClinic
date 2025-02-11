@@ -1,10 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 import Specialization from '../../../entities/specialization';
+import PaginatedList from '../../../models/paginatedList';
 
 interface FetchSpecializationsState {
   loading: boolean;
   error: string | null;
-  data: Specialization | Specialization[] | null 
+  data: Specialization | Specialization[] | PaginatedList<Specialization> | null 
 }
 
 const initialState : FetchSpecializationsState = {
