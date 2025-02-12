@@ -11,7 +11,8 @@ import { AppointmentsPage } from "../pages/appointments/AppointmentsPage";
 import { SilentRenew } from "../features/auth/SilentRenew";
 import { OfficesPage } from "../pages/offices/OfficesPage";
 import { SpecializationsPage } from "../pages/specializations/SpecializationsPage";
-import { ServiceCategoriesPage } from "../pages/serviceCategories/ServiceCategory";
+import { ServiceCategoriesPage } from "../pages/serviceCategories/ServiceCategoriesPage";
+import { ServicesPage } from "../pages/services/ServicesPage";
 
 const router = createBrowserRouter([
   {
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
       {
         path: "service-categories",
         element: <ServiceCategoriesPage />,
+      },
+      {
+        path: "services",
+        element: <ServicesPage />,
       },
       {
         path: "",

@@ -27,6 +27,7 @@ import {
 import { RootState } from "../../store/store";
 import CreateServiceModel from "../../features/services/models/CreateServiceModel";
 import Service from "../../entities/service";
+import ServiceModel from "../../features/services/models/ServiceModel"
 
 export const useServices = (token: string | null) => {
   const dispatch = useDispatch()
@@ -100,11 +101,11 @@ export const useServices = (token: string | null) => {
     (state: RootState) => state.editServiceReducer
   );
 
-  const editService = async (service: Service) => {
+  const editService = async (serviceModel: ServiceModel) => {
     if (token) {
       try {
         dispatch(editServiceRequest())
-        await PUT(service, token)
+        await PUT(serviceModel, token)
         dispatch(editServiceSuccess())
       } catch (error: unknown) {
         let errorMessage = "An unknown error occurred";

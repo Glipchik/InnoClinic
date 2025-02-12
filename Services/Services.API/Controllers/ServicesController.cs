@@ -6,6 +6,7 @@ using Services.API.DTOs;
 using Services.Application.Models;
 using Services.Application.Services.Abstractions;
 using Services.Domain.Entities;
+using Services.Domain.Models;
 
 namespace Services.API.Controllers
 {
@@ -56,6 +57,29 @@ namespace Services.API.Controllers
 
             var servicesDtos = _mapper.Map<IEnumerable<ServiceDto>>(services);
             return servicesDtos;
+        }
+
+        /// <summary>
+        /// Gets the list of all services with pagination.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     GET /api/Services/with-pagination
+        ///
+        /// </remarks>
+        /// <returns>Returns a list of services objects.</returns>
+        /// <response code="200">Returns the list of services</response>
+        /// <response code="500">If there was an internal server error</response>
+        [HttpGet("with-pagination")]
+        [Authorize]
+        public async Task<PaginatedList<ServiceDto>> Get([FromQuery] ServiceQueryParametresDto serviceQueryParametresDto, CancellationToken cancellationToken, [FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 10)
+        {
+            var services = await _serviceManager.GetAll(_mapper.Map<ServiceQueryParametresModel>(serviceQueryParametresDto), pageIndex, pageSize, cancellationToken);
+            _logger.LogInformation("Requested services list");
+
+            List<ServiceDto> serviceDtos = _mapper.Map<List<ServiceDto>>(services.Items);
+            return new PaginatedList<ServiceDto>(serviceDtos, services.PageIndex, services.TotalPages);
         }
 
         /// <summary>

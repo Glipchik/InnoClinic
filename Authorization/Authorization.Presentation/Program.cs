@@ -63,7 +63,6 @@ try
     app.Use(async (context, next) =>
     {
         context.Response.Headers.Remove("X-Frame-Options");
-        context.Response.Headers.Add("X-Frame-Options", "SAMEORIGIN");
         await next();
     });
 
