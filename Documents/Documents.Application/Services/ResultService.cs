@@ -74,7 +74,7 @@ namespace Documents.Application.Services
             return _mapper.Map<IEnumerable<ResultModel>>(await _unitOfWork.ResultRepository.GetAllAsync(cancellationToken));
         }
 
-        public async Task<IEnumerable<ResultModel>> GetAllByDoctorid(Guid doctorId, CancellationToken cancellationToken)
+        public async Task<IEnumerable<ResultModel>> GetAllByDoctorId(Guid doctorId, CancellationToken cancellationToken)
         {
 
             return _mapper.Map<IEnumerable<ResultModel>>(await _unitOfWork.ResultRepository.GetAllByDoctorIdAsync(doctorId, cancellationToken));

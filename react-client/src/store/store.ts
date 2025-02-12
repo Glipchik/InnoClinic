@@ -19,6 +19,11 @@ import createServiceReducer from './slices/services/createServiceSlice';
 import editServiceReducer from './slices/services/editServiceSlice';
 import deleteServiceReducer from './slices/services/deleteServiceSlice';
 
+import fetchServiceCategoriesReducer from './slices/serviceCategories/fetchServiceCategoriesSlice';
+import editServiceCategoriesReducer from './slices/serviceCategories/editServiceCategorySlice';
+import deleteServiceCategoriesReducer from './slices/serviceCategories/deleteServiceCategorySlice';
+import createServiceCategoriesReducer from './slices/serviceCategories/createServiceCategorySlice';
+
 export const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -42,6 +47,11 @@ export const store = configureStore({
 
     createAppointmentReducer: createAppointmentReducer,
     fetchDoctorScheduleReducer: fetchDoctorScheduleReducer,
+
+    fetchServiceCategoriesReducer: fetchServiceCategoriesReducer,
+    editServiceCategoriesReducer: editServiceCategoriesReducer,
+    deleteServiceCategoriesReducer: deleteServiceCategoriesReducer,
+    createServiceCategoriesReducer: createServiceCategoriesReducer,
   }
 });
 

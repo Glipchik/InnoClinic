@@ -1,4 +1,5 @@
 ﻿using Services.Application.Models;
+using Services.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,5 +10,6 @@ namespace Services.Application.Services.Abstractions
 {
     public interface IServiceCategoryManager : IGenericService<CreateServiceCategoryModel, ServiceCategoryModel, UpdateServiceCategoryModel>
     {
+        Task<PaginatedList<ServiceCategoryModel>> GetAll(int pageIndex, int pageSize, CancellationToken cancellationToken);
     }
 }

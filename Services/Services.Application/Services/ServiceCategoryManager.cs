@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Services.MessageBroking.Producers.Abstractions;
+using Services.Domain.Models;
 
 namespace Services.Application.Services
 {
@@ -61,6 +62,21 @@ namespace Services.Application.Services
         public async Task<IEnumerable<ServiceCategoryModel>> GetAll(CancellationToken cancellationToken)
         {
             return _mapper.Map<IEnumerable<ServiceCategoryModel>>(await _unitOfWork.ServiceCategoryRepository.GetAllAsync(cancellationToken));
+        }
+
+        public async Task<PaginatedList<ServiceCategoryModel>> GetAll(int pageIndex, int pageSize, CancellationToken cancellationToken)
+        {
+            var result = new List<ServiceCategoryModel>();
+
+            var serviceCategories = await _unitOfWork.ServiceCategoryRepository.GetAllAsync(pageIndex, pageSize, cancellationToken);
+
+            foreach (var serviceCategory in serviceCategories.Items)
+            {
+                var serviceCategoryModel = _mapper.Map<ServiceCategoryModel>(serviceCategory);
+                result.Add(serviceCategoryModel);
+            }
+
+            return new PaginatedList<ServiceCategoryModel>(result, serviceCategories.PageIndex, serviceCategories.TotalPages);
         }
 
         public async Task Update(UpdateServiceCategoryModel updateModel, CancellationToken cancellationToken)
