@@ -29,7 +29,7 @@ const router = createBrowserRouter([
       },
       {
         path: "specializations",
-        element: <SpecializationsPage />,
+        element: <PrivateRoute requiredRole="Receptionist"> <SpecializationsPage /> </PrivateRoute>,
       },
       {
         path: "",
