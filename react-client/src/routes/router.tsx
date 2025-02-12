@@ -39,7 +39,7 @@ const router = createBrowserRouter([
       },
       {
         path: "services",
-        element: <ServicesPage />,
+        element: <PrivateRoute requiredRole="Receptionist"> <ServicesPage /> </PrivateRoute>,
       },
       {
         path: "",
