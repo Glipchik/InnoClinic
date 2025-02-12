@@ -10,6 +10,8 @@ import Layout from '../shared/ui/Layout'
 import { AppointmentsPage } from "../pages/appointments/AppointmentsPage";
 import { SilentRenew } from "../features/auth/SilentRenew";
 import { OfficesPage } from "../pages/offices/OfficesPage";
+import { PrivateRoute } from "../shared/routes/PrivateRoute/index";
+import { ForbiddenPage } from "../pages/errors/ForbiddenPage";
 
 const router = createBrowserRouter([
   {
@@ -27,6 +29,10 @@ const router = createBrowserRouter([
       {
         path: "",
         children: [
+          {
+            path: "forbidden",
+            element: <ForbiddenPage />,
+          },
           {
             path: "login",
             element: <Login />,
@@ -54,7 +60,7 @@ const router = createBrowserRouter([
         children: [
           {
             path: "appointments",
-            element: <AppointmentsPage />,
+            element: <PrivateRoute requiredRole="Patient"> <AppointmentsPage /> </PrivateRoute>,
           },
         ]
       },
