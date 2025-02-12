@@ -34,7 +34,7 @@ const router = createBrowserRouter([
       },
       {
         path: "service-categories",
-        element: <ServiceCategoriesPage />,
+        element: <PrivateRoute requiredRole="Receptionist"> <ServiceCategoriesPage /> </PrivateRoute>,
       },
       {
         path: "",
