@@ -24,7 +24,7 @@ const router = createBrowserRouter([
       },
       {
         path: "offices",
-        element: <OfficesPage />,
+        element: <PrivateRoute requiredRole="Receptionist"> <OfficesPage /> </PrivateRoute>,
       },
       {
         path: "",
