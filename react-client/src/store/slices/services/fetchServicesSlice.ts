@@ -1,20 +1,21 @@
 import { createSlice } from '@reduxjs/toolkit';
 import Service from '../../../entities/service';
+import PaginatedList from '../../../models/paginatedList';
 
-interface ServicesState {
+interface FetchServicesState {
   loading: boolean;
   error: string | null;
-  data: Service | Service[] | null 
+  data: Service | Service[] | PaginatedList<Service> | null 
 }
 
-const initialState : ServicesState = {
+const initialState : FetchServicesState = {
   loading: false,
   error: null,
   data: null
 };
 
 const FetchServicesSlice = createSlice({
-  name: 'Services',
+  name: 'FetchServices',
   initialState,
   reducers: {
     fetchServicesRequest: state => {
