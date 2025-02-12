@@ -8,6 +8,8 @@ using Appointments.API.Infrastructure;
 using Appointments.API.DTOs;
 using Appointments.API.Validators;
 using Appointments.API.Mapper;
+using Microsoft.IdentityModel.Tokens;
+using Appointments.MessageBroking.DependencyInjection;
 
 namespace Appointments.API.DependencyInjection
 {
@@ -16,6 +18,8 @@ namespace Appointments.API.DependencyInjection
         public static IServiceCollection AddApiDependencyInjection(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddInfrastructureDependencyInjection(configuration);
+
+            services.AddMessageBrokingDependencyInjection();
 
             services.AddControllers();
 
@@ -35,10 +39,23 @@ namespace Appointments.API.DependencyInjection
 
             services.AddAuthentication(options =>
             {
-                options.DefaultScheme = "Cookies";
+                options.DefaultScheme = "Bearer";
                 options.DefaultChallengeScheme = "oidc";
             })
-            .AddCookie("Cookies")
+            .AddCookie("Cookies", options =>
+            {
+                options.Cookie.SameSite = SameSiteMode.None;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            })
+            .AddJwtBearer("Bearer", options =>
+            {
+                options.Authority = configuration.GetSection("Authorization")["ServerUrl"];
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateAudience = false
+                };
+            })
             .AddOpenIdConnect("oidc", options =>
             {
                 options.Authority = configuration.GetSection("Authorization")["ServerUrl"];
@@ -62,6 +79,15 @@ namespace Appointments.API.DependencyInjection
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 options.IncludeXmlComments(xmlPath);
+            });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowLocalhost3000",
+                    builder => builder.WithOrigins("http://localhost:3000")
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod()
+                                      .AllowCredentials());
             });
 
             return services;
