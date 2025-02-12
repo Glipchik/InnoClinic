@@ -18,6 +18,7 @@ const PrivateRoute = ({ requiredRole, children }: PrivateRouteProps) => {
       userManager.getUser().then((user) => {
         if (!user || user.expired) {
           setIsAuthorized(false)
+          setIsForbidden(false)
         } else {
           setIsAuthorized(true)
           if (!user.profile.role.includes(requiredRole)) {

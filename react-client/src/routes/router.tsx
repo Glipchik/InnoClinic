@@ -9,7 +9,7 @@ import { HomePage } from '../pages/home/HomePage'
 import Layout from '../shared/ui/Layout'
 import { AppointmentsPage } from "../pages/appointments/AppointmentsPage";
 import { SilentRenew } from "../features/auth/SilentRenew";
-import PrivateRoute from "../shared/routes/PrivateRoute/PrivateRoute";
+import { PrivateRoute } from "../shared/routes/PrivateRoute/index";
 import { ForbiddenPage } from "../pages/errors/ForbiddenPage";
 
 const router = createBrowserRouter([
