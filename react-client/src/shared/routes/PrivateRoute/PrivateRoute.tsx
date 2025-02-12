@@ -11,24 +11,34 @@ interface PrivateRouteProps {
 const PrivateRoute = ({ requiredRole, children }: PrivateRouteProps) => {
   const userManager = useContext(UserManagerContext);
   const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
+  const [isForbidden, setIsForbidden] = useState<boolean | null>(null);
 
   useEffect(() => {
     if (userManager) {
       userManager.getUser().then((user) => {
-        if (!user || user.expired || !user.profile.role.includes(requiredRole)) {
-          setIsAuthorized(false);
+        if (!user || user.expired) {
+          setIsAuthorized(false)
         } else {
-          setIsAuthorized(true);
+          setIsAuthorized(true)
+          if (!user.profile.role.includes(requiredRole)) {
+            setIsForbidden(true)
+          } else {
+            setIsForbidden(false)
+          }
         }
       });
     }
   }, [userManager, requiredRole]);
 
-  if (isAuthorized === null) {
-    return <Loading label="Loading..." />;
+  if (isAuthorized === null || isForbidden === null) {
+    return <Loading label="Checking session..." />;
   }
 
   if (!isAuthorized) {
+    userManager?.signinRedirect()
+  }
+
+  if (!isForbidden && isAuthorized) {
     return <Navigate to="/forbidden" />;
   }
 
