@@ -13,6 +13,8 @@ import { OfficesPage } from "../pages/offices/OfficesPage";
 import { SpecializationsPage } from "../pages/specializations/SpecializationsPage";
 import { ServiceCategoriesPage } from "../pages/serviceCategories/ServiceCategoriesPage";
 import { ServicesPage } from "../pages/services/ServicesPage";
+import { PrivateRoute } from "../shared/routes/PrivateRoute/index";
+import { ForbiddenPage } from "../pages/errors/ForbiddenPage";
 
 const router = createBrowserRouter([
   {
@@ -25,15 +27,15 @@ const router = createBrowserRouter([
       },
       {
         path: "offices",
-        element: <OfficesPage />,
+        element: <PrivateRoute requiredRole="Receptionist"> <OfficesPage /> </PrivateRoute>,
       },
       {
         path: "specializations",
-        element: <SpecializationsPage />,
+        element: <PrivateRoute requiredRole="Receptionist"> <SpecializationsPage /> </PrivateRoute>,
       },
       {
         path: "service-categories",
-        element: <ServiceCategoriesPage />,
+        element: <PrivateRoute requiredRole="Receptionist"> <ServiceCategoriesPage /> </PrivateRoute>,
       },
       {
         path: "services",
@@ -42,6 +44,10 @@ const router = createBrowserRouter([
       {
         path: "",
         children: [
+          {
+            path: "forbidden",
+            element: <ForbiddenPage />,
+          },
           {
             path: "login",
             element: <Login />,
@@ -69,7 +75,7 @@ const router = createBrowserRouter([
         children: [
           {
             path: "appointments",
-            element: <AppointmentsPage />,
+            element: <PrivateRoute requiredRole="Patient"> <AppointmentsPage /> </PrivateRoute>,
           },
         ]
       },
