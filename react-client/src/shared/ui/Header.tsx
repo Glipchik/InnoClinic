@@ -5,10 +5,13 @@ import { Link } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import Button from "./controls/Button";
 import { RootState } from "../../store/store";
+import { GETProfilePictureUrl } from "../api/profileApi";
+import profile_pic from "../../assets/profile_pic.png"
 
 function Header() {
   const userManager = useContext(UserManagerContext);
   const [user, setUser] = useState<User | null>(null);
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null)
 
   const { isUserAuthorized } = useSelector(
     (state: RootState) => state.auth
@@ -24,6 +27,23 @@ function Header() {
     }
   }, [userManager, isUserAuthorized]);
 
+  useEffect(() => {
+    if (user) {
+      async function fetchPhoto() {
+        try { 
+          if (user?.access_token && user?.profile.sub) {
+            const response = await GETProfilePictureUrl(user?.profile.sub, user?.access_token);
+            setPhotoUrl(response.data)        
+          }
+        } catch {
+          setPhotoUrl(null)
+        }
+      }
+
+      fetchPhoto();
+    }
+  }, [user])
+
   return (
     <header className="w-full inline-flex py-7 px-3 items-center bg-gray-100 text-black">
       <div className="w-[25%] h-full">
@@ -36,15 +56,18 @@ function Header() {
         <div className="flex w-full h-full items items-center space-x-3 justify-end">
           {user ? (
             <>
-              <div className="flex-col h-full space-y-0">
-                <p className="text-xl">
-                  {user.profile.email}
-                </p>
-                <p className="text-sm text-gray-800">
-                  {user.profile.role}
-                </p>
+              <div className="flex flex-row space-x-1">
+                <img src={photoUrl ? photoUrl : profile_pic} height={50} width={50} />
+                <div className="flex-col h-full space-y-0">
+                  <p className="text-xl">
+                    {user.profile.email}
+                  </p>
+                  <p className="text-sm text-gray-800">
+                    {user.profile.role}
+                  </p>
+                </div>
+                <li className="list-none"> <Link to="/logout"> <Button className="bg-red-600 hover:bg-red-700"> Logout </Button> </Link> </li>
               </div>
-              <li className="list-none"> <Link to="/logout"> <Button className="bg-red-600 hover:bg-red-700"> Logout </Button> </Link> </li>
             </>
           ) : (
             <>
