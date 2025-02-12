@@ -53,6 +53,7 @@ namespace Appointments.API.Controllers
         /// Gets list of appointments for a doctor.
         /// </summary>
         /// <param name="id">The ID of the doctor.</param>
+        /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Returns the list of appointments.</returns>
         /// <response code="200">If the doctor is found</response>
         /// <response code="400">If validation errors occured</response>
@@ -71,6 +72,7 @@ namespace Appointments.API.Controllers
         /// Gets list of appointments for a patient as patient.
         /// </summary>
         /// <returns>Returns the list of appointments.</returns>
+        /// <param name="cancellationToken">Cancellation token</param>
         /// <response code="200">If the patient is found</response>
         /// <response code="400">If validation errors occured</response>
         /// <response code="404">If the patient is not found</response>
@@ -116,6 +118,7 @@ namespace Appointments.API.Controllers
         /// </summary>
         /// <param name="id">The ID of the patient.</param>
         /// <returns>Returns the list of appointments.</returns>
+        /// <param name="cancellationToken">Cancellation token</param>
         /// <response code="200">If the patient is found</response>
         /// <response code="400">If validation errors occured</response>
         /// <response code="404">If the patient is not found</response>
@@ -150,6 +153,7 @@ namespace Appointments.API.Controllers
         /// Create an appointment.
         /// </summary>
         /// <param name="createAppointmentDto">The appointment object fields containing details.</param>
+        /// <param name="cancellationToken">Cancellation token</param>
         /// <response code="200">If the appointment is created</response>
         /// <response code="400">If validation errors occured</response>
         /// <response code="500">If there was an internal server error</response>
@@ -173,6 +177,7 @@ namespace Appointments.API.Controllers
         /// Update an appointment.
         /// </summary>
         /// <param name="updateAppointmentDto">The appointment object fields containing details.</param>
+        /// <param name="cancellationToken">Cancellation token</param>
         /// <response code="200">If the appointment is updated</response>
         /// <response code="400">If validation errors occured</response>
         /// <response code="500">If there was an internal server error</response>
@@ -201,9 +206,39 @@ namespace Appointments.API.Controllers
         }
 
         /// <summary>
+        /// Delete an appointment.
+        /// </summary>
+        /// <param name="id">The appointment id to delete.</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <response code="200">If the appointment is deleted</response>
+        /// <response code="400">If validation errors occured</response>
+        /// <response code="500">If there was an internal server error</response>
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Patient,Receptionist")]
+        public async Task Delete(string id, CancellationToken cancellationToken)
+        {
+            if (User.IsInRole("Patient"))
+            {
+                var appointment = await _appointmentService.Get(Guid.Parse(id), cancellationToken);
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                    ?? throw new ForbiddenException("You are not allowed to access this resource");
+
+                var patient = await _patientService.GetByAccountId(Guid.Parse(userId), cancellationToken);
+                if (patient.Id != appointment.PatientId)
+                {
+                    throw new ForbiddenException("You are not allowed to access this resource");
+                }
+            }
+
+            await _appointmentService.Delete(Guid.Parse(id), cancellationToken);
+            _logger.LogInformation("New appointment was successfully deleted.");
+        }
+
+        /// <summary>
         /// Gets a schedule of a doctor on some day.
         /// </summary>
         /// <param name="getScheduleDto">The object which contains fields for getting schedule.</param>
+        /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Returns the schedule.</returns>
         /// <response code="200">Success</response>
         /// <response code="400">If validation errors occured</response>
