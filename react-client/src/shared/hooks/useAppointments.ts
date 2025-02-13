@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { POST } from "../api/appointmentApi"
 import { createAppointmentFailure, createAppointmentRequest, createAppointmentSuccess } from "../../store/slices/appointments/createAppointmentSlice"
 import { RootState } from "../../store/store";
-import CreateAppointmentModel from "../../features/appointments/models/CreateAppointmentModel";
+import CreateAppointmentModel from "../../features/appointments/CreateAppointmentForm/models/CreateAppointmentModel";
 
 export const useAppointments = (token: string | null) => {
   const dispatch = useDispatch()
