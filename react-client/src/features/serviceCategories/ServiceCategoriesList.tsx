@@ -1,8 +1,5 @@
-import { useSelector } from "react-redux";
 import { useServiceCategories } from "../../shared/hooks/useServiceCategories";
-import { useContext, useEffect, useState } from "react";
-import { RootState } from "../../store/store";
-import { UserManagerContext } from "../../shared/contexts/UserManagerContext";
+import { useEffect, useState } from "react";
 import Button from "../../shared/ui/controls/Button";
 import Loading from "../../shared/ui/controls/Loading";
 import ErrorBox from "../../shared/ui/containers/ErrorBox";
@@ -12,14 +9,14 @@ import { Pagination } from "../../shared/ui/controls/Pagination";
 import CreateServiceCategoryModel from "./models/createServiceCategoryModel";
 import PaginatedList from "../../models/paginatedList";
 
-export function ServiceCategoriesList() {
-  const [token, setToken] = useState<string | null>(null);
+interface ServiceCategoriesListProps {
+  token: string
+}
+
+export function ServiceCategoriesList({ token }: ServiceCategoriesListProps) {
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [isCreating, setIsCreating] = useState<boolean>(false);
   const pageSize = 2;
-
-  const userManager = useContext(UserManagerContext);
-  const { isUserAuthorized } = useSelector((state: RootState) => state.auth);
 
   const [editingServiceCategoryId, setEditingServiceCategoryId] = useState<string | null>(null);
 
@@ -35,16 +32,6 @@ export function ServiceCategoriesList() {
   } = useServiceCategories(token);
 
   useEffect(() => {
-    if (userManager) {
-      async function fetchUser() {
-        const user = await userManager!.getUser();
-        setToken(user?.access_token ?? null);
-      }
-      fetchUser();
-    }
-  }, [userManager, isUserAuthorized]);
-
-  useEffect(() => {
     if (token) {
       fetchServiceCategoriesWithPagination(pageIndex, pageSize);
     }
@@ -56,14 +43,6 @@ export function ServiceCategoriesList() {
 
   return (
     <div className="my-auto">
-      <h1 className="text-3xl my-4">ServiceCategories</h1>
-      
-      <div className="flex justify-end mb-4">
-        <Button onClick={() => setIsCreating(true)}>
-          Create New ServiceCategory
-        </Button>
-      </div>
-
       {isCreating && (
         <ServiceCategoryForm
           serviceCategory={{ id: "", categoryName: "", timeSlotSize: "00:05:00" } as ServiceCategory}

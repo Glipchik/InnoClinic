@@ -1,10 +1,6 @@
-import { useDispatch, useSelector } from "react-redux";
 import { useOffices } from "../../shared/hooks/useOffices";
-import { useContext, useEffect, useState } from "react";
-import { RootState } from "../../store/store";
-import { UserManagerContext } from "../../shared/contexts/UserManagerContext";
+import { useEffect, useState } from "react";
 import Button from "../../shared/ui/controls/Button";
-import { DELETE } from '../../shared/api/officeApi';
 import Loading from "../../shared/ui/controls/Loading";
 import ErrorBox from "../../shared/ui/containers/ErrorBox";
 import { OfficeForm } from "./OfficeForm";
@@ -12,14 +8,14 @@ import Office from "../../entities/office";
 import { Pagination } from "../../shared/ui/controls/Pagination";
 import CreateOfficeModel from "./models/CreateOfficeModel";
 
-export function OfficesList() {
-  const [token, setToken] = useState<string | null>(null);
+interface OfficesListProps {
+  token: string
+}
+
+export function OfficesList({ token }: OfficesListProps) {
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [isCreating, setIsCreating] = useState<boolean>(false);
   const pageSize = 2;
-  
-  const userManager = useContext(UserManagerContext);
-  const { isUserAuthorized } = useSelector((state: RootState) => state.auth);
 
   const [editingOfficeId, setEditingOfficeId] = useState<string | null>(null);
 
@@ -29,16 +25,6 @@ export function OfficesList() {
     editOfficeError, editOfficeLoading,
     deleteOfficeLoading, deleteOfficeError,
     fetchOffices, editOffice, createOffice, deleteOffice } = useOffices(token);
-
-  useEffect(() => {
-    if (userManager) {
-      async function fetchUser() {
-        const user = await userManager!.getUser();
-        setToken(user?.access_token ?? null);
-      }
-      fetchUser();
-    }
-  }, [userManager, isUserAuthorized]);
 
   useEffect(() => {
     if (token) {
@@ -52,13 +38,6 @@ export function OfficesList() {
 
   return (
     <div className="my-auto">
-      <h1 className="text-3xl my-4">Offices</h1>
-
-      <div className="flex justify-end mb-4">
-        <Button onClick={() => setIsCreating(true)}>
-          Create New Office
-        </Button>
-      </div>
 
       {createOfficeLoading && <Loading label="Creating: Creating office..." />}
       {createOfficeError && <ErrorBox value={`Creating Error: ${createOfficeError}`} />}
