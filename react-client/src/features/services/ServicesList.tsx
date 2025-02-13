@@ -1,8 +1,5 @@
-import { useSelector } from "react-redux";
 import { useServices } from "../../shared/hooks/useServices";
-import { useContext, useEffect, useState } from "react";
-import { RootState } from "../../store/store";
-import { UserManagerContext } from "../../shared/contexts/UserManagerContext";
+import { useEffect, useState } from "react";
 import Button from "../../shared/ui/controls/Button";
 import Loading from "../../shared/ui/controls/Loading";
 import ErrorBox from "../../shared/ui/containers/ErrorBox";
@@ -13,14 +10,14 @@ import CreateServiceModel from "./models/CreateServiceModel";
 import PaginatedList from "../../models/paginatedList";
 import ServiceModel from "./models/ServiceModel";
 
-export function ServicesList() {
-  const [token, setToken] = useState<string | null>(null);
+interface ServicesListProps {
+  token: string
+}
+
+export function ServicesList( { token }: ServicesListProps ) {
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [isCreating, setIsCreating] = useState<boolean>(false);
   const pageSize = 2;
-
-  const userManager = useContext(UserManagerContext);
-  const { isUserAuthorized } = useSelector((state: RootState) => state.auth);
 
   const [editingServiceId, setEditingServiceId] = useState<string | null>(null);
 
@@ -31,16 +28,6 @@ export function ServicesList() {
     editServiceError, editServiceLoading,
     deleteServiceLoading, deleteServiceError,
     fetchServicesWithPagination, editService, createService, deleteService } = useServices(token);
-
-  useEffect(() => {
-    if (userManager) {
-      async function fetchUser() {
-        const user = await userManager!.getUser();
-        setToken(user?.access_token ?? null);
-      }
-      fetchUser();
-    }
-  }, [userManager, isUserAuthorized]);
 
   useEffect(() => {
     if (token) {
@@ -54,8 +41,6 @@ export function ServicesList() {
 
   return (
     <div className="my-auto">
-      <h1 className="text-3xl my-4">Services</h1>
-
       {fetchServicesLoading && <Loading label="Fetching Services: Loading..." />}
       {fetchServicesError && <ErrorBox value={`Fetching Error: ${fetchServicesError}`} />}
 
@@ -67,12 +52,6 @@ export function ServicesList() {
 
       {createServiceLoading && <Loading label="Creating Services: Creating..." />}
       {createServiceError && <ErrorBox value={`Creating Error: ${createServiceError}`} />}
-      
-      <div className="flex justify-end mb-4">
-        <Button onClick={() => setIsCreating(true)}>
-          Create New Service
-        </Button>
-      </div>
 
       {isCreating && (
         <ServiceForm
