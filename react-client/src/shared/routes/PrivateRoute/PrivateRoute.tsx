@@ -22,9 +22,9 @@ const PrivateRoute = ({ requiredRole, children }: PrivateRouteProps) => {
         } else {
           setIsAuthorized(true)
           if (!user.profile.role.includes(requiredRole)) {
-            setIsForbidden(true)
-          } else {
             setIsForbidden(false)
+          } else {
+            setIsForbidden(true)
           }
         }
       });
