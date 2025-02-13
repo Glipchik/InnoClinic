@@ -87,7 +87,7 @@ const CreateAppointmentForm = ({ token } : CreateAppointmentFormProps) => {
   }
 
   return (
-    <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4 p-4 bg-gray-200 shadow-md rounded-lg w-[50%]">
+    <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4 p-4 m-4 bg-gray-200 shadow-md rounded-lg w-[30%]">
 
       {/* Specialization Select */}
       <div className="flex flex-col">

@@ -27,17 +27,20 @@ function AppointmentsPage() {
 
   return (
     <>
-      <h1>
-        Hello from Appointments page
+      <h1 className="text-4xl font-semibold m-4">
+        Appointments
       </h1> 
 
-      <div className="flex justify-end mb-4">
+      <div className="flex justify-end m-4">
         <Button onClick={() => setIsCreating(true)}>
           Create New Service
         </Button>
       </div>
 
-      {token && isCreating && <CreateAppointmentForm token={token} />}
+      <div className="flex flex-col items-center">
+        {token && isCreating && <CreateAppointmentForm token={token} /> }
+      </div>
+
     </>
 
   )
