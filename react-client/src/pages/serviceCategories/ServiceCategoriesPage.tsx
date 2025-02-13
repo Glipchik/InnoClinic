@@ -45,9 +45,9 @@ function ServiceCategoriesPage() {
       
       <div className="flex flex-col items-center m-4">
         {token && isCreating && <ServiceCategoryForm onCancel={() => setIsCreating(false)} onSubmit={(servicecategory : ServiceCategory) => {
-          createServiceCategory(servicecategory as CreateServiceCategoryModel);
-          fetchServiceCategoriesWithPagination(1, 2);
-          setIsCreating(false);
+          createServiceCategory(servicecategory as CreateServiceCategoryModel).then(() => {;
+            setIsCreating(false);
+          });
         }} serviceCategory={{ id: "", categoryName: "", isActive: true, timeSlotSize: "00:15:00" } as ServiceCategory} /> }
 
         {createServiceCategoryLoading && <Loading label="Creating ServiceCategory..." />}
