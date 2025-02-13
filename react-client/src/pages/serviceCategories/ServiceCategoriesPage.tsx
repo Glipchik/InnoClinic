@@ -14,7 +14,8 @@ import { ServiceCategoriesList } from "../../features/serviceCategories/ServiceC
 function ServiceCategoriesPage() {
   const [token, setToken] = useState<string | null>(null)
   const [isCreating, setIsCreating] = useState<boolean>(false);
-  const { createServiceCategoryError, createServiceCategoryLoading, createServiceCategory, fetchServiceCategoriesWithPagination } = useServiceCategories(token);
+  const { createServiceCategoryError, createServiceCategoryLoading, createServiceCategory } = useServiceCategories(token);
+  const [listKey, setListKey] = useState(0);
 
   const userManager = useContext(UserManagerContext)
   const { isUserAuthorized } = useSelector(
@@ -45,9 +46,10 @@ function ServiceCategoriesPage() {
       
       <div className="flex flex-col items-center m-4">
         {token && isCreating && <ServiceCategoryForm onCancel={() => setIsCreating(false)} onSubmit={(servicecategory : ServiceCategory) => {
-          createServiceCategory(servicecategory as CreateServiceCategoryModel);
-          fetchServiceCategoriesWithPagination(1, 2);
-          setIsCreating(false);
+          createServiceCategory(servicecategory as CreateServiceCategoryModel).then(() => {;
+            setIsCreating(false);
+            setListKey(prevKey => prevKey + 1);
+          });
         }} serviceCategory={{ id: "", categoryName: "", isActive: true, timeSlotSize: "00:15:00" } as ServiceCategory} /> }
 
         {createServiceCategoryLoading && <Loading label="Creating ServiceCategory..." />}
@@ -55,7 +57,7 @@ function ServiceCategoriesPage() {
       </div>
 
       <div className="min-h-dvh">
-        {token && <ServiceCategoriesList token={token} />}
+        {token && <ServiceCategoriesList key={listKey} token={token} />}
       </div>
     </>
   )

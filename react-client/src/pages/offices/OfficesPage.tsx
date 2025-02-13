@@ -15,6 +15,7 @@ function OfficesPage() {
   const [token, setToken] = useState<string | null>(null)
   const [isCreating, setIsCreating] = useState<boolean>(false);
   const { createOfficeLoading, createOfficeError, createOffice } = useOffices(token);
+  const [listKey, setListKey] = useState(0);
 
   const userManager = useContext(UserManagerContext)
   const { isUserAuthorized } = useSelector(
@@ -47,6 +48,7 @@ function OfficesPage() {
         {token && isCreating && <OfficeForm onCancel={() => setIsCreating(false)} onSubmit={(office : Office) => {
           createOffice(office as CreateOfficeModel).then(() => {
             setIsCreating(false);
+            setListKey(prevKey => prevKey + 1);
           });
         }} office={{ id: "", address: "", registryPhoneNumber: "", isActive: true } as Office} /> }
 
@@ -55,7 +57,7 @@ function OfficesPage() {
       </div>
   
       <div className="min-h-dvh m-4">
-        {token && <OfficesList token={token} />}
+        {token && <OfficesList key={listKey} token={token} />}
       </div>
     </>
   )
