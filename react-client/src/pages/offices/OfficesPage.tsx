@@ -37,22 +37,24 @@ function OfficesPage() {
         Offices
       </h1> 
 
-      <div className="flex justify-end mb-4">
+      <div className="flex justify-end m-4">
         <Button onClick={() => setIsCreating(true)}>
           Create New Office
         </Button>
       </div>
 
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center m-4">
         {token && isCreating && <OfficeForm onCancel={() => setIsCreating(false)} onSubmit={(office : Office) => {
-          createOffice(office as CreateOfficeModel);
+          createOffice(office as CreateOfficeModel).then(() => {
+            setIsCreating(false);
+          });
         }} office={{ id: "", address: "", registryPhoneNumber: "", isActive: true } as Office} /> }
 
         {createOfficeLoading && <Loading label="Creating Office..." />}
         {createOfficeError && <ErrorBox value={createOfficeError} />}
       </div>
   
-      <div className="min-h-dvh">
+      <div className="min-h-dvh m-4">
         {token && <OfficesList token={token} />}
       </div>
     </>
