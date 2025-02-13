@@ -15,6 +15,7 @@ function SpecializationsPage() {
   const [token, setToken] = useState<string | null>(null)
   const [isCreating, setIsCreating] = useState<boolean>(false);
   const { createSpecializationLoading, createSpecializationError, createSpecialization } = useSpecializations(token);
+  const [listKey, setListKey] = useState(0);
 
   const userManager = useContext(UserManagerContext)
   const { isUserAuthorized } = useSelector(
@@ -45,7 +46,10 @@ function SpecializationsPage() {
 
       <div className="flex flex-col items-center m-4">
         {token && isCreating && <SpecializationForm onCancel={() => setIsCreating(false)} onSubmit={(specialization : Specialization) => {
-          createSpecialization(specialization as CreateSpecializationModel);
+          createSpecialization(specialization as CreateSpecializationModel).then(() => {
+            setIsCreating(false)
+            setListKey(prevKey => prevKey + 1)
+          });
         }} specialization={{ id: "", specializationName: "", isActive: true } as Specialization} /> }
 
         {createSpecializationLoading && <Loading label="Creating Specialization..." />}
@@ -53,7 +57,7 @@ function SpecializationsPage() {
       </div>
       
       <div className="min-h-dvh m-4">
-        {token && <SpecializationsList token={token} />}
+        {token && <SpecializationsList key={listKey} token={token} />}
       </div>
     </>
   )
