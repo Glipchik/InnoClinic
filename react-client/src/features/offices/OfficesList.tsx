@@ -6,7 +6,7 @@ import ErrorBox from "../../shared/ui/containers/ErrorBox";
 import { OfficeForm } from "./OfficeForm";
 import Office from "../../entities/office";
 import { Pagination } from "../../shared/ui/controls/Pagination";
-import CreateOfficeModel from "./models/CreateOfficeModel";
+import CreateOfficeModel from "../../models/offices/CreateOfficeModel";
 
 interface OfficesListProps {
   token: string
