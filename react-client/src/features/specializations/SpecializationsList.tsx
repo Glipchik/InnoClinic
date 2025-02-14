@@ -6,7 +6,7 @@ import ErrorBox from "../../shared/ui/containers/ErrorBox";
 import { SpecializationForm } from "./SpecializationForm";
 import Specialization from "../../entities/specialization";
 import { Pagination } from "../../shared/ui/controls/Pagination";
-import CreateSpecializationModel from "./models/createSpecializationModel";
+import CreateSpecializationModel from "../../models/specializations/createSpecializationModel";
 import PaginatedList from "../../models/paginatedList";
 
 interface SpecializationsListProps {
