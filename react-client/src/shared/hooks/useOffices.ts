@@ -4,7 +4,7 @@ import { fetchOfficesFailure, fetchOfficesSuccess, fetchOfficesRequest } from ".
 import { createOfficeFailure, createOfficeSuccess, createOfficeRequest } from "../../store/slices/offices/createOfficeSlice"
 import { RootState } from "../../store/store";
 import Office from "../../entities/office";
-import CreateOfficeModel from "../../features/offices/models/CreateOfficeModel";
+import CreateOfficeModel from "../../models/offices/CreateOfficeModel";
 import { editOfficeFailure, editOfficeRequest, editOfficeSuccess } from "../../store/slices/offices/editOfficeSlice";
 import { deleteOfficeFailure, deleteOfficeRequest, deleteOfficeSuccess } from "../../store/slices/offices/deleteOfficeSlice";
 

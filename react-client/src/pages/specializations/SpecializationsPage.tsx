@@ -7,7 +7,7 @@ import Button from "../../shared/ui/controls/Button";
 import { useSpecializations } from "../../shared/hooks/useSpecializations";
 import { SpecializationForm } from "../../features/specializations/SpecializationForm";
 import Specialization from "../../entities/specialization";
-import CreateSpecializationModel from "../../features/specializations/models/createSpecializationModel";
+import CreateSpecializationModel from "../../models/specializations/createSpecializationModel";
 import Loading from "../../shared/ui/controls/Loading";
 import ErrorBox from "../../shared/ui/containers/ErrorBox";
 

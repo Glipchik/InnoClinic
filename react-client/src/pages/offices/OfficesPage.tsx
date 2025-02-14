@@ -9,7 +9,7 @@ import Office from "../../entities/office";
 import { useOffices } from "../../shared/hooks/useOffices";
 import ErrorBox from "../../shared/ui/containers/ErrorBox";
 import Loading from "../../shared/ui/controls/Loading";
-import CreateOfficeModel from "../../features/offices/models/CreateOfficeModel";
+import CreateOfficeModel from "../../models/offices/CreateOfficeModel";
 
 function OfficesPage() {
   const [token, setToken] = useState<string | null>(null)

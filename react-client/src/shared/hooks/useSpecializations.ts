@@ -28,7 +28,7 @@ import {
 
 import { RootState } from "../../store/store";
 import Specialization from "../../entities/specialization";
-import CreateSpecializationModel from "../../features/specializations/models/createSpecializationModel";
+import CreateSpecializationModel from "../../models/specializations/createSpecializationModel";
 
 export const useSpecializations = (token: string | null) => {
   const dispatch = useDispatch()
