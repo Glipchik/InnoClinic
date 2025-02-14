@@ -5,7 +5,7 @@ import { RootState } from "../../store/store";
 import { useServiceCategories } from "../../shared/hooks/useServiceCategories";
 import Button from "../../shared/ui/controls/Button";
 import { ServiceCategoryForm } from "../../features/serviceCategories/ServiceCategoryForm";
-import CreateServiceCategoryModel from "../../features/serviceCategories/models/createServiceCategoryModel";
+import CreateServiceCategoryModel from "../../models/serviceCategories/createServiceCategoryModel";
 import ServiceCategory from "../../entities/serviceCategory";
 import Loading from "../../shared/ui/controls/Loading";
 import ErrorBox from "../../shared/ui/containers/ErrorBox";
