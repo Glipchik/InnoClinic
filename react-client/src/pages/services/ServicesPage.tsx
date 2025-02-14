@@ -6,10 +6,10 @@ import { RootState } from "../../store/store";
 import { useServices } from "../../shared/hooks/useServices";
 import Button from "../../shared/ui/controls/Button";
 import { ServiceForm } from "../../features/services/ServiceForm";
-import CreateServiceModel from "../../features/services/models/CreateServiceModel";
+import CreateServiceModel from "../../models/services/CreateServiceModel";
 import Loading from "../../shared/ui/controls/Loading";
 import ErrorBox from "../../shared/ui/containers/ErrorBox";
-import ServiceModel from "../../features/services/models/ServiceModel";
+import ServiceModel from "../../models/services/ServiceModel";
 
 function ServicesPage() {
   const [token, setToken] = useState<string | null>(null)

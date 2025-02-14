@@ -25,9 +25,9 @@ import {
 } from "../../store/slices/services/deleteServiceSlice"
 
 import { RootState } from "../../store/store";
-import CreateServiceModel from "../../features/services/models/CreateServiceModel";
+import CreateServiceModel from "../../models/services/CreateServiceModel";
 import Service from "../../entities/service";
-import ServiceModel from "../../features/services/models/ServiceModel"
+import ServiceModel from "../../models/services/ServiceModel"
 
 export const useServices = (token: string | null) => {
   const dispatch = useDispatch()

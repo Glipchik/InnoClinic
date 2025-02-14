@@ -2,8 +2,8 @@ import axios from 'axios';
 import { AxiosResponse } from 'axios';
 import Service from '../../entities/service';
 import PaginatedList from '../../models/paginatedList';
-import CreateServiceModel from '../../features/services/models/CreateServiceModel';
-import ServiceModel from '../../features/services/models/ServiceModel';
+import CreateServiceModel from '../../models/services/CreateServiceModel';
+import ServiceModel from '../../models/services/ServiceModel';
 
 async function GET(id: string | null, specializationId: string | null, token: string): Promise<AxiosResponse<Service | Service[]>> {
   if (id === null) {

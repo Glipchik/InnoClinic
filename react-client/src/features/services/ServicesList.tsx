@@ -6,9 +6,9 @@ import ErrorBox from "../../shared/ui/containers/ErrorBox";
 import { ServiceForm } from "./ServiceForm";
 import Service from "../../entities/service";
 import { Pagination } from "../../shared/ui/controls/Pagination";
-import CreateServiceModel from "./models/CreateServiceModel";
+import CreateServiceModel from "../../models/services/CreateServiceModel";
 import PaginatedList from "../../models/paginatedList";
-import ServiceModel from "./models/ServiceModel";
+import ServiceModel from "../../models/services/ServiceModel";
 
 interface ServicesListProps {
   token: string

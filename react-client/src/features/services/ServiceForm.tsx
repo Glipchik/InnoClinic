@@ -2,7 +2,7 @@ import { useFormik } from "formik";
 import { validationSchema } from "./validationSchema";
 import Input from "../../shared/ui/forms/Input";
 import Button from "../../shared/ui/controls/Button";
-import ServiceModel from "./models/ServiceModel";
+import ServiceModel from "../../models/services/ServiceModel";
 import ServiceCategory from "../../entities/serviceCategory";
 import { useSpecializations } from "../../shared/hooks/useSpecializations";
 import { useContext, useEffect, useState } from "react";
