@@ -8,5 +8,5 @@ export default interface Appointment {
   officeId: string,
   careerStartYear: Date,
   dateOfBirth: Date,
-  Status: DoctorStatus
+  isApproved: boolean
 }

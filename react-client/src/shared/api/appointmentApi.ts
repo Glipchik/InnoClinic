@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios';
-import CreateAppointmentModel from '../../features/appointments/CreateAppointmentForm/models/CreateAppointmentModel';
+import CreateAppointmentModel from '../../models/appointments/CreateAppointmentModel';
 import axios from 'axios';
 import Appointment from '../../entities/appointment';
 

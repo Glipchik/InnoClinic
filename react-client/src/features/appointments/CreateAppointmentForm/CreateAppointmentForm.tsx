@@ -15,7 +15,7 @@ import type Doctor from "../../../entities/doctor"
 import type TimeSlot from "../../../entities/timeSlot"
 import ErrorBox from "../../../shared/ui/containers/ErrorBox"
 import Loading from "../../../shared/ui/controls/Loading"
-import CreateAppointmentModel from "./models/CreateAppointmentModel"
+import CreateAppointmentModel from "../../../models/appointments/CreateAppointmentModel"
 import { useFormik } from 'formik'
 import { useAppointments } from "../../../shared/hooks/useAppointments"
 

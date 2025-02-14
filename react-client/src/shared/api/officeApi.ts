@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios';
-import CreateOfficeModel from '../../features/offices/models/CreateOfficeModel';
+import CreateOfficeModel from '../../models/offices/CreateOfficeModel';
 import axios from 'axios';
 import Office from '../../entities/office';
 import PaginatedList from '../../models/paginatedList';
