@@ -9,6 +9,7 @@ using Profiles.Application.Models;
 using Profiles.Application.Services.Abstractions;
 using System.Security.Claims;
 using Profiles.API.Validators;
+using Profiles.Domain.Models;
 
 namespace Profiles.API.Controllers
 {
@@ -67,6 +68,29 @@ namespace Profiles.API.Controllers
 
             var patientDtos = _mapper.Map<IEnumerable<PatientDto>>(patients);
             return patientDtos;
+        }
+
+        /// <summary>
+        /// Gets the list of all patients with pagination.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     GET /api/Patients/with-pagination
+        ///
+        /// </remarks>
+        /// <returns>Returns a list of patients objects.</returns>
+        /// <response code="200">Returns the list of patients</response>
+        /// <response code="500">If there was an internal server error</response>
+        [HttpGet("with-pagination")]
+        [Authorize(Roles = "Receptionist")]
+        public async Task<PaginatedList<PatientDto>> Get(CancellationToken cancellationToken, [FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 10)
+        {
+            var patients = await _patientService.GetAll(cancellationToken, pageIndex, pageSize);
+            _logger.LogInformation("Requested patients list");
+
+            var patientDtos = _mapper.Map<IEnumerable<PatientDto>>(patients.Items);
+            return new PaginatedList<PatientDto>([.. patientDtos], patients.PageIndex, patients.TotalPages);
         }
 
         /// <summary>
@@ -177,7 +201,7 @@ namespace Profiles.API.Controllers
                 throw new NotFoundException($"Patient with id: {updatePatientDto.Id} is not found. Can't update.");
             }
 
-            if (userId == null || (Guid.Parse(userId) != existingPatientModel.AccountId && !User.IsInRole("Receptionist")))
+            if (userId == null || (Guid.Parse(userId) != existingPatientModel.Account.Id && !User.IsInRole("Receptionist")))
             {
                 _logger.LogWarning("Unauthorized access to patient with id {id}", updatePatientDto.Id);
                 throw new ForbiddenException("You are not allowed to access this resource");

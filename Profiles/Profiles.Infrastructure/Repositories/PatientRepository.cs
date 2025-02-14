@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Profiles.Domain.Entities;
+using Profiles.Domain.Models;
 using Profiles.Domain.Repositories.Abstractions;
 using Profiles.Infrastructure.Contexts;
 
@@ -67,6 +68,26 @@ namespace Profiles.Infrastructure.Repositories
         {
             return await _context.Set<Patient>().AsNoTracking()
                 .FirstOrDefaultAsync(p => p.AccountId == accountId, cancellationToken: cancellationToken);
+        }
+
+        public async Task<PaginatedList<Patient>> GetAllAsync(CancellationToken cancellationToken, int pageIndex = 1, int pageSize = 10)
+        {
+            var query = _context.Set<Patient>().AsNoTracking()
+                .Include(d => d.Account)
+                .AsQueryable();
+
+            var count = await query.CountAsync(cancellationToken);
+
+            var paginatedEntities = await query
+                .AsNoTracking()
+                .OrderBy(b => b.Id)
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(cancellationToken);
+
+            var totalPages = (int)Math.Ceiling(count / (double)pageSize);
+
+            return new PaginatedList<Patient>(paginatedEntities, pageIndex, totalPages);
         }
     }
 }

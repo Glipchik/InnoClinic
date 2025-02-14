@@ -1,4 +1,5 @@
 ﻿using Profiles.Application.Models.Enums;
+using Profiles.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,10 +26,10 @@ namespace Profiles.Application.Models
         public required string FirstName { get; set; }
         public required string LastName { get; set; }
         public required string MiddleName { get; set; }
-        public Guid SpecializationId { get; set; }
-        public Guid AccountId { get; set; }
+        public required SpecializationModel Specialization { get; set; }
+        public required AccountModel Account { get; set; }
+        public required OfficeModel OfficeId { get; set; }
         public DateTime CareerStartYear { get; set; }
-        public Guid OfficeId { get; set; }
         public DateTime DateOfBirth { get; set; }
         public DoctorStatusModel Status { get; set; }
     }
@@ -48,6 +49,7 @@ namespace Profiles.Application.Models
     }
 
     public record DoctorQueryParametresModel(
+        Guid? OfficeId,
         Guid? SpecializationId,
         DoctorStatusModel? Status);
 }

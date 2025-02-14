@@ -20,8 +20,8 @@ namespace Profiles.Application.Models
         public required string FirstName { get; set; }
         public required string LastName { get; set; }
         public required string MiddleName { get; set; }
-        public Guid AccountId { get; set; }
-        public Guid OfficeId { get; set; }
+        public required AccountModel Account { get; set; }
+        public required OfficeModel Office { get; set; }
     }
 
     public class UpdateReceptionistModel
@@ -33,4 +33,7 @@ namespace Profiles.Application.Models
         public Guid OfficeId { get; set; }
         public Guid AuthorId { get; set; }
     }
+
+    public record ReceptionistQueryParametresModel(
+        Guid? OfficeId);
 }

@@ -9,6 +9,8 @@ public partial class ApiMapping : Profile
     partial void AddPatientMapping();
     partial void AddReceptionistMapping();
     partial void AddAccountMapping();
+    partial void AddOfficeMapping();
+    partial void AddSpecializationMapping();
 
     public ApiMapping()
     {
@@ -16,5 +18,7 @@ public partial class ApiMapping : Profile
         AddPatientMapping();
         AddReceptionistMapping();
         AddAccountMapping();
+        AddOfficeMapping();
+        AddSpecializationMapping();
     }
 }

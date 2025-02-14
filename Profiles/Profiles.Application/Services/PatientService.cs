@@ -3,6 +3,7 @@ using Profiles.Application.Exceptions;
 using Profiles.Application.Models;
 using Profiles.Application.Services.Abstractions;
 using Profiles.Domain.Entities;
+using Profiles.Domain.Models;
 using Profiles.Domain.Repositories.Abstractions;
 using Profiles.MessageBroking.Producers.Abstractions;
 using System;
@@ -197,6 +198,16 @@ namespace Profiles.Application.Services
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             await _patientProducer.PublishPatientUpdated(patientToUpdate, cancellationToken);
+        }
+
+        public async Task<PaginatedList<PatientModel>> GetAll(CancellationToken cancellationToken, int pageIndex = 1, int pageSize = 10)
+        {
+            var patientsPaginatedList = await _unitOfWork.PatientRepository.GetAllAsync(
+                cancellationToken: cancellationToken, pageIndex, pageSize);
+
+            var patientModelItems = _mapper.Map<IEnumerable<PatientModel>>(patientsPaginatedList.Items);
+
+            return new PaginatedList<PatientModel>([.. patientModelItems],  patientsPaginatedList.PageIndex, patientsPaginatedList.TotalPages);
         }
     }
 }

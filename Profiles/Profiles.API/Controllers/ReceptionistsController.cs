@@ -8,6 +8,7 @@ using Profiles.Application.Models.Enums;
 using Profiles.Application.Models;
 using Profiles.Application.Services.Abstractions;
 using System.Security.Claims;
+using Profiles.Domain.Models;
 
 namespace Profiles.API.Controllers
 {
@@ -56,13 +57,36 @@ namespace Profiles.API.Controllers
         /// <response code="500">If there was an internal server error</response>
         [HttpGet]
         [Authorize(Roles = "Receptionist")]
-        public async Task<IEnumerable<ReceptionistDto>> Get(CancellationToken cancellationToken)
+        public async Task<IEnumerable<ReceptionistDto>> Get(ReceptionistQueryParametresModel receptionistQueryParametresModel, CancellationToken cancellationToken)
         {
-            var receptionists = await _receptionistService.GetAll(cancellationToken);
+            var receptionists = await _receptionistService.GetAll(cancellationToken, receptionistQueryParametresModel);
             _logger.LogInformation("Requested receptionists list");
 
             var receptionistDtos = _mapper.Map<IEnumerable<ReceptionistDto>>(receptionists);
             return receptionistDtos;
+        }
+
+        /// <summary>
+        /// Gets the list of all receptionists with-pagination.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     GET /api/Receptionists/with-pagination
+        ///
+        /// </remarks>
+        /// <returns>Returns a list of receptionists objects.</returns>
+        /// <response code="200">Returns the list of receptionists</response>
+        /// <response code="500">If there was an internal server error</response>
+        [HttpGet]
+        [Authorize(Roles = "Receptionist")]
+        public async Task<PaginatedList<ReceptionistDto>> Get(ReceptionistQueryParametresModel receptionistQueryParametresModel, CancellationToken cancellationToken,  [FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 10)
+        {
+            var receptionists = await _receptionistService.GetAll(cancellationToken, receptionistQueryParametresModel, pageIndex, pageSize);
+            _logger.LogInformation("Requested receptionists list");
+
+            var receptionistDtos = _mapper.Map<IEnumerable<ReceptionistDto>>(receptionists);
+            return new PaginatedList<ReceptionistDto>([.. receptionistDtos], receptionists.PageIndex, receptionists.TotalPages);
         }
 
         /// <summary>

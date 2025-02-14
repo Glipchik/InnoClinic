@@ -3,6 +3,7 @@ using Profiles.Application.Exceptions;
 using Profiles.Application.Models;
 using Profiles.Application.Services.Abstractions;
 using Profiles.Domain.Entities;
+using Profiles.Domain.Models;
 using Profiles.Domain.Repositories.Abstractions;
 using Profiles.MessageBroking.Producers.Abstractions;
 using System;
@@ -125,6 +126,22 @@ namespace Profiles.Application.Services
         public async Task<IEnumerable<ReceptionistModel>> GetAll(CancellationToken cancellationToken)
         {
             return _mapper.Map<IEnumerable<ReceptionistModel>>(await _unitOfWork.ReceptionistRepository.GetAllAsync(cancellationToken));
+        }
+
+        public async Task<IEnumerable<ReceptionistModel>> GetAll(CancellationToken cancellationToken, ReceptionistQueryParametresModel receptionistQueryParametresModel)
+        {
+            return _mapper.Map<IEnumerable<ReceptionistModel>>(await _unitOfWork.ReceptionistRepository.GetAllAsync(receptionistQueryParametresModel.OfficeId, cancellationToken));
+        }
+
+        public async Task<PaginatedList<ReceptionistModel>> GetAll(CancellationToken cancellationToken, ReceptionistQueryParametresModel receptionistQueryParametresModel, int pageIndex = 1, int pageSize = 10)
+        {
+            var receptionistsPaginatedList = await _unitOfWork.ReceptionistRepository.GetAllAsync(
+                receptionistQueryParametresModel.OfficeId,
+                cancellationToken: cancellationToken, pageIndex, pageSize);
+
+            var receptionistModelItems = _mapper.Map<IEnumerable<ReceptionistModel>>(receptionistsPaginatedList.Items);
+
+            return new PaginatedList<ReceptionistModel>([.. receptionistModelItems],  receptionistsPaginatedList.PageIndex, receptionistsPaginatedList.TotalPages);
         }
 
         public async Task<ReceptionistModel> GetByAccountId(Guid id, CancellationToken cancellationToken)

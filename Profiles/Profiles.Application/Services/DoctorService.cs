@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Profiles.MessageBroking.Producers.Abstractions;
 using Profiles.Domain.Enums;
+using Profiles.Domain.Models;
 
 namespace Profiles.Application.Services
 {
@@ -122,7 +123,21 @@ namespace Profiles.Application.Services
             return _mapper.Map<IEnumerable<DoctorModel>>(await _unitOfWork.DoctorRepository.GetAllAsync(
                 doctorQueryParametresModel.SpecializationId,
                 _mapper.Map<DoctorStatus>(doctorQueryParametresModel.Status),
+                doctorQueryParametresModel.SpecializationId,
                 cancellationToken: cancellationToken));
+        }
+
+        public async Task<PaginatedList<DoctorModel>> GetAll(DoctorQueryParametresModel doctorQueryParametresModel, CancellationToken cancellationToken, int pageIndex = 1, int pageSize = 10)
+        {
+            var doctorsPaginatedList = await _unitOfWork.DoctorRepository.GetAllAsync(
+                doctorQueryParametresModel.SpecializationId,
+                _mapper.Map<DoctorStatus>(doctorQueryParametresModel.Status),
+                doctorQueryParametresModel.SpecializationId,
+                cancellationToken: cancellationToken, pageIndex, pageSize);
+
+            var doctorModelItems = _mapper.Map<IEnumerable<DoctorModel>>(doctorsPaginatedList.Items);
+
+            return new PaginatedList<DoctorModel>([.. doctorModelItems],  doctorsPaginatedList.PageIndex, doctorsPaginatedList.TotalPages);
         }
 
         public async Task<DoctorModel> GetByAccountId(Guid id, CancellationToken cancellationToken)

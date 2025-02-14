@@ -5,6 +5,7 @@ using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Minio.DataModel.Notification;
 using Profiles.Domain.Entities;
+using Profiles.Domain.Models;
 using Profiles.Domain.Repositories.Abstractions;
 using Profiles.Infrastructure.Contexts;
 using System;
@@ -81,7 +82,9 @@ namespace Profiles.Infrastructure.Repositories
                 .FirstOrDefaultAsync(d => d.AccountId == accountId, cancellationToken: cancellationToken);
         }
 
-        public async Task<IEnumerable<Doctor>> GetAllAsync(Guid? specializationId, Domain.Enums.DoctorStatus? status, CancellationToken cancellationToken)
+        public async Task<PaginatedList<Doctor>> GetAllAsync(Guid? specializationId, Domain.Enums.DoctorStatus? status, Guid? OfficeId,
+            CancellationToken cancellationToken,
+            int pageIndex = 1, int pageSize = 10)
         {
             var query = _context.Set<Doctor>().AsNoTracking()
                 .Include(d => d.Specialization)
@@ -99,7 +102,49 @@ namespace Profiles.Infrastructure.Repositories
                 query = query.Where(d => d.Status.Equals(status.Value));
             }
 
-            return await query.ToListAsync(cancellationToken);
+            if (OfficeId.HasValue) 
+            {
+                query = query.Where(d => d.OfficeId == OfficeId.Value);
+            }
+
+            var count = await query.CountAsync(cancellationToken);
+
+            var paginatedEntities = await query
+                .AsNoTracking()
+                .OrderBy(b => b.Id)
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(cancellationToken);
+
+            var totalPages = (int)Math.Ceiling(count / (double)pageSize);
+
+            return new PaginatedList<Doctor>(paginatedEntities, pageIndex, totalPages);
+        }
+
+        public async Task<IEnumerable<Doctor>> GetAllAsync(Guid? specializationId, Domain.Enums.DoctorStatus? status, Guid? OfficeId, CancellationToken cancellationToken)
+        {
+            var query = _context.Set<Doctor>().AsNoTracking()
+                .Include(d => d.Specialization)
+                .Include(d => d.Account)
+                .Include(d => d.Office)
+                .AsQueryable();
+
+            if (specializationId.HasValue)
+            {
+                query = query.Where(d => d.SpecializationId == specializationId.Value);
+            }
+
+            if (status.HasValue && status != Domain.Enums.DoctorStatus.None)
+            {
+                query = query.Where(d => d.Status.Equals(status.Value));
+            }
+
+            if (OfficeId.HasValue) 
+            {
+                query = query.Where(d => d.OfficeId == OfficeId.Value);
+            }
+
+            return await query.ToListAsync();
         }
     }
 }

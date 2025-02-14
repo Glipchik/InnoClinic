@@ -15,6 +15,8 @@ namespace Profiles.Application.Mapper
         partial void AddPatientMapping();
         partial void AddReceptionistMapping();
         partial void AddAccountMapping();
+        partial void AddSpecializationMapping();
+        partial void AddOfficeMapping();
 
         public ApplicationMapping()
         {
@@ -22,6 +24,8 @@ namespace Profiles.Application.Mapper
             AddPatientMapping();
             AddReceptionistMapping();
             AddAccountMapping();
+            AddSpecializationMapping();
+            AddOfficeMapping();
         }
     }
 }

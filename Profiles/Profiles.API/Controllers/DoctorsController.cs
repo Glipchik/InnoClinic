@@ -9,6 +9,7 @@ using Profiles.Application.Exceptions;
 using Profiles.Application.Models;
 using Profiles.Application.Models.Enums;
 using Profiles.Application.Services.Abstractions;
+using Profiles.Domain.Models;
 using System;
 using System.IO;
 using System.Security.Claims;
@@ -71,6 +72,29 @@ public class DoctorsController : ControllerBase
 
         var doctorDtos = _mapper.Map<IEnumerable<DoctorDto>>(doctors);
         return doctorDtos;
+    }
+
+    /// <summary>
+    /// Gets the list of all doctors with pagination.
+    /// </summary>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     GET /api/Doctors/with-pagination
+    ///
+    /// </remarks>
+    /// <returns>Returns a list of doctors objects.</returns>
+    /// <response code="200">Returns the list of doctors</response>
+    /// <response code="500">If there was an internal server error</response>
+    [HttpGet("with-pagination")]
+    [Authorize]
+    public async Task<PaginatedList<DoctorDto>> Get([FromQuery] DoctorQueryParametresDto doctorQueryParametresDto, CancellationToken cancellationToken, [FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 10)
+    {
+        var doctors = await _doctorService.GetAll(_mapper.Map<DoctorQueryParametresModel>(doctorQueryParametresDto), cancellationToken, pageIndex, pageSize);
+        _logger.LogInformation("Requested doctors list");
+
+        var doctorDtos = _mapper.Map<IEnumerable<DoctorDto>>(doctors);
+        return new PaginatedList<DoctorDto>([.. doctorDtos], doctors.PageIndex, doctors.TotalPages);
     }
 
     /// <summary>
@@ -182,7 +206,7 @@ public class DoctorsController : ControllerBase
             throw new NotFoundException($"Doctor with id: {updateDoctorDto.Id} is not found. Can't update.");
         }
 
-        if (userId == null || (Guid.Parse(userId) != existingDoctorModel.AccountId && !User.IsInRole("Receptionist")))
+        if (userId == null || (Guid.Parse(userId) != existingDoctorModel.Account.Id && !User.IsInRole("Receptionist")))
         {
             _logger.LogWarning("Unauthorized access to doctor with id {id}", updateDoctorDto.Id);
             throw new ForbiddenException("You are not allowed to access this resource");

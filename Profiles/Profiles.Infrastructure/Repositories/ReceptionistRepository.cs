@@ -3,6 +3,7 @@ using Events.Receptionist;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Profiles.Domain.Entities;
+using Profiles.Domain.Models;
 using Profiles.Domain.Repositories.Abstractions;
 using Profiles.Infrastructure.Contexts;
 
@@ -72,6 +73,47 @@ namespace Profiles.Infrastructure.Repositories
         {
             return await _context.Set<Receptionist>().AsNoTracking()
                 .FirstOrDefaultAsync(r => r.AccountId == accountId, cancellationToken: cancellationToken);
+        }
+
+        public async Task<PaginatedList<Receptionist>> GetAllAsync(Guid? OfficeId, CancellationToken cancellationToken, int pageIndex = 1, int pageSize = 10)
+        {
+            var query = _context.Set<Receptionist>().AsNoTracking()
+                .Include(d => d.Account)
+                .Include(d => d.Office)
+                .AsQueryable();
+
+            if (OfficeId.HasValue) 
+            {
+                query = query.Where(r => r.OfficeId == OfficeId.Value);
+            }
+
+            var count = await query.CountAsync(cancellationToken);
+
+            var paginatedEntities = await query
+                .AsNoTracking()
+                .OrderBy(b => b.Id)
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(cancellationToken);
+
+            var totalPages = (int)Math.Ceiling(count / (double)pageSize);
+
+            return new PaginatedList<Receptionist>(paginatedEntities, pageIndex, totalPages);
+        }
+
+        public async Task<IEnumerable<Receptionist>> GetAllAsync(Guid? OfficeId, CancellationToken cancellationToken)
+        {
+            var query = _context.Set<Receptionist>().AsNoTracking()
+                .Include(d => d.Account)
+                .Include(d => d.Office)
+                .AsQueryable();
+
+            if (OfficeId.HasValue) 
+            {
+                query = query.Where(r => r.OfficeId == OfficeId.Value);
+            }
+
+            return await query.ToListAsync(cancellationToken);
         }
     }
 }
