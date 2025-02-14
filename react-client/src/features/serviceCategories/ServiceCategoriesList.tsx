@@ -6,7 +6,7 @@ import ErrorBox from "../../shared/ui/containers/ErrorBox";
 import { ServiceCategoryForm } from "./ServiceCategoryForm";
 import ServiceCategory from "../../entities/serviceCategory";
 import { Pagination } from "../../shared/ui/controls/Pagination";
-import CreateServiceCategoryModel from "./models/createServiceCategoryModel";
+import CreateServiceCategoryModel from "../../models/serviceCategories/createServiceCategoryModel";
 import PaginatedList from "../../models/paginatedList";
 
 interface ServiceCategoriesListProps {

@@ -27,7 +27,7 @@ import {
 
 import { RootState } from "../../store/store";
 import ServiceCategory from "../../entities/serviceCategory";
-import CreateServiceCategoryModel from "../../features/serviceCategories/models/createServiceCategoryModel";
+import CreateServiceCategoryModel from "../../models/serviceCategories/createServiceCategoryModel";
 
 export const useServiceCategories = (token: string | null) => {
   const dispatch = useDispatch()
