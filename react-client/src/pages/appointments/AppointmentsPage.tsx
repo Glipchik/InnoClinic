@@ -47,7 +47,7 @@ function AppointmentsPage() {
       </div>
 
       <div className="flex flex-col items-center">
-        {token && isCreating && <CreateAppointmentForm onSubmit={createAppointment} token={token} /> }
+        {token && isCreating && <CreateAppointmentForm onCancel={() => setIsCreating(false)} onSubmit={createAppointment} token={token} /> }
       </div>
 
     </>
