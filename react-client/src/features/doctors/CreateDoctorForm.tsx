@@ -11,7 +11,7 @@ import Loading from "../../shared/ui/controls/Loading";
 import Specialization from "../../entities/specialization";
 import CreateDoctorModel from "../../models/doctors/CreateDoctorModel";
 import { useOffices } from "../../shared/hooks/useOffices";
-import { createDoctorValidationSchema } from "./createDoctorvalidationSchema";
+import { createDoctorValidationSchema } from "./createDoctorValidationSchema";
 import Office from "../../entities/office";
 import { DoctorStatus } from "../../entities/enums/doctorStatus";
 import DatePicker from "../../shared/ui/forms/DatePicker";
