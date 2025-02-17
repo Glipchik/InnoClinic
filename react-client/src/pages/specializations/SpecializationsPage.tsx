@@ -6,7 +6,6 @@ import { RootState } from "../../store/store";
 import Button from "../../shared/ui/controls/Button";
 import { useSpecializations } from "../../shared/hooks/useSpecializations";
 import { SpecializationForm } from "../../features/specializations/SpecializationForm";
-import Specialization from "../../entities/specialization";
 import CreateSpecializationModel from "../../models/specializations/createSpecializationModel";
 import Loading from "../../shared/ui/controls/Loading";
 import ErrorBox from "../../shared/ui/containers/ErrorBox";
@@ -14,7 +13,12 @@ import ErrorBox from "../../shared/ui/containers/ErrorBox";
 function SpecializationsPage() {
   const [token, setToken] = useState<string | null>(null)
   const [isCreating, setIsCreating] = useState<boolean>(false);
-  const { createSpecializationLoading, createSpecializationError, createSpecialization } = useSpecializations(token);
+  const {
+    fetchSpecializationsError, fetchSpecializationsLoading,
+    createSpecializationError, createSpecializationLoading,
+    editSpecializationError, editSpecializationLoading,
+    deleteSpecializationLoading, deleteSpecializationError, createSpecialization } = useSpecializations(token);
+
   const [listKey, setListKey] = useState(0);
 
   const userManager = useContext(UserManagerContext)
@@ -36,7 +40,19 @@ function SpecializationsPage() {
     <>
       <h1 className="text-4xl font-semibold m-4">
         Specializations
-      </h1> 
+      </h1>
+      
+      {fetchSpecializationsLoading && <Loading label="Fetching Specializations: Loading..." />}
+      {fetchSpecializationsError && <ErrorBox value={`Fetching Error: ${fetchSpecializationsError}`} />}
+
+      {editSpecializationLoading && <Loading label="Editing Specialization: Editing..." />}
+      {editSpecializationError && <ErrorBox value={`Editing Error: ${editSpecializationError}`} />}
+
+      {deleteSpecializationLoading && <Loading label="Deleting Specializations: Deleting..." />}
+      {deleteSpecializationError && <ErrorBox value={`Deleting Error: ${deleteSpecializationError}`} />}
+
+      {createSpecializationLoading && <Loading label="Creating Specializations: Creating..." />}
+      {createSpecializationError && <ErrorBox value={`Creating Error: ${createSpecializationError}`} />}
 
       <div className="flex justify-end m-4">
         <Button onClick={() => setIsCreating(true)}>
@@ -45,12 +61,12 @@ function SpecializationsPage() {
       </div>
 
       <div className="flex flex-col items-center m-4">
-        {token && isCreating && <SpecializationForm onCancel={() => setIsCreating(false)} onSubmit={(specialization : Specialization) => {
-          createSpecialization(specialization as CreateSpecializationModel).then(() => {
+        {token && isCreating && <SpecializationForm onCancel={() => setIsCreating(false)} onSubmit={(createSpecializationModel : CreateSpecializationModel) => {
+          createSpecialization(createSpecializationModel).then(() => {
             setIsCreating(false)
             setListKey(prevKey => prevKey + 1)
           });
-        }} specialization={{ id: "", specializationName: "", isActive: true } as Specialization} /> }
+        }} createSpecializationModel={{ specializationName: "", isActive: true } as CreateSpecializationModel} /> }
 
         {createSpecializationLoading && <Loading label="Creating Specialization..." />}
         {createSpecializationError && <ErrorBox value={createSpecializationError} />}
