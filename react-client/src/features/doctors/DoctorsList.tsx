@@ -13,6 +13,8 @@ import Specialization from "../../entities/specialization";
 import { useSpecializations } from "../../shared/hooks/useSpecializations";
 import { useOffices } from "../../shared/hooks/useOffices";
 import Office from "../../entities/office";
+import profile_pic from "../../assets/profile_pic.png"
+import { GETProfilePictureUrl } from "../../shared/api/profileApi";
 
 interface DoctorsListProps {
   token: string
@@ -25,6 +27,8 @@ export function DoctorsList({ token }: DoctorsListProps) {
   const { fetchSpecializationsLoading, fetchSpecializationsError, fetchSpecializationsData, fetchSpecializations } = useSpecializations(token)
   const { fetchOfficesLoading, fetchOfficesError, fetchOfficesData, fetchOffices } = useOffices(token)
   const pageSize = 2;
+
+  const [photoUrls, setPhotoUrls] = useState<{ [key: string]: string | null }>({});
 
   const [editingDoctorId, setEditingDoctorId] = useState<string | null>(null);
 
@@ -41,6 +45,24 @@ export function DoctorsList({ token }: DoctorsListProps) {
     }
   }, [token, pageIndex]);
 
+  useEffect(() => {
+    if (fetchDoctorsData) {
+      async function fetchPhotos() {
+        const newPhotoUrls: { [key: string]: string | null } = {};
+
+        for (const doctor of (fetchDoctorsData as PaginatedList<DoctorModel>).items) {
+          newPhotoUrls[doctor.id] = (await GETProfilePictureUrl(doctor.account.id, token)).data;
+        }
+
+        setPhotoUrls(newPhotoUrls);
+      }
+
+      if (fetchDoctorsData) {
+        fetchPhotos();
+      }
+    }
+  }, [fetchDoctorsData]);
+
   const handleEdit = (id: string) => {
     setEditingDoctorId(id);
   };
@@ -49,14 +71,13 @@ export function DoctorsList({ token }: DoctorsListProps) {
     <div className="my-auto">
 
       {/* Specialization Select */}
-      <div className="flex flex-col">
+      <div className="mb-4 flex flex-col">
 
         {fetchSpecializationsLoading && <Loading label="Loading specializations..." />}
 
         {fetchSpecializationsError && <p className="text-red-500">Error: {fetchSpecializationsError}</p>}
 
         <Select
-          disabled={false}
           label="Specialization"
           id="specializationId"
           name="specializationId"
@@ -65,26 +86,23 @@ export function DoctorsList({ token }: DoctorsListProps) {
             fetchDoctorsWithPagination(e.target.value, officeId, pageIndex, pageSize)
           }}
         >
-
           <option value="" label="Select specialization" />
           {fetchSpecializationsData &&
             (fetchSpecializationsData as Specialization[]).map((spec: Specialization) => (
               <option key={spec.id} value={spec.id} label={spec.specializationName} />
             ))}
-
         </Select>
 
       </div>
 
       {/* Office Select */}
-      <div className="flex flex-col">
+      <div className="mb-4 flex flex-col">
 
         {fetchOfficesLoading && <Loading label="Loading offices..." />}
 
         {fetchOfficesError && <p className="text-red-500">Error: {fetchOfficesError}</p>}
 
         <Select
-          disabled={false}
           label="Office"
           id="officeId"
           name="officeId"
@@ -93,20 +111,18 @@ export function DoctorsList({ token }: DoctorsListProps) {
             fetchDoctorsWithPagination(specializationId, e.target.value, pageIndex, pageSize)
           }}
         >
-
           <option value="" label="Select office" />
           {fetchOfficesData &&
-            (fetchOfficesData as Office[]).map((spec: Office) => (
-              <option key={spec.id} value={spec.id} label={spec.address} />
+            (fetchOfficesData as Office[]).map((office: Office) => (
+              <option key={office.id} value={office.id} label={office.address} />
             ))}
-
         </Select>
       </div>
 
       {fetchDoctorsData && (
-        <ul className="w-full flex flex-row justify-center items-center space-x-4">
+        <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {(fetchDoctorsData as PaginatedList<DoctorModel>).items.map((doctorModel) => (
-            <li key={doctorModel.id} className="p-4 w-[40%] flex flex-col rounded-xl space-y-3 bg-gray-200 justify-between items-center">
+            <li key={doctorModel.id} className="flex flex-col p-6 bg-white rounded-lg shadow-lg hover:shadow-2xl transition-shadow">
               {editingDoctorId === doctorModel.id ? (
                 <EditDoctorForm
                   editDoctorModel={{
@@ -129,34 +145,40 @@ export function DoctorsList({ token }: DoctorsListProps) {
                   }}
                 />
               ) : (
-                <>
-                  <h2 className="text-2xl font-bold">Account info</h2>
-                  <p className="place-self-start text-xl font-semibold">Email: {doctorModel.account.email}</p>
-                  <p className="place-self-start text-xl font-semibold">Phone Number: {doctorModel.account.phoneNumber}</p>
-                  <h2 className="text-2xl font-bold">Personal info</h2>
-                  <p className="place-self-start text-xl font-semibold">First Name: {doctorModel.firstName}</p>
-                  <p className="place-self-start text-xl font-semibold">Last Name: {doctorModel.lastName}</p>
-                  {doctorModel.middleName && <p className="place-self-start text-xl font-semibold">Middle Name: {doctorModel.middleName}</p>}
-                  <p className="place-self-start text-xl font-semibold">Date Of Birth: {doctorModel.dateOfBirth.toString()}</p>
-                  <p className="place-self-start text-xl font-semibold">Career Start: {doctorModel.careerStartYear.toString()}</p>
-                  <h2 className="text-2xl font-bold">Specialization info</h2>
-                  <p className="place-self-start text-xl">Specialization Name: {doctorModel.specialization.specializationName}</p>
-                  <h2 className="text-2xl font-bold">Office info</h2>
-                  <p className="place-self-start text-xl">Address: {doctorModel.office.address}</p>
-                  <p className="place-self-start text-xl">Registry Phone Number: {doctorModel.office.registryPhoneNumber}</p>
-                  <br />
-                  <p className="place-self-start text-xl">Status: {DoctorStatus[doctorModel.status]}</p>
-                  <div className="flex space-x-4">
-                    <Button onClick={() => handleEdit(doctorModel.id)}>Edit</Button>
-                    {doctorModel.status != DoctorStatus.Inactive && (<Button onClick={async () => {
-                      await deleteDoctor(doctorModel.id);
-                      setEditingDoctorId(null);
-                      fetchDoctorsWithPagination(specializationId, officeId, pageIndex, pageSize);
-                    }} className="bg-red-600 hover:bg-red-700">
-                      Delete
-                    </Button>)}
+                <div className="flex flex-col space-y-3">
+                  <div className="flex items-center space-x-4">
+                    <img 
+                      src={photoUrls[doctorModel.id] || profile_pic} 
+                      alt={doctorModel.firstName} 
+                      className="w-16 h-16 rounded-full object-cover"
+                    />
+                    <div>
+                      <h3 className="text-xl font-semibold">{doctorModel.firstName} {doctorModel.lastName}</h3>
+                      <p className="text-gray-500">{DoctorStatus[doctorModel.status]}</p>
+                    </div>
                   </div>
-                </>
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-lg">Email: {doctorModel.account.email}</p>
+                    <p className="text-lg">Phone: {doctorModel.account.phoneNumber}</p>
+                    <p className="text-lg">Date of Birth: {doctorModel.dateOfBirth.toString()}</p>
+                    <p className="text-lg">Career Start: {doctorModel.careerStartYear.toString()}</p>
+                    <p className="text-lg">Specialization: {doctorModel.specialization.specializationName}</p>
+                    <p className="text-lg">Office: {doctorModel.office.address}</p>
+                    <p className="text-lg">Registry Phone: {doctorModel.office.registryPhoneNumber}</p>
+                  </div>
+                  <div className="flex justify-between mt-4">
+                    <Button onClick={() => handleEdit(doctorModel.id)}>Edit</Button>
+                    {doctorModel.status !== DoctorStatus.Inactive && (
+                      <Button onClick={async () => {
+                        await deleteDoctor(doctorModel.id);
+                        setEditingDoctorId(null);
+                        fetchDoctorsWithPagination(specializationId, officeId, pageIndex, pageSize);
+                      }} className="bg-red-600 hover:bg-red-700">
+                        Delete
+                      </Button>
+                    )}
+                  </div>
+                </div>
               )}
             </li>
           ))}

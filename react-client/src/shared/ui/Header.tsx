@@ -64,7 +64,7 @@ function Header() {
           {user ? (
             <>
               <div className="flex flex-row space-x-1">
-                <img src={photoUrl ? photoUrl : profile_pic} height={50} width={50} />
+                <img src={photoUrl ? photoUrl : profile_pic} className="w-16 h-16 rounded-full object-cover"/>
                 <div className="flex-col h-full space-y-0">
                   <p className="text-xl">
                     {user.profile.email}

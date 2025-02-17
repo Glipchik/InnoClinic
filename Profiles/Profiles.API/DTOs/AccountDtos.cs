@@ -12,6 +12,7 @@ public record CreateAccountFromAuthDto(
     string PhoneNumber);
 
 public record AccountDto(
+    Guid Id,
     string Email,
     string PhoneNumber,
     string? PhotoFileName);

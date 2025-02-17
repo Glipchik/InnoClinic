@@ -38,7 +38,32 @@ async function GETWithPagination(specializationId: string | null, officeId: stri
 }
 
 async function POST(createDoctorModel: CreateDoctorModel, token: string): Promise<AxiosResponse> {
-  return await axios.post<CreateDoctorModel>(`${import.meta.env.VITE_PROFILES_BASE_URL}/api/Doctors`, createDoctorModel, { headers: { Authorization: `Bearer ${token}` } });
+  const formData = new FormData();
+
+  Object.entries(createDoctorModel).forEach(([key, value]) => {
+    if (value !== null && value !== undefined) {
+      if (typeof value === "object" && value !== null) {
+        Object.entries(value).forEach(([nestedKey, nestedValue]) => {
+          if (nestedValue !== null && nestedValue !== undefined) {
+            formData.append(`${key}.${nestedKey}`, nestedValue as string);
+          }
+        });
+      } else {
+        formData.append(key, value as string);
+      }
+    }
+  });
+
+  if (createDoctorModel.photo) {
+    formData.append("photo", createDoctorModel.photo);
+  }
+
+  return await axios.post<FormData>(`${import.meta.env.VITE_PROFILES_BASE_URL}/api/Doctors`, formData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'multipart/form-data'
+    }
+  });
 }
 
 async function PUTAsDoctor(updateDoctorModelByDoctor: EditDoctorModelByDoctor, token: string): Promise<AxiosResponse> {

@@ -120,8 +120,8 @@ export function CreateDoctorForm({ createDoctorModel, onSubmit, onCancel }: Crea
         <Input
           type="text"
           label="Email"
-          id="email"
-          name="email"
+          id="account.email"
+          name="account.email"
           onChange={formik.handleChange}
           value={formik.values.account.email}
         />
@@ -135,8 +135,8 @@ export function CreateDoctorForm({ createDoctorModel, onSubmit, onCancel }: Crea
         <Input
           type="text"
           label="Phone Number"
-          id="phoneNumber"
-          name="phoneNumber"
+          id="account.phoneNumber"
+          name="account.phoneNumber"
           onChange={formik.handleChange}
           value={formik.values.account.phoneNumber}
         />
