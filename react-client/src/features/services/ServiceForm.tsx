@@ -2,7 +2,6 @@ import { useFormik } from "formik";
 import { validationSchema } from "./validationSchema";
 import Input from "../../shared/ui/forms/Input";
 import Button from "../../shared/ui/controls/Button";
-import ServiceModel from "../../models/services/ServiceModel";
 import ServiceCategory from "../../entities/serviceCategory";
 import { useSpecializations } from "../../shared/hooks/useSpecializations";
 import { useContext, useEffect, useState } from "react";
@@ -13,14 +12,15 @@ import { useServiceCategories } from "../../shared/hooks/useServiceCategories";
 import Select from "../../shared/ui/forms/Select";
 import Loading from "../../shared/ui/controls/Loading";
 import Specialization from "../../entities/specialization";
+import CreateServiceModel from "../../models/services/CreateServiceModel";
 
 interface ServiceFormProps {
-  serviceModel: ServiceModel;
-  onSubmit: (serviceModel: ServiceModel) => void;
+  createServiceModel: CreateServiceModel;
+  onSubmit: (createServiceModel: CreateServiceModel) => void;
   onCancel: () => void;
 }
 
-export function ServiceForm({ serviceModel, onSubmit, onCancel }: ServiceFormProps) {
+export function ServiceForm({ createServiceModel, onSubmit, onCancel }: ServiceFormProps) {
   const [token, setToken] = useState<string | null>(null)
 
   const userManager = useContext(UserManagerContext)
@@ -48,15 +48,14 @@ export function ServiceForm({ serviceModel, onSubmit, onCancel }: ServiceFormPro
   
   const formik = useFormik({
     initialValues: {
-      id: serviceModel.id,
-      serviceName: serviceModel.serviceName,
-      serviceCategoryId: serviceModel.serviceCategoryId,
-      specializationId: serviceModel.specializationId,
-      isActive: serviceModel.isActive,
-      price: serviceModel.price,
+      serviceName: createServiceModel.serviceName,
+      serviceCategoryId: createServiceModel.serviceCategoryId,
+      specializationId: createServiceModel.specializationId,
+      isActive: createServiceModel.isActive,
+      price: createServiceModel.price,
     },
     validationSchema,
-    onSubmit: (values: ServiceModel) => onSubmit(values),
+    onSubmit: (values: CreateServiceModel) => onSubmit(values),
   })
 
   return (

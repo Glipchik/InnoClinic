@@ -1,14 +1,13 @@
 import { useServices } from "../../shared/hooks/useServices";
 import { useEffect, useState } from "react";
 import Button from "../../shared/ui/controls/Button";
-import Loading from "../../shared/ui/controls/Loading";
-import ErrorBox from "../../shared/ui/containers/ErrorBox";
 import { ServiceForm } from "./ServiceForm";
 import Service from "../../entities/service";
 import { Pagination } from "../../shared/ui/controls/Pagination";
 import CreateServiceModel from "../../models/services/CreateServiceModel";
 import PaginatedList from "../../models/paginatedList";
 import ServiceModel from "../../models/services/ServiceModel";
+import EditServiceModel from "../../models/services/EditServiceModel";
 
 interface ServicesListProps {
   token: string
@@ -23,11 +22,7 @@ export function ServicesList( { token }: ServicesListProps ) {
 
 
   const {
-    fetchServicesData, fetchServicesError, fetchServicesLoading,
-    createServiceError, createServiceLoading,
-    editServiceError, editServiceLoading,
-    deleteServiceLoading, deleteServiceError,
-    fetchServicesWithPagination, editService, createService, deleteService } = useServices(token);
+    fetchServicesData, fetchServicesWithPagination, editService, createService, deleteService } = useServices(token);
 
   useEffect(() => {
     if (token) {
@@ -41,21 +36,10 @@ export function ServicesList( { token }: ServicesListProps ) {
 
   return (
     <div className="my-auto">
-      {fetchServicesLoading && <Loading label="Fetching Services: Loading..." />}
-      {fetchServicesError && <ErrorBox value={`Fetching Error: ${fetchServicesError}`} />}
-
-      {editServiceLoading && <Loading label="Editing Service: Editing..." />}
-      {editServiceError && <ErrorBox value={`Editing Error: ${editServiceError}`} />}
-
-      {deleteServiceLoading && <Loading label="Deleting Services: Deleting..." />}
-      {deleteServiceError && <ErrorBox value={`Deleting Error: ${deleteServiceError}`} />}
-
-      {createServiceLoading && <Loading label="Creating Services: Creating..." />}
-      {createServiceError && <ErrorBox value={`Creating Error: ${createServiceError}`} />}
 
       {isCreating && (
         <ServiceForm
-          serviceModel={{ id: "", serviceName: "", isActive: true, serviceCategoryId: "", specializationId: "", price: 0 } as ServiceModel}
+          createServiceModel={{ serviceName: "", isActive: true, serviceCategoryId: "", specializationId: "", price: 0 } as ServiceModel}
           onCancel={() => setIsCreating(false)}
           onSubmit={async (createServiceModel: CreateServiceModel) => {
             await createService(createServiceModel);
@@ -71,17 +55,16 @@ export function ServicesList( { token }: ServicesListProps ) {
             <li key={service.id} className="p-4 w-[40%] flex flex-col rounded-xl space-y-3 bg-gray-200 justify-between items-center">
               {editingServiceId === service.id ? (
               <ServiceForm
-                serviceModel={{
-                id: service.id,
-                serviceName: service.serviceName,
-                isActive: service.isActive,
-                serviceCategoryId: service.serviceCategory.id,
-                specializationId: service.specialization.id,
-                price: service.price
+                createServiceModel={{
+                  serviceName: service.serviceName,
+                  isActive: service.isActive,
+                  serviceCategoryId: service.serviceCategory.id,
+                  specializationId: service.specialization.id,
+                  price: service.price
                 } as ServiceModel}
                 onCancel={() => setEditingServiceId(null)}
-                onSubmit={async (serviceModel: ServiceModel) => {
-                  await editService(serviceModel);
+                onSubmit={async (createServiceModel: CreateServiceModel) => {
+                  await editService({ ...createServiceModel, id: service.id } as EditServiceModel);
                   setEditingServiceId(null);
                   fetchServicesWithPagination(pageIndex, pageSize);
                 }}

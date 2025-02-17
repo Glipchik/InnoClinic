@@ -3,7 +3,7 @@ import { AxiosResponse } from 'axios';
 import Service from '../../entities/service';
 import PaginatedList from '../../models/paginatedList';
 import CreateServiceModel from '../../models/services/CreateServiceModel';
-import ServiceModel from '../../models/services/ServiceModel';
+import EditServiceModel from '../../models/services/EditServiceModel';
 
 async function GET(id: string | null, specializationId: string | null, token: string): Promise<AxiosResponse<Service | Service[]>> {
   if (id === null) {
@@ -37,8 +37,8 @@ async function POST(createServiceModel: CreateServiceModel, token: string): Prom
   return await axios.post<CreateServiceModel>(`${import.meta.env.VITE_SERVICES_BASE_URL}/api/Services`, createServiceModel, { headers: { Authorization: `Bearer ${token}` } });
 }
 
-async function PUT(serviceModel: ServiceModel, token: string): Promise<AxiosResponse> {
-  return await axios.put<Service>(`${import.meta.env.VITE_SERVICES_BASE_URL}/api/Services`, serviceModel, { headers: { Authorization: `Bearer ${token}` } });
+async function PUT(editServiceModel: EditServiceModel, token: string): Promise<AxiosResponse> {
+  return await axios.put<EditServiceModel>(`${import.meta.env.VITE_SERVICES_BASE_URL}/api/Services`, editServiceModel, { headers: { Authorization: `Bearer ${token}` } });
 }
 
 async function DELETE(id: string, token: string): Promise<AxiosResponse> {
