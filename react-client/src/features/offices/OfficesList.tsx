@@ -1,12 +1,10 @@
 import { useOffices } from "../../shared/hooks/useOffices";
 import { useEffect, useState } from "react";
 import Button from "../../shared/ui/controls/Button";
-import Loading from "../../shared/ui/controls/Loading";
-import ErrorBox from "../../shared/ui/containers/ErrorBox";
 import { OfficeForm } from "./OfficeForm";
-import Office from "../../entities/office";
 import { Pagination } from "../../shared/ui/controls/Pagination";
 import CreateOfficeModel from "../../models/offices/CreateOfficeModel";
+import { EditOfficeModel } from "../../models/offices/EditOfficeModel";
 
 interface OfficesListProps {
   token: string
@@ -14,17 +12,11 @@ interface OfficesListProps {
 
 export function OfficesList({ token }: OfficesListProps) {
   const [pageIndex, setPageIndex] = useState<number>(1);
-  const [isCreating, setIsCreating] = useState<boolean>(false);
   const pageSize = 2;
 
   const [editingOfficeId, setEditingOfficeId] = useState<string | null>(null);
 
-  const {
-    fetchOfficesData, fetchOfficesError, fetchOfficesLoading,
-    createOfficeError, createOfficeLoading,
-    editOfficeError, editOfficeLoading,
-    deleteOfficeLoading, deleteOfficeError,
-    fetchOffices, editOffice, createOffice, deleteOffice } = useOffices(token);
+  const { fetchOfficesData, fetchOffices, editOffice, deleteOffice } = useOffices(token);
 
   useEffect(() => {
     if (token) {
@@ -38,41 +30,16 @@ export function OfficesList({ token }: OfficesListProps) {
 
   return (
     <div className="my-auto">
-
-      {createOfficeLoading && <Loading label="Creating: Creating office..." />}
-      {createOfficeError && <ErrorBox value={`Creating Error: ${createOfficeError}`} />}
-
-      {fetchOfficesLoading && <Loading label="Fetching: Loading offices..." />}
-      {fetchOfficesError && <ErrorBox value={`Fetching Error: ${fetchOfficesError}`} />}
-      
-      {editOfficeLoading && <Loading label="Editing: Editing office..." />}
-      {editOfficeError && <ErrorBox value={`Editing Error: ${editOfficeError}`} />}
-      
-      {deleteOfficeLoading && <Loading label="Editing: Editing office..." />}
-      {deleteOfficeError && <ErrorBox value={`Editing Error: ${deleteOfficeError}`} />}
-
-      {isCreating && (
-        <OfficeForm
-          office={{ id: "", address: "", registryPhoneNumber: "", isActive: true }}
-          onCancel={() => setIsCreating(false)}
-          onSubmit={async (createOfficeModel: CreateOfficeModel) => {
-            await createOffice(createOfficeModel);
-            setIsCreating(false);
-            fetchOffices(pageIndex, pageSize);
-          }}
-        />
-      )}
-
       {fetchOfficesData && (
         <ul className="w-full flex flex-row justify-center items-center space-x-4">
           {fetchOfficesData.items.map((office) => (
             <li key={office.id} className="p-4 w-[40%] flex flex-col rounded-xl space-y-3 bg-gray-200 justify-between items-center">
               {editingOfficeId === office.id ? (
                 <OfficeForm
-                  office={office}
+                  createOfficeModel={office as CreateOfficeModel}
                   onCancel={() => setEditingOfficeId(null)}
-                  onSubmit={async (office: Office) => {
-                    await editOffice(office);
+                  onSubmit={async (createOfficeModel: CreateOfficeModel) => {
+                    await editOffice({ ...createOfficeModel, id: office.id } as EditOfficeModel);
                     setEditingOfficeId(null);
                     fetchOffices(pageIndex, pageSize);
                   }}
