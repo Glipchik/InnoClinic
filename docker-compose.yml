@@ -32,7 +32,7 @@ services:
       MSSQL_PID: "Express"
     volumes:
       - mssql_data_authorization:/var/opt/mssql
-      
+
   mssql-db-documents-api:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: mssql_documents_container

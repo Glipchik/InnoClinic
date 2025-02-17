@@ -36,8 +36,8 @@ namespace Profiles.API.Controllers
         /// <returns>Returns an url of photo.</returns>
         /// <response code="200">Returns the photo</response>
         /// <response code="500">If there was an internal server error</response>
-        [HttpGet]
-        public async Task<string> Get(string id, CancellationToken cancellationToken)
+        [HttpGet("{id}")]
+        public async Task<string> Get([FromRoute] string id, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Requested photo");
             var accountModel = await _accountService.Get(Guid.Parse(id), cancellationToken);
