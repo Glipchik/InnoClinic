@@ -24,7 +24,7 @@ async function POST(createOfficeModel: CreateOfficeModel, token: string): Promis
 }
 
 async function PUT(editOfficeModel: EditOfficeModel, token: string): Promise<AxiosResponse> {
-  return await axios.put<Office>(`${import.meta.env.VITE_OFFICES_BASE_URL}/api/Offices`, editOfficeModel, { headers: { Authorization: `Bearer ${token}` } });
+  return await axios.put<EditOfficeModel>(`${import.meta.env.VITE_OFFICES_BASE_URL}/api/Offices`, editOfficeModel, { headers: { Authorization: `Bearer ${token}` } });
 }
 
 async function DELETE(id: string, token: string): Promise<AxiosResponse> {
