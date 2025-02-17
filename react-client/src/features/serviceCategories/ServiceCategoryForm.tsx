@@ -1,24 +1,23 @@
-import ServiceCategory from "../../entities/serviceCategory";
 import { useFormik } from "formik";
 import { validationSchema } from "./validationSchema";
 import Input from "../../shared/ui/forms/Input";
 import Button from "../../shared/ui/controls/Button";
+import CreateServiceCategoryModel from "../../models/serviceCategories/createServiceCategoryModel";
 
 interface ServiceCategoryFormProps {
-  serviceCategory: ServiceCategory;
-  onSubmit: (serviceCategory: ServiceCategory) => void;
+  createServiceCategoryModel: CreateServiceCategoryModel;
+  onSubmit: (createServiceCategoryModel: CreateServiceCategoryModel) => void;
   onCancel: () => void;
 }
 
-export function ServiceCategoryForm({ serviceCategory, onSubmit, onCancel }: ServiceCategoryFormProps) {
+export function ServiceCategoryForm({ createServiceCategoryModel, onSubmit, onCancel }: ServiceCategoryFormProps) {
   const formik = useFormik({
     initialValues: {
-      id: serviceCategory.id,
-      categoryName: serviceCategory.categoryName,
-      timeSlotSize: serviceCategory.timeSlotSize,
+      categoryName: createServiceCategoryModel.categoryName,
+      timeSlotSize: createServiceCategoryModel.timeSlotSize,
     },
     validationSchema,
-    onSubmit: (values: ServiceCategory) => {
+    onSubmit: (values: CreateServiceCategoryModel) => {
       const hours = Math.floor(Number(values.timeSlotSize) / 60);
       const minutes = Number(values.timeSlotSize) % 60;
       values.timeSlotSize = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:00`;
