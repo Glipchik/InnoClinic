@@ -1,25 +1,24 @@
-import Specialization from "../../entities/specialization";
 import { useFormik } from "formik";
 import { validationSchema } from "./validationSchema";
 import Input from "../../shared/ui/forms/Input";
 import Button from "../../shared/ui/controls/Button";
+import CreateSpecializationModel from "../../models/specializations/createSpecializationModel";
 
 interface SpecializationFormProps {
-  specialization: Specialization;
-  onSubmit: (specialization: Specialization) => void;
+  createSpecializationModel: CreateSpecializationModel;
+  onSubmit: (specialization: CreateSpecializationModel) => void;
   onCancel: () => void;
 }
 
-export function SpecializationForm({ specialization, onSubmit, onCancel }: SpecializationFormProps) {
+export function SpecializationForm({ createSpecializationModel, onSubmit, onCancel }: SpecializationFormProps) {
 
   const formik = useFormik({
     initialValues: {
-      id: specialization.id,
-      specializationName: specialization.specializationName,
-      isActive: specialization.isActive,
+      specializationName: createSpecializationModel.specializationName,
+      isActive: createSpecializationModel.isActive,
     },
     validationSchema,
-    onSubmit: (values: Specialization) => onSubmit(values),
+    onSubmit: (values: CreateSpecializationModel) => onSubmit(values),
   })
 
   return (

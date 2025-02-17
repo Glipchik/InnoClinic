@@ -3,6 +3,7 @@ import Specialization from '../../entities/specialization';
 import { AxiosResponse } from 'axios';
 import CreateSpecializationModel from '../../models/specializations/createSpecializationModel';
 import PaginatedList from '../../models/paginatedList';
+import EditSpecializationModel from '../../models/specializations/editSpecializationModel';
 
 async function GET(id: string | null, token: string): Promise<AxiosResponse<Specialization | Specialization[]>> {
 
@@ -31,8 +32,8 @@ async function POST(createSpecializationModel: CreateSpecializationModel, token:
   return await axios.post<CreateSpecializationModel>(`${import.meta.env.VITE_SERVICES_BASE_URL}/api/Specializations`, createSpecializationModel, { headers: { Authorization: `Bearer ${token}` } });
 }
 
-async function PUT(specialization: Specialization, token: string): Promise<AxiosResponse> {
-  return await axios.put<Specialization>(`${import.meta.env.VITE_SERVICES_BASE_URL}/api/Specializations`, specialization, { headers: { Authorization: `Bearer ${token}` } });
+async function PUT(editSpecializationModel: EditSpecializationModel, token: string): Promise<AxiosResponse> {
+  return await axios.put<EditSpecializationModel>(`${import.meta.env.VITE_SERVICES_BASE_URL}/api/Specializations`, editSpecializationModel, { headers: { Authorization: `Bearer ${token}` } });
 }
 
 async function DELETE(id: string, token: string): Promise<AxiosResponse> {
