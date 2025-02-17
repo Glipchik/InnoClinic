@@ -6,7 +6,6 @@ import { useServiceCategories } from "../../shared/hooks/useServiceCategories";
 import Button from "../../shared/ui/controls/Button";
 import { ServiceCategoryForm } from "../../features/serviceCategories/ServiceCategoryForm";
 import CreateServiceCategoryModel from "../../models/serviceCategories/createServiceCategoryModel";
-import ServiceCategory from "../../entities/serviceCategory";
 import Loading from "../../shared/ui/controls/Loading";
 import ErrorBox from "../../shared/ui/containers/ErrorBox";
 import { ServiceCategoriesList } from "../../features/serviceCategories/ServiceCategoriesList";
@@ -14,8 +13,14 @@ import { ServiceCategoriesList } from "../../features/serviceCategories/ServiceC
 function ServiceCategoriesPage() {
   const [token, setToken] = useState<string | null>(null)
   const [isCreating, setIsCreating] = useState<boolean>(false);
-  const { createServiceCategoryError, createServiceCategoryLoading, createServiceCategory } = useServiceCategories(token);
-  const [listKey, setListKey] = useState(0);
+
+  const {
+    fetchServiceCategoriesError, fetchServiceCategoriesLoading, 
+    editServiceCategoryError, editServiceCategoryLoading,
+    deleteServiceCategoryError, deleteServiceCategoryLoading,
+    createServiceCategoryError, createServiceCategoryLoading,
+    createServiceCategory,
+  } = useServiceCategories(token);  const [listKey, setListKey] = useState(0);
 
   const userManager = useContext(UserManagerContext)
   const { isUserAuthorized } = useSelector(
@@ -37,6 +42,18 @@ function ServiceCategoriesPage() {
       <h1 className="text-4xl font-semibold m-4">
         Service Categories
       </h1> 
+      
+      {fetchServiceCategoriesLoading && <Loading label="Fetching Service Categories: Loading..." />}
+      {fetchServiceCategoriesError && <ErrorBox value={`Fetching Error: ${fetchServiceCategoriesError}`} />}
+
+      {editServiceCategoryLoading && <Loading label="Editing Service Category: Editing..." />}
+      {editServiceCategoryError && <ErrorBox value={`Editing Error: ${editServiceCategoryError}`} />}
+
+      {deleteServiceCategoryLoading && <Loading label="Deleting Service Category: Deleting..." />}
+      {deleteServiceCategoryError && <ErrorBox value={`Deleting Error: ${deleteServiceCategoryError}`} />}
+
+      {createServiceCategoryLoading && <Loading label="Creating Service Category: Creating..." />}
+      {createServiceCategoryError && <ErrorBox value={`Creating Error: ${createServiceCategoryError}`} />}
 
       <div className="flex justify-end m-4">
         <Button onClick={() => setIsCreating(true)}>
@@ -45,12 +62,12 @@ function ServiceCategoriesPage() {
       </div>
       
       <div className="flex flex-col items-center m-4">
-        {token && isCreating && <ServiceCategoryForm onCancel={() => setIsCreating(false)} onSubmit={(servicecategory : ServiceCategory) => {
-          createServiceCategory(servicecategory as CreateServiceCategoryModel).then(() => {;
+        {token && isCreating && <ServiceCategoryForm onCancel={() => setIsCreating(false)} onSubmit={(createServiceCategoryModel : CreateServiceCategoryModel) => {
+          createServiceCategory(createServiceCategoryModel).then(() => {;
             setIsCreating(false);
             setListKey(prevKey => prevKey + 1);
           });
-        }} serviceCategory={{ id: "", categoryName: "", isActive: true, timeSlotSize: "00:15:00" } as ServiceCategory} /> }
+        }} createServiceCategoryModel={{ categoryName: "", isActive: true, timeSlotSize: "00:15:00" } as CreateServiceCategoryModel} /> }
 
         {createServiceCategoryLoading && <Loading label="Creating ServiceCategory..." />}
         {createServiceCategoryError && <ErrorBox value={createServiceCategoryError} />}

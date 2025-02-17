@@ -5,7 +5,6 @@ import { RootState } from "../../store/store";
 import { UserManagerContext } from "../../shared/contexts/UserManagerContext";
 import Button from "../../shared/ui/controls/Button";
 import { OfficeForm } from "../../features/offices/OfficeForm";
-import Office from "../../entities/office";
 import { useOffices } from "../../shared/hooks/useOffices";
 import ErrorBox from "../../shared/ui/containers/ErrorBox";
 import Loading from "../../shared/ui/controls/Loading";
@@ -14,7 +13,13 @@ import CreateOfficeModel from "../../models/offices/CreateOfficeModel";
 function OfficesPage() {
   const [token, setToken] = useState<string | null>(null)
   const [isCreating, setIsCreating] = useState<boolean>(false);
-  const { createOfficeLoading, createOfficeError, createOffice } = useOffices(token);
+
+  const {
+    fetchOfficesError, fetchOfficesLoading,
+    createOfficeError, createOfficeLoading,
+    editOfficeError, editOfficeLoading,
+    deleteOfficeLoading, deleteOfficeError, createOffice } = useOffices(token);
+
   const [listKey, setListKey] = useState(0);
 
   const userManager = useContext(UserManagerContext)
@@ -38,6 +43,20 @@ function OfficesPage() {
         Offices
       </h1> 
 
+      
+      {createOfficeLoading && <Loading label="Creating: Creating office..." />}
+      {createOfficeError && <ErrorBox value={`Creating Error: ${createOfficeError}`} />}
+
+      {fetchOfficesLoading && <Loading label="Fetching: Loading offices..." />}
+      {fetchOfficesError && <ErrorBox value={`Fetching Error: ${fetchOfficesError}`} />}
+      
+      {editOfficeLoading && <Loading label="Editing: Editing office..." />}
+      {editOfficeError && <ErrorBox value={`Editing Error: ${editOfficeError}`} />}
+      
+      {deleteOfficeLoading && <Loading label="Editing: Editing office..." />}
+      {deleteOfficeError && <ErrorBox value={`Editing Error: ${deleteOfficeError}`} />}
+      
+
       <div className="flex justify-end m-4">
         <Button onClick={() => setIsCreating(true)}>
           Create New Office
@@ -45,12 +64,12 @@ function OfficesPage() {
       </div>
 
       <div className="flex flex-col items-center m-4">
-        {token && isCreating && <OfficeForm onCancel={() => setIsCreating(false)} onSubmit={(office : Office) => {
-          createOffice(office as CreateOfficeModel).then(() => {
+        {token && isCreating && <OfficeForm onCancel={() => setIsCreating(false)} onSubmit={(createOfficeModel : CreateOfficeModel) => {
+          createOffice(createOfficeModel).then(() => {
             setIsCreating(false);
             setListKey(prevKey => prevKey + 1);
           });
-        }} office={{ id: "", address: "", registryPhoneNumber: "", isActive: true } as Office} /> }
+        }} createOfficeModel={{ address: "", registryPhoneNumber: "", isActive: true } as CreateOfficeModel} /> }
 
         {createOfficeLoading && <Loading label="Creating Office..." />}
         {createOfficeError && <ErrorBox value={createOfficeError} />}

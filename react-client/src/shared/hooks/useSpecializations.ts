@@ -29,6 +29,7 @@ import {
 import { RootState } from "../../store/store";
 import Specialization from "../../entities/specialization";
 import CreateSpecializationModel from "../../models/specializations/createSpecializationModel";
+import EditSpecializationModel from "../../models/specializations/editSpecializationModel"
 
 export const useSpecializations = (token: string | null) => {
   const dispatch = useDispatch()
@@ -103,11 +104,11 @@ export const useSpecializations = (token: string | null) => {
     (state: RootState) => state.editSpecializationReducer
   );
 
-  const editSpecialization = async (specialization: Specialization) => {
+  const editSpecialization = async (editSpecializationModel: EditSpecializationModel) => {
     if (token) {
       try {
         dispatch(editSpecializationRequest())
-        await PUT(specialization, token)
+        await PUT(editSpecializationModel, token)
         dispatch(editSpecializationSuccess())
       } catch (error: unknown) {
         let errorMessage = "An unknown error occurred";

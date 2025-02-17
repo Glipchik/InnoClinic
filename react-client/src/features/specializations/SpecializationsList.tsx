@@ -1,8 +1,6 @@
 import { useSpecializations } from "../../shared/hooks/useSpecializations";
 import { useEffect, useState } from "react";
 import Button from "../../shared/ui/controls/Button";
-import Loading from "../../shared/ui/controls/Loading";
-import ErrorBox from "../../shared/ui/containers/ErrorBox";
 import { SpecializationForm } from "./SpecializationForm";
 import Specialization from "../../entities/specialization";
 import { Pagination } from "../../shared/ui/controls/Pagination";
@@ -15,18 +13,13 @@ interface SpecializationsListProps {
 
 export function SpecializationsList({ token }: SpecializationsListProps) {
   const [pageIndex, setPageIndex] = useState<number>(1);
-  const [isCreating, setIsCreating] = useState<boolean>(false);
   const pageSize = 2;
 
 
   const [editingSpecializationId, setEditingSpecializationId] = useState<string | null>(null);
 
   const {
-    fetchSpecializationsData, fetchSpecializationsError, fetchSpecializationsLoading,
-    createSpecializationError, createSpecializationLoading,
-    editSpecializationError, editSpecializationLoading,
-    deleteSpecializationLoading, deleteSpecializationError,
-    fetchSpecializationsWithPagination, editSpecialization, createSpecialization, deleteSpecialization } = useSpecializations(token);
+    fetchSpecializationsData, fetchSpecializationsWithPagination, editSpecialization, deleteSpecialization } = useSpecializations(token);
 
   useEffect(() => {
     if (token) {
@@ -40,29 +33,6 @@ export function SpecializationsList({ token }: SpecializationsListProps) {
 
   return (
     <div className="my-auto">
-      {fetchSpecializationsLoading && <Loading label="Fetching Specializations: Loading..." />}
-      {fetchSpecializationsError && <ErrorBox value={`Fetching Error: ${fetchSpecializationsError}`} />}
-
-      {editSpecializationLoading && <Loading label="Editing Specialization: Editing..." />}
-      {editSpecializationError && <ErrorBox value={`Editing Error: ${editSpecializationError}`} />}
-
-      {deleteSpecializationLoading && <Loading label="Deleting Specializations: Deleting..." />}
-      {deleteSpecializationError && <ErrorBox value={`Deleting Error: ${deleteSpecializationError}`} />}
-
-      {createSpecializationLoading && <Loading label="Creating Specializations: Creating..." />}
-      {createSpecializationError && <ErrorBox value={`Creating Error: ${createSpecializationError}`} />}
-
-      {isCreating && (
-        <SpecializationForm
-          specialization={{ id: "", specializationName: "", isActive: true } as Specialization}
-          onCancel={() => setIsCreating(false)}
-          onSubmit={async (createSpecializationModel: CreateSpecializationModel) => {
-            await createSpecialization(createSpecializationModel);
-            setIsCreating(false);
-            fetchSpecializationsWithPagination(pageIndex, pageSize);
-          }}
-        />
-      )}
       
       {fetchSpecializationsData && (
         <ul className="w-full flex flex-row justify-center items-center space-x-4">
@@ -70,10 +40,10 @@ export function SpecializationsList({ token }: SpecializationsListProps) {
             <li key={specialization.id} className="p-4 w-[40%] flex flex-col rounded-xl space-y-3 bg-gray-200 justify-between items-center">
               {editingSpecializationId === specialization.id ? (
                 <SpecializationForm
-                  specialization={specialization}
+                  createSpecializationModel={specialization as CreateSpecializationModel}
                   onCancel={() => setEditingSpecializationId(null)}
-                  onSubmit={async (specialization: Specialization) => {
-                    await editSpecialization(specialization);
+                  onSubmit={async (createSpecializationModel: CreateSpecializationModel) => {
+                    await editSpecialization({ ...createSpecializationModel, id: specialization.id });
                     setEditingSpecializationId(null);
                     fetchSpecializationsWithPagination(pageIndex, pageSize);
                   }}

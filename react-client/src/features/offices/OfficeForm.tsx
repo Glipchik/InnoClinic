@@ -1,26 +1,25 @@
-import Office from "../../entities/office";
 import { useFormik } from "formik";
 import { validationSchema } from "./validationSchema";
 import Input from "../../shared/ui/forms/Input";
 import Button from "../../shared/ui/controls/Button";
+import CreateOfficeModel from "../../models/offices/CreateOfficeModel";
 
 interface OfficeFormProps {
-  office: Office;
-  onSubmit: (office: Office) => void;
+  createOfficeModel: CreateOfficeModel;
+  onSubmit: (createOfficeModel: CreateOfficeModel) => void;
   onCancel: () => void;
 }
 
-export function OfficeForm({ office, onSubmit, onCancel }: OfficeFormProps) {
+export function OfficeForm({ createOfficeModel, onSubmit, onCancel }: OfficeFormProps) {
 
   const formik = useFormik({
     initialValues: {
-      id: office.id,
-      address: office.address,
-      registryPhoneNumber: office.registryPhoneNumber,
-      isActive: office.isActive,
+      address: createOfficeModel.address,
+      registryPhoneNumber: createOfficeModel.registryPhoneNumber,
+      isActive: createOfficeModel.isActive,
     },
     validationSchema,
-    onSubmit: (values: Office) => onSubmit(values),
+    onSubmit: (values: CreateOfficeModel) => onSubmit(values),
   })
 
   return (

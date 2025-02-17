@@ -1,13 +1,12 @@
 import { useServiceCategories } from "../../shared/hooks/useServiceCategories";
 import { useEffect, useState } from "react";
 import Button from "../../shared/ui/controls/Button";
-import Loading from "../../shared/ui/controls/Loading";
-import ErrorBox from "../../shared/ui/containers/ErrorBox";
 import { ServiceCategoryForm } from "./ServiceCategoryForm";
 import ServiceCategory from "../../entities/serviceCategory";
 import { Pagination } from "../../shared/ui/controls/Pagination";
 import CreateServiceCategoryModel from "../../models/serviceCategories/createServiceCategoryModel";
 import PaginatedList from "../../models/paginatedList";
+import EditServiceCategoryModel from "../../models/serviceCategories/editServiceCategoryModel";
 
 interface ServiceCategoriesListProps {
   token: string
@@ -21,10 +20,7 @@ export function ServiceCategoriesList({ token }: ServiceCategoriesListProps) {
   const [editingServiceCategoryId, setEditingServiceCategoryId] = useState<string | null>(null);
 
   const {
-    fetchServiceCategoriesData, fetchServiceCategoriesError, fetchServiceCategoriesLoading, 
-    editServiceCategoryError, editServiceCategoryLoading,
-    deleteServiceCategoryError, deleteServiceCategoryLoading,
-    createServiceCategoryError, createServiceCategoryLoading,
+    fetchServiceCategoriesData,
     fetchServiceCategoriesWithPagination, 
     editServiceCategory, 
     createServiceCategory, 
@@ -45,7 +41,7 @@ export function ServiceCategoriesList({ token }: ServiceCategoriesListProps) {
     <div className="my-auto">
       {isCreating && (
         <ServiceCategoryForm
-          serviceCategory={{ id: "", categoryName: "", timeSlotSize: "00:05:00" } as ServiceCategory}
+          createServiceCategoryModel={{ categoryName: "", timeSlotSize: "00:05:00" } as ServiceCategory}
           onCancel={() => setIsCreating(false)}
           onSubmit={async (createServiceCategoryModel: CreateServiceCategoryModel) => {
             await createServiceCategory(createServiceCategoryModel);
@@ -54,18 +50,6 @@ export function ServiceCategoriesList({ token }: ServiceCategoriesListProps) {
           }}
         />
       )}
-
-      {fetchServiceCategoriesLoading && <Loading label="Fetching Service Categories: Loading..." />}
-      {fetchServiceCategoriesError && <ErrorBox value={`Fetching Error: ${fetchServiceCategoriesError}`} />}
-
-      {editServiceCategoryLoading && <Loading label="Editing Service Category: Editing..." />}
-      {editServiceCategoryError && <ErrorBox value={`Editing Error: ${editServiceCategoryError}`} />}
-
-      {deleteServiceCategoryLoading && <Loading label="Deleting Service Category: Deleting..." />}
-      {deleteServiceCategoryError && <ErrorBox value={`Deleting Error: ${deleteServiceCategoryError}`} />}
-
-      {createServiceCategoryLoading && <Loading label="Creating Service Category: Creating..." />}
-      {createServiceCategoryError && <ErrorBox value={`Creating Error: ${createServiceCategoryError}`} />}
       
       {fetchServiceCategoriesData && (
         <ul className="w-full flex flex-row justify-center items-center space-x-4">
@@ -73,10 +57,10 @@ export function ServiceCategoriesList({ token }: ServiceCategoriesListProps) {
             <li key={serviceCategory.id} className="p-4 w-[40%] flex flex-col rounded-xl space-y-3 bg-gray-200 justify-between items-center">
               {editingServiceCategoryId === serviceCategory.id ? (
                 <ServiceCategoryForm
-                  serviceCategory={serviceCategory}
+                  createServiceCategoryModel={serviceCategory as CreateServiceCategoryModel}
                   onCancel={() => setEditingServiceCategoryId(null)}
-                  onSubmit={async (serviceCategory: ServiceCategory) => {
-                    await editServiceCategory(serviceCategory);
+                  onSubmit={async (createServiceCategoryModel: CreateServiceCategoryModel) => {
+                    await editServiceCategory({ ...createServiceCategoryModel, id: serviceCategory.id } as EditServiceCategoryModel);
                     setEditingServiceCategoryId(null);
                     fetchServiceCategoriesWithPagination(pageIndex, pageSize);
                   }}

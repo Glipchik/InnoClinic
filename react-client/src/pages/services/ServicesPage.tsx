@@ -14,7 +14,13 @@ import ServiceModel from "../../models/services/ServiceModel";
 function ServicesPage() {
   const [token, setToken] = useState<string | null>(null)
   const [isCreating, setIsCreating] = useState<boolean>(false);
-  const { createServiceLoading, createServiceError, createService } = useServices(token);
+
+  const {
+    fetchServicesError, fetchServicesLoading,
+    createServiceError, createServiceLoading,
+    editServiceError, editServiceLoading,
+    deleteServiceLoading, deleteServiceError, createService } = useServices(token);
+
   const [listKey, setListKey] = useState(0);
 
   const userManager = useContext(UserManagerContext)
@@ -38,6 +44,18 @@ function ServicesPage() {
         Services
       </h1> 
 
+      {fetchServicesLoading && <Loading label="Fetching Services: Loading..." />}
+      {fetchServicesError && <ErrorBox value={`Fetching Error: ${fetchServicesError}`} />}
+
+      {editServiceLoading && <Loading label="Editing Service: Editing..." />}
+      {editServiceError && <ErrorBox value={`Editing Error: ${editServiceError}`} />}
+
+      {deleteServiceLoading && <Loading label="Deleting Services: Deleting..." />}
+      {deleteServiceError && <ErrorBox value={`Deleting Error: ${deleteServiceError}`} />}
+
+      {createServiceLoading && <Loading label="Creating Services: Creating..." />}
+      {createServiceError && <ErrorBox value={`Creating Error: ${createServiceError}`} />}
+
       <div className="flex justify-end m-4">
         <Button onClick={() => setIsCreating(true)}>
           Create New Service
@@ -51,9 +69,6 @@ function ServicesPage() {
             setListKey(prevKey => prevKey + 1)
           });
         }} serviceModel={{ serviceName: "", price: 0, serviceCategoryId: "", specializationId: "", isActive: true } as ServiceModel} /> }
-
-        {createServiceLoading && <Loading label="Creating Service..." />}
-        {createServiceError && <ErrorBox value={createServiceError} />}
       </div>
       
       <div className="min-h-dvh m-4">

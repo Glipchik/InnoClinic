@@ -26,8 +26,8 @@ import {
 } from "../../store/slices/serviceCategories/deleteServiceCategorySlice"
 
 import { RootState } from "../../store/store";
-import ServiceCategory from "../../entities/serviceCategory";
 import CreateServiceCategoryModel from "../../models/serviceCategories/createServiceCategoryModel";
+import EditServiceCategoryModel from "../../models/serviceCategories/editServiceCategoryModel"
 
 export const useServiceCategories = (token: string | null) => {
   const dispatch = useDispatch()
@@ -105,11 +105,11 @@ export const useServiceCategories = (token: string | null) => {
     (state: RootState) => state.editServiceCategoriesReducer
   );
 
-  const editServiceCategory = async (serviceCategory: ServiceCategory) => {
+  const editServiceCategory = async (editServiceCategoryModel: EditServiceCategoryModel) => {
     if (token) {
       try {
         dispatch(editServiceCategoryRequest())
-        await PUT(serviceCategory, token)
+        await PUT(editServiceCategoryModel, token)
         dispatch(editServiceCategorySuccess())
       } catch (error: unknown) {
         let errorMessage = "An unknown error occurred";
