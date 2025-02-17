@@ -68,7 +68,7 @@ function ServicesPage() {
             setIsCreating(false)
             setListKey(prevKey => prevKey + 1)
           });
-        }} serviceModel={{ serviceName: "", price: 0, serviceCategoryId: "", specializationId: "", isActive: true } as ServiceModel} /> }
+        }} createServiceModel={{ serviceName: "", price: 0, serviceCategoryId: "", specializationId: "", isActive: true } as CreateServiceModel} /> }
       </div>
       
       <div className="min-h-dvh m-4">
