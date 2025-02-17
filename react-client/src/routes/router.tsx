@@ -15,6 +15,7 @@ import { ServiceCategoriesPage } from "../pages/serviceCategories/ServiceCategor
 import { ServicesPage } from "../pages/services/ServicesPage";
 import { PrivateRoute } from "../shared/routes/PrivateRoute/index";
 import { ForbiddenPage } from "../pages/errors/ForbiddenPage";
+import { DoctorsPage } from "../pages/doctors/DoctorsPage";
 
 const router = createBrowserRouter([
   {
@@ -22,8 +23,13 @@ const router = createBrowserRouter([
     element: <Layout />,
     children: [
       {
-        path: "home",
-        element: <HomePage />,
+        path: "",
+        children: [
+          {
+            path: "doctors",
+            element: <PrivateRoute requiredRole="Receptionist"> <DoctorsPage /> </PrivateRoute>
+          }
+        ]
       },
       {
         path: "offices",

@@ -19,10 +19,10 @@ public record DoctorDto(
     string FirstName,
     string LastName,
     string? MiddleName,
-    Guid SpecializationId,
-    Guid AccountId,
+    SpecializationDto Specialization,
+    AccountDto Account,
     DateTime CareerStartYear,
-    Guid OfficeId,
+    OfficeDto Office,
     DateTime DateOfBirth,
     DoctorStatusDto Status);
 
@@ -46,5 +46,6 @@ public record UpdateDoctorByReceptionistDto(
     DoctorStatusDto Status);
 
 public record DoctorQueryParametresDto(
+    Guid? OfficeId,
     Guid? SpecializationId,
     DoctorStatusDto? Status);

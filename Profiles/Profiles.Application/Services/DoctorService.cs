@@ -132,7 +132,7 @@ namespace Profiles.Application.Services
             var doctorsPaginatedList = await _unitOfWork.DoctorRepository.GetAllAsync(
                 doctorQueryParametresModel.SpecializationId,
                 _mapper.Map<DoctorStatus>(doctorQueryParametresModel.Status),
-                doctorQueryParametresModel.SpecializationId,
+                doctorQueryParametresModel.OfficeId,
                 cancellationToken: cancellationToken, pageIndex, pageSize);
 
             var doctorModelItems = _mapper.Map<IEnumerable<DoctorModel>>(doctorsPaginatedList.Items);

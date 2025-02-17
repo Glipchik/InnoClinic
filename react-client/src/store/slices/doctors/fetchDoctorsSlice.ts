@@ -1,10 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 import Doctor from '../../../entities/doctor';
+import PaginatedList from '../../../models/paginatedList';
+import DoctorModel from '../../../models/doctors/DoctorModel';
 
 interface FetchDoctorsState {
   loading: boolean;
   error: string | null;
-  data: Doctor | Doctor[] | null 
+  data: Doctor | Doctor[] | null | PaginatedList<DoctorModel>;
 }
 
 const initialState : FetchDoctorsState = {

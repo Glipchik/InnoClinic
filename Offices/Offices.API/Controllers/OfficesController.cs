@@ -47,13 +47,13 @@ namespace Offices.API.Controllers
         /// <remarks>
         /// Sample request:
         ///
-        ///     GET /api/Offices
+        ///     GET /api/Offices/with-pagination
         ///
         /// </remarks>
         /// <returns>Returns a list of office objects.</returns>
         /// <response code="200">Returns the list of offices</response>
         /// <response code="500">If there was an internal server error</response>
-        [HttpGet]
+        [HttpGet("with-pagination")]
         [Authorize]
         public async Task<PaginatedList<OfficeDto>> Get(CancellationToken cancellationToken, int pageIndex = 1, int pageSize = 10)
         {
@@ -62,6 +62,28 @@ namespace Offices.API.Controllers
 
             List<OfficeDto> officeDtos = _mapper.Map<List<OfficeDto>>(offices.Items);
             return new PaginatedList<OfficeDto>(officeDtos, offices.PageIndex, offices.TotalPages);
+        }
+
+        /// <summary>
+        /// Gets the list of all offices.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     GET /api/Offices
+        ///
+        /// </remarks>
+        /// <returns>Returns a list of office objects.</returns>
+        /// <response code="200">Returns the list of offices</response>
+        /// <response code="500">If there was an internal server error</response>
+        [HttpGet]
+        [Authorize]
+        public async Task<IEnumerable<OfficeDto>> Get(CancellationToken cancellationToken)
+        {
+            var offices = await _officeService.GetAll(cancellationToken);
+            _logger.LogInformation("Requested offices list");
+
+            return _mapper.Map<IEnumerable<OfficeDto>>(offices);
         }
 
         /// <summary>

@@ -78,14 +78,14 @@ namespace Profiles.API.Controllers
         /// <returns>Returns a list of receptionists objects.</returns>
         /// <response code="200">Returns the list of receptionists</response>
         /// <response code="500">If there was an internal server error</response>
-        [HttpGet]
+        [HttpGet("with-pagination")]
         [Authorize(Roles = "Receptionist")]
         public async Task<PaginatedList<ReceptionistDto>> Get(ReceptionistQueryParametresModel receptionistQueryParametresModel, CancellationToken cancellationToken,  [FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 10)
         {
             var receptionists = await _receptionistService.GetAll(cancellationToken, receptionistQueryParametresModel, pageIndex, pageSize);
             _logger.LogInformation("Requested receptionists list");
 
-            var receptionistDtos = _mapper.Map<IEnumerable<ReceptionistDto>>(receptionists);
+            var receptionistDtos = _mapper.Map<IEnumerable<ReceptionistDto>>(receptionists.Items);
             return new PaginatedList<ReceptionistDto>([.. receptionistDtos], receptionists.PageIndex, receptionists.TotalPages);
         }
 

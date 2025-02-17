@@ -93,7 +93,7 @@ public class DoctorsController : ControllerBase
         var doctors = await _doctorService.GetAll(_mapper.Map<DoctorQueryParametresModel>(doctorQueryParametresDto), cancellationToken, pageIndex, pageSize);
         _logger.LogInformation("Requested doctors list");
 
-        var doctorDtos = _mapper.Map<IEnumerable<DoctorDto>>(doctors);
+        var doctorDtos = _mapper.Map<IEnumerable<DoctorDto>>(doctors.Items);
         return new PaginatedList<DoctorDto>([.. doctorDtos], doctors.PageIndex, doctors.TotalPages);
     }
 

@@ -9,6 +9,7 @@ namespace Offices.Application.Services.Abstractions
         Task Create(CreateOfficeModel createOfficeModel, CancellationToken cancellationToken);
         Task<OfficeModel> Get(Guid id, CancellationToken cancellationToken);
         Task<PaginatedList<OfficeModel>> GetAll(int pageIndex, int pageSize, CancellationToken cancellationToken);
+        Task<IEnumerable<OfficeModel>> GetAll(CancellationToken cancellationToken);
         Task Update(UpdateOfficeModel updateOfficeModel, CancellationToken cancellationToken);
         Task Delete(Guid id, CancellationToken cancellationToken);
     }

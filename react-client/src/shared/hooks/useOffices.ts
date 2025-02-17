@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux"
-import { GET, PUT, POST, DELETE } from "../api/officeApi"
+import { GET, GETWithPagination, PUT, POST, DELETE } from "../api/officeApi"
 import { fetchOfficesFailure, fetchOfficesSuccess, fetchOfficesRequest } from "../../store/slices/offices/fetchOfficesSlice"
 import { createOfficeFailure, createOfficeSuccess, createOfficeRequest } from "../../store/slices/offices/createOfficeSlice"
 import { RootState } from "../../store/store";
@@ -15,11 +15,30 @@ export const useOffices = (token: string | null) => {
     (state: RootState) => state.fetchOfficesReducer
   );
 
-  const fetchOffices = async (pageIndex: number | null, padeSize: number | null) => {
+  const fetchOfficesWithPagination = async (pageIndex: number | null, padeSize: number | null) => {
     if (token) {
       try {
         dispatch(fetchOfficesRequest())
-        const response = await GET(pageIndex, padeSize, token)
+        const response = await GETWithPagination(pageIndex, padeSize, token)
+        dispatch(fetchOfficesSuccess(response.data))
+      } catch (error: unknown) {
+        let errorMessage = "An unknown error occurred";
+
+        if (error.response && error.response.data) {
+          const problemDetails = error.response.data;
+          errorMessage = problemDetails.detail || problemDetails.title || errorMessage;
+        }
+          
+        dispatch(fetchOfficesFailure(errorMessage))
+      }
+    }
+  }
+
+  const fetchOffices = async () => {
+    if (token) {
+      try {
+        dispatch(fetchOfficesRequest())
+        const response = await GET(token)
         dispatch(fetchOfficesSuccess(response.data))
       } catch (error: unknown) {
         let errorMessage = "An unknown error occurred";
@@ -108,5 +127,5 @@ export const useOffices = (token: string | null) => {
     createOfficeLoading, createOfficeError,
     editOfficeLoading, editOfficeError,
     deleteOfficeLoading, deleteOfficeError,
-    fetchOffices, editOffice, createOffice, deleteOffice }
+    fetchOffices, editOffice, createOffice, deleteOffice, fetchOfficesWithPagination }
 }

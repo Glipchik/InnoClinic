@@ -28,7 +28,7 @@ namespace Profiles.Application.Models
         public required string MiddleName { get; set; }
         public required SpecializationModel Specialization { get; set; }
         public required AccountModel Account { get; set; }
-        public required OfficeModel OfficeId { get; set; }
+        public required OfficeModel Office { get; set; }
         public DateTime CareerStartYear { get; set; }
         public DateTime DateOfBirth { get; set; }
         public DoctorStatusModel Status { get; set; }

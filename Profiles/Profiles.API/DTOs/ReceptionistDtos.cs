@@ -12,8 +12,8 @@
         string FirstName,
         string LastName,
         string? MiddleName,
-        Guid AccountId,
-        Guid OfficeId);
+        AccountDto Account,
+        OfficeDto Office);
 
     public record UpdateReceptionistDto(
         Guid Id,

@@ -4,7 +4,8 @@ import axios from 'axios';
 import PaginatedList from '../../models/paginatedList';
 import DoctorModel from '../../models/doctors/DoctorModel';
 import CreateDoctorModel from '../../models/doctors/CreateDoctorModel';
-import UpdateDoctorModelByDoctor from '../../models/doctors/UpdateDoctorModelByDoctor';
+import EditDoctorModelByDoctor from '../../models/doctors/EditDoctorModelByDoctor';
+import EditDoctorModel from '../../models/doctors/EditDoctorModel';
 
 async function GET(id: string | null, specializationId: string | null, token: string): Promise<AxiosResponse<Doctor | Doctor[]>> {
   if (id === null) {
@@ -14,15 +15,15 @@ async function GET(id: string | null, specializationId: string | null, token: st
   }
 }
 
-async function GETWithPagination(specializationId: string | null, officeId: string | null, pageIndex: number, pageSize: number, token: string): Promise<AxiosResponse<PaginatedList<DoctorModel>>> {
+async function GETWithPagination(specializationId: string | null, officeId: string | null, pageIndex: number | null, pageSize: number | null, token: string): Promise<AxiosResponse<PaginatedList<DoctorModel>>> {
   let url = `${import.meta.env.VITE_PROFILES_BASE_URL}/api/Doctors/with-pagination?`
 
   if (specializationId) {
-    url += `specializationId=${specializationId}`
+    url += `specializationId=${specializationId}&`
   }
 
   if (officeId) {
-    url += `officeId=${officeId}`
+    url += `officeId=${officeId}&`
   }
 
   if (pageIndex) {
@@ -30,7 +31,7 @@ async function GETWithPagination(specializationId: string | null, officeId: stri
   }
 
   if (pageSize) {
-    url += `pageSize=${pageSize}`
+    url += `pageSize=${pageSize}&`
   }
 
   return await axios.get<{ data: DoctorModel }>(url, { headers: { Authorization: `Bearer ${token}` } });
@@ -40,12 +41,29 @@ async function POST(createDoctorModel: CreateDoctorModel, token: string): Promis
   return await axios.post<CreateDoctorModel>(`${import.meta.env.VITE_PROFILES_BASE_URL}/api/Doctors`, createDoctorModel, { headers: { Authorization: `Bearer ${token}` } });
 }
 
-async function PUTAsDoctor(updateDoctorModelByDoctor: UpdateDoctorModelByDoctor, token: string): Promise<AxiosResponse> {
-  return await axios.put<Doctor>(`${import.meta.env.VITE_PROFILES_BASE_URL}/api/Doctors`, updateDoctorModelByDoctor, { headers: { Authorization: `Bearer ${token}` } });
+async function PUTAsDoctor(updateDoctorModelByDoctor: EditDoctorModelByDoctor, token: string): Promise<AxiosResponse> {
+  return await axios.put<EditDoctorModelByDoctor>(`${import.meta.env.VITE_PROFILES_BASE_URL}/api/Doctors`, updateDoctorModelByDoctor, { headers: { Authorization: `Bearer ${token}` } });
 }
 
-async function PUT(doctor: Doctor, token: string): Promise<AxiosResponse> {
-  return await axios.put<Doctor>(`${import.meta.env.VITE_PROFILES_BASE_URL}/api/Doctors/as-receptionist`, doctor, { headers: { Authorization: `Bearer ${token}` } });
+async function PUT(editDoctorModel: EditDoctorModel, token: string): Promise<AxiosResponse> {
+  const formData = new FormData();
+
+  Object.entries(editDoctorModel).forEach(([key, value]) => {
+    if (value !== null && value !== undefined) {
+      formData.append(key, value as string);
+    }
+  });
+
+  if (editDoctorModel.photo) {
+    formData.append("photo", editDoctorModel.photo);
+  }
+
+  return await axios.put<FormData>(`${import.meta.env.VITE_PROFILES_BASE_URL}/api/Doctors/as-receptionist`, formData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'multipart/form-data'
+    }
+  });
 }
 
 async function DELETE(id: string, token: string): Promise<AxiosResponse> {

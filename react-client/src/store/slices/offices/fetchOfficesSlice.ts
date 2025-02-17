@@ -5,7 +5,7 @@ import PaginatedList from '../../../models/paginatedList';
 interface FetchOfficesState {
   loading: boolean;
   error: string | null;
-  officesData: PaginatedList<Office> | null
+  officesData: PaginatedList<Office> | null | Office[];
 }
 
 const initialState : FetchOfficesState = {

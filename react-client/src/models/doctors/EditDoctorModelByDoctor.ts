@@ -1,4 +1,4 @@
-export default interface UpdateDoctorModelByDoctor {
+export default interface EditDoctorModelByDoctor {
   id: string,
   firstName: string,
   lastName: string,

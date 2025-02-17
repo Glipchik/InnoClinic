@@ -5,8 +5,12 @@ import Office from '../../entities/office';
 import PaginatedList from '../../models/paginatedList';
 import { EditOfficeModel } from '../../models/offices/EditOfficeModel';
 
-async function GET(pageIndex: number | null, pageSize: number | null, token: string): Promise<AxiosResponse<PaginatedList<Office>>> {
-  let url = `${import.meta.env.VITE_OFFICES_BASE_URL}/api/Offices?`
+async function GET(token: string): Promise<AxiosResponse<Office[]>> {
+  return await axios.get<{ data: Office[] }>(`${import.meta.env.VITE_OFFICES_BASE_URL}/api/Offices?`, { headers: { Authorization: `Bearer ${token}` } });
+}
+
+async function GETWithPagination(pageIndex: number | null, pageSize: number | null, token: string): Promise<AxiosResponse<PaginatedList<Office>>> {
+  let url = `${import.meta.env.VITE_OFFICES_BASE_URL}/api/Offices/with-pagination?`
 
   if (pageIndex) {
     url += `pageIndex=${pageIndex}&`
@@ -31,4 +35,4 @@ async function DELETE(id: string, token: string): Promise<AxiosResponse> {
   return await axios.delete(`${import.meta.env.VITE_OFFICES_BASE_URL}/api/Offices/${id}`, { headers: { Authorization: `Bearer ${token}` } });
 }
 
-export { GET, POST, DELETE, PUT }
+export { GET, GETWithPagination, POST, DELETE, PUT }

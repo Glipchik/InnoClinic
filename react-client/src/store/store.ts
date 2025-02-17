@@ -1,6 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from './slices/authSlice';
-import fetchDoctorsReducer from './slices/doctors/fetchDoctorsSlice';
 import createAppointmentReducer from './slices/appointments/createAppointmentSlice';
 import fetchDoctorScheduleReducer from './slices/appointments/fetchDoctorSchedule';
 
@@ -24,6 +23,21 @@ import editServiceCategoriesReducer from './slices/serviceCategories/editService
 import deleteServiceCategoriesReducer from './slices/serviceCategories/deleteServiceCategorySlice';
 import createServiceCategoriesReducer from './slices/serviceCategories/createServiceCategorySlice';
 
+import fetchDoctorsReducer from './slices/doctors/fetchDoctorsSlice';
+import editDoctorReducer from './slices/doctors/editDoctorSlice';
+import deleteDoctorReducer from './slices/doctors/deleteDoctorSlice';
+import createDoctorReducer from './slices/doctors/createDoctorSlice';
+
+import fetchPatientsReducer from './slices/patients/fetchPatientsSlice';
+import editPatientReducer from './slices/patients/editPatientSlice';
+import deletePatientReducer from './slices/patients/deletePatientSlice';
+import createPatientReducer from './slices/patients/createPatientSlice';
+
+import fetchReceptionistsReducer from './slices/receptionists/fetchReceptionistsSlice';
+import editReceptionistReducer from './slices/receptionists/editReceptionistSlice';
+import deleteReceptionistReducer from './slices/receptionists/deleteReceptionistSlice';
+import createReceptionistReducer from './slices/receptionists/createReceptionistSlice';
+
 export const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -43,10 +57,24 @@ export const store = configureStore({
     editServiceReducer: editServiceReducer,
     deleteServiceReducer: deleteServiceReducer,
 
-    fetchDoctorsReducer: fetchDoctorsReducer,
-
     createAppointmentReducer: createAppointmentReducer,
+
     fetchDoctorScheduleReducer: fetchDoctorScheduleReducer,
+
+    fetchDoctorsReducer: fetchDoctorsReducer,
+    createDoctorReducer: createDoctorReducer,
+    editDoctorReducer: editDoctorReducer,
+    deleteDoctorReducer: deleteDoctorReducer,
+    
+    fetchPatientsReducer: fetchPatientsReducer,
+    createPatientReducer: createPatientReducer,
+    editPatientReducer: editPatientReducer,
+    deletePatientReducer: deletePatientReducer,
+
+    fetchReceptionistsReducer: fetchReceptionistsReducer,
+    createReceptionistReducer: createReceptionistReducer,
+    editReceptionistReducer: editReceptionistReducer,
+    deleteReceptionistReducer: deleteReceptionistReducer,
 
     fetchServiceCategoriesReducer: fetchServiceCategoriesReducer,
     editServiceCategoriesReducer: editServiceCategoriesReducer,

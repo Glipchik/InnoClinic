@@ -9,9 +9,9 @@ export default interface DoctorModel {
   lastName: string,
   middleName: string | null,
   specialization: Specialization,
-  accountId: Account,
-  officeId: Office,
+  account: Account,
+  office: Office,
   careerStartYear: Date,
   dateOfBirth: Date,
-  Status: DoctorStatus
+  status: DoctorStatus
 }

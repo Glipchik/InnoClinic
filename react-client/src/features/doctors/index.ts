@@ -1,0 +1,1 @@
+export { CreateDoctorForm as DoctorForm } from './CreateDoctorForm'

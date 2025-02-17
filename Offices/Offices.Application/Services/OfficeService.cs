@@ -101,5 +101,10 @@ namespace Offices.Application.Services
             // If someone works in the office, returns true
             return (doctorsInOfficeCount > 0) || (receptionistsInOfficeCount > 0);
         }
+
+        public async Task<IEnumerable<OfficeModel>> GetAll(CancellationToken cancellationToken)
+        {
+            return _mapper.Map<IEnumerable<OfficeModel>>(await _officeRepository.GetAllAsync(cancellationToken));
+        }
     }
 }

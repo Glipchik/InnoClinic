@@ -1,8 +1,7 @@
 import { DoctorStatus } from "../../entities/enums/doctorStatus";
-import CreateAccountModelForProfile from "../accounts/CreateAccountModelForProfile";
 
-export default interface CreateDoctorModel {
-  account: CreateAccountModelForProfile,
+export default interface EditDoctorModel {
+  id: string;
   firstName: string,
   lastName: string,
   middleName: string | null,

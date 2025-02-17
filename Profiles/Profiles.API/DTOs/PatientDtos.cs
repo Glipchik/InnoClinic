@@ -22,7 +22,7 @@ public record PatientDto(
     string FirstName,
     string LastName,
     string? MiddleName,
-    Guid AccountId,
+    AccountDto Account,
     DateTime DateOfBirth);
 
 public record UpdatePatientDto(
