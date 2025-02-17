@@ -17,13 +17,13 @@ import ErrorBox from "../../../shared/ui/containers/ErrorBox"
 import Loading from "../../../shared/ui/controls/Loading"
 import CreateAppointmentModel from "../../../models/appointments/CreateAppointmentModel"
 import { useFormik } from 'formik'
-import { useAppointments } from "../../../shared/hooks/useAppointments"
 
 interface CreateAppointmentFormProps {
-  token: string
+  onSubmit: (createAppointmentModel: CreateAppointmentModel) => void;
+  token: string | null;
 }
 
-const CreateAppointmentForm = ({ token } : CreateAppointmentFormProps) => {
+const CreateAppointmentForm = ({ onSubmit, token } : CreateAppointmentFormProps) => {
   const [date, setDate] = useState<string | null>(null)
   const [isServiceSelectDisabled, setIsServiceSelectDisabled] = useState<boolean>(true)
   const [isDoctorSelectDisabled, setIsDoctorSelectDisabled] = useState<boolean>(true)
@@ -34,7 +34,6 @@ const CreateAppointmentForm = ({ token } : CreateAppointmentFormProps) => {
   const { fetchDoctorsLoading, fetchDoctorsData, fetchDoctorsError, fetchDoctors } = useDoctors(token)
   const { fetchDoctorScheduleData, fetchDoctorScheduleError, fetchDoctorScheduleLoading, fetchDoctorSchedule } = useDoctorSchedule(token);
   
-  const { createAppointmentError, createAppointmentLoading, createAppointment } = useAppointments(token)
 
   useEffect(() => {
     fetchSpecializations()
@@ -49,7 +48,7 @@ const CreateAppointmentForm = ({ token } : CreateAppointmentFormProps) => {
       doctorId: "",
     },
     validationSchema,
-    onSubmit: (values) => handleSubmit(values as CreateAppointmentModel),
+    onSubmit: (values) => onSubmit(values as CreateAppointmentModel),
   })
 
   const handleSpecializationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -80,12 +79,6 @@ const CreateAppointmentForm = ({ token } : CreateAppointmentFormProps) => {
     }
   }
 
-  const handleSubmit = async (createAppointmentModel: CreateAppointmentModel) => {
-    if (token) {
-      createAppointment(createAppointmentModel);
-    }
-  }
-
   return (
     <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4 p-4 m-4 bg-gray-200 shadow-md rounded-lg w-[30%]">
 
@@ -93,7 +86,6 @@ const CreateAppointmentForm = ({ token } : CreateAppointmentFormProps) => {
       <div className="flex flex-col">
 
         {fetchSpecializationsLoading && <Loading label="Loading specializations..." />}
-
         {fetchSpecializationsError && <p className="text-red-500">Error: {fetchSpecializationsError}</p>}
 
         <Select
@@ -120,11 +112,9 @@ const CreateAppointmentForm = ({ token } : CreateAppointmentFormProps) => {
       </div>
 
       {/* Service Select */}
-
       <div className="flex flex-col">
 
         {fetchServicesLoading && <Loading label="Loading services..." />}
-
         {fetchServicesError && <ErrorBox value={fetchServicesError} />}
         
         <Select
@@ -152,11 +142,9 @@ const CreateAppointmentForm = ({ token } : CreateAppointmentFormProps) => {
       </div>
 
       {/* Doctor Select */}
-
       <div className="flex flex-col">
         
         {fetchDoctorsLoading && <Loading label="Loading doctors..." />}
-        
         {fetchDoctorsError && <ErrorBox value={fetchDoctorsError} />}
         
         <Select
@@ -185,7 +173,6 @@ const CreateAppointmentForm = ({ token } : CreateAppointmentFormProps) => {
 
       
       {/* Date Picker */}
-      
       <DatePicker
         label="Choose a date of an appointment"
         id="date"
@@ -214,11 +201,9 @@ const CreateAppointmentForm = ({ token } : CreateAppointmentFormProps) => {
       {formik.touched.date && formik.errors.date ? <div className="text-red-500">{formik.errors.date}</div> : null}
 
       {/* Time Slot Select */}
-
       <div className="flex flex-col">
 
         {fetchDoctorScheduleLoading && <Loading label="Loading doctor schedule..." />}
-
         {fetchDoctorScheduleError && <ErrorBox value={fetchDoctorScheduleError} />}
         
         <Select
@@ -246,13 +231,9 @@ const CreateAppointmentForm = ({ token } : CreateAppointmentFormProps) => {
       </div>
 
       {/* Submit Button */}
-
       <Button type="submit" className="w-full">
         Submit
       </Button>
-
-      {createAppointmentLoading && <Loading label="Creating Appointment..." />}
-      {createAppointmentError && <ErrorBox value={createAppointmentError} />}
     </form>
   )
 }
