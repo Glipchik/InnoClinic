@@ -1,53 +1,43 @@
 import { useFormik } from "formik";
 import Input from "../../shared/ui/forms/Input";
 import Button from "../../shared/ui/controls/Button";
-import { useSpecializations } from "../../shared/hooks/useSpecializations";
 import { useEffect } from "react";
 import Select from "../../shared/ui/forms/Select";
 import Loading from "../../shared/ui/controls/Loading";
-import Specialization from "../../entities/specialization";
-import CreateDoctorModel from "../../models/doctors/CreateDoctorModel";
+import CreateReceptionistModel from "../../models/receptionists/CreateReceptionistModel";
 import { useOffices } from "../../shared/hooks/useOffices";
-import { createDoctorValidationSchema } from "./createDoctorValidationSchema";
+import { createReceptionistValidationSchema } from "./createReceptionistValidationSchema";
 import Office from "../../entities/office";
-import { DoctorStatus } from "../../entities/enums/doctorStatus";
-import DatePicker from "../../shared/ui/forms/DatePicker";
 
-interface CreateDoctorFormProps {
-  createDoctorModel: CreateDoctorModel;
-  onSubmit: (createDoctorModel: CreateDoctorModel) => void;
+interface CreateReceptionistFormProps {
+  createReceptionistModel: CreateReceptionistModel;
+  onSubmit: (createReceptionistModel: CreateReceptionistModel) => void;
   onCancel: () => void;
   token: string | null
 }
 
-export function CreateDoctorForm({ createDoctorModel, onSubmit, onCancel, token }: CreateDoctorFormProps) {
+export function CreateReceptionistForm({ createReceptionistModel, onSubmit, onCancel, token }: CreateReceptionistFormProps) {
 
-  const { fetchSpecializationsLoading, fetchSpecializationsError, fetchSpecializationsData, fetchSpecializations } = useSpecializations(token)
   const { fetchOfficesLoading, fetchOfficesError, fetchOfficesData, fetchOffices } = useOffices(token)
 
   useEffect(() => {
-    fetchSpecializations()
     fetchOffices()
   }, [token])
 
   const formik = useFormik({
     initialValues: {
-      firstName: createDoctorModel.firstName,
-      lastName: createDoctorModel.lastName,
-      middleName: createDoctorModel.middleName,
-      officeId: createDoctorModel.officeId,
-      specializationId: createDoctorModel.specializationId,
-      status: createDoctorModel.status,
-      dateOfBirth: createDoctorModel.dateOfBirth,
-      careerStartYear: createDoctorModel.careerStartYear,
+      firstName: createReceptionistModel.firstName,
+      lastName: createReceptionistModel.lastName,
+      middleName: createReceptionistModel.middleName,
+      officeId: createReceptionistModel.officeId,
       account: {
-        email: createDoctorModel.account.email,
-        phoneNumber: createDoctorModel.account.phoneNumber,
+        email: createReceptionistModel.account.email,
+        phoneNumber: createReceptionistModel.account.phoneNumber,
       },
       photo: null
     },
-    validationSchema: createDoctorValidationSchema,
-    onSubmit: (values: CreateDoctorModel) => onSubmit(values),
+    validationSchema: createReceptionistValidationSchema,
+    onSubmit: (values: CreateReceptionistModel) => onSubmit(values),
   })
 
   return (
@@ -127,29 +117,6 @@ export function CreateDoctorForm({ createDoctorModel, onSubmit, onCancel, token 
         ) : null}
       </div>
 
-      {/* Specialization Select */}
-      <div className="flex flex-col">
-        {fetchSpecializationsLoading && <Loading label="Loading specializations..." />}
-        {fetchSpecializationsError && <p className="text-red-500">Error: {fetchSpecializationsError}</p>}
-        <Select
-          disabled={false}
-          label="Specialization"
-          id="specializationId"
-          name="specializationId"
-          onChange={formik.handleChange}
-          value={formik.values.specializationId}
-        >
-          <option value="" label="Select specialization" />
-          {fetchSpecializationsData &&
-            (fetchSpecializationsData as Specialization[]).map((spec: Specialization) => (
-              <option key={spec.id} value={spec.id} label={spec.specializationName} />
-            ))}
-        </Select>
-        {formik.touched.specializationId && formik.errors.specializationId ? (
-          <div className="text-red-500">{formik.errors.specializationId}</div>
-        ) : null}
-      </div>
-
       {/* Office Select */}
       <div className="flex flex-col">
         {fetchOfficesLoading && <Loading label="Loading offices..." />}
@@ -172,49 +139,6 @@ export function CreateDoctorForm({ createDoctorModel, onSubmit, onCancel, token 
           <div className="text-red-500">{formik.errors.officeId}</div>
         ) : null}
       </div>
-
-      {/* Status Select */}
-      <div className="flex flex-col">
-        <Select
-          label="Status"
-          id="Status"
-          name="Status"
-          onChange={formik.handleChange}
-          value={formik.values.status}
-        >
-          <option value="" label="Select status" />
-          {Object.keys(DoctorStatus)
-            .filter((key) => isNaN(Number(key)))
-            .map((key) => (
-              <option key={key} value={DoctorStatus[key as keyof typeof DoctorStatus]} label={key} />
-            ))}
-        </Select>
-        {formik.touched.status && formik.errors.status ? (
-          <div className="text-red-500">{formik.errors.status}</div>
-        ) : null}
-      </div>
-
-      {/* Date Picker */}
-      <DatePicker
-        label="Choose a career start year"
-        id="careerStartYear"
-        name="careerStartYear"
-        value={formik.values.careerStartYear}
-        onChange={formik.handleChange}
-        disabled={false}
-        className="bg-gray-100"
-      />
-
-      {/* Date Picker */}
-      <DatePicker
-        label="Choose a date of birth"
-        id="dateOfBirth"
-        name="dateOfBirth"
-        value={formik.values.dateOfBirth}
-        onChange={formik.handleChange}
-        disabled={false}
-        className="bg-gray-100"
-      />
 
       {/* Photo Upload Input */}
       <div className="flex flex-col">

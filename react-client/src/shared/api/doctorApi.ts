@@ -66,8 +66,20 @@ async function POST(createDoctorModel: CreateDoctorModel, token: string): Promis
   });
 }
 
-async function PUTAsDoctor(updateDoctorModelByDoctor: EditDoctorModelByDoctor, token: string): Promise<AxiosResponse> {
-  return await axios.put<EditDoctorModelByDoctor>(`${import.meta.env.VITE_PROFILES_BASE_URL}/api/Doctors`, updateDoctorModelByDoctor, { headers: { Authorization: `Bearer ${token}` } });
+async function PUTAsDoctor(editDoctorModelByDoctor: EditDoctorModelByDoctor, token: string): Promise<AxiosResponse> {
+  const formData = new FormData();
+
+  Object.entries(editDoctorModelByDoctor).forEach(([key, value]) => {
+    if (value !== null && value !== undefined) {
+      formData.append(key, value as string);
+    }
+  });
+
+  if (editDoctorModelByDoctor.photo) {
+    formData.append("photo", editDoctorModelByDoctor.photo);
+  }
+
+  return await axios.put<FormData>(`${import.meta.env.VITE_PROFILES_BASE_URL}/api/Doctors`, formData, { headers: { Authorization: `Bearer ${token}` } });
 }
 
 async function PUT(editDoctorModel: EditDoctorModel, token: string): Promise<AxiosResponse> {

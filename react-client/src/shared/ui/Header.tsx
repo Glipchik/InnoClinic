@@ -12,6 +12,7 @@ function Header() {
   const userManager = useContext(UserManagerContext);
   const [user, setUser] = useState<User | null>(null);
   const [photoUrl, setPhotoUrl] = useState<string | null>(null)
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const { isUserAuthorized } = useSelector(
     (state: RootState) => state.auth
@@ -51,18 +52,39 @@ function Header() {
       </div>
       <div className="w-[45%] h-full">
         {user?.profile.role === "Receptionist" && (
-          <ul className="flex flex-row space-x-4">
+          <ul className="flex flex-row space-x-6 items-center">
             <li className="list-none"> <Link to="/offices" className="text-xl"> Offices </Link> </li>
             <li className="list-none"> <Link to="/specializations" className="text-xl"> Specializations </Link> </li>
             <li className="list-none"> <Link to="/services" className="text-xl"> Services </Link> </li>
             <li className="list-none"> <Link to="/service-categories" className="text-xl"> Service Categories </Link> </li>
+            <div className="relative">
+              <button
+                className="text-xl px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300"
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              >
+                Profiles
+              </button>
+              {isDropdownOpen && (
+                <ul className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg">
+                  <li className="px-4 py-2 hover:bg-gray-100">
+                    <Link to="/profiles/doctors">Doctors</Link>
+                  </li>
+                  <li className="px-4 py-2 hover:bg-gray-100">
+                    <Link to="/profiles/patients">Patients</Link>
+                  </li>
+                  <li className="px-4 py-2 hover:bg-gray-100">
+                    <Link to="/profiles/receptionists">Receptionists</Link>
+                  </li>
+                </ul>
+              )}
+            </div>
           </ul>
         )}
       </div>
       <div className="w-[30%] h-full">
         <div className="flex w-full h-full items items-center space-x-3 justify-end">
           {user ? (
-            <>
+            <Link to="/profiles/me">
               <div className="flex flex-row space-x-1">
                 <img src={photoUrl ? photoUrl : profile_pic} className="w-16 h-16 rounded-full object-cover"/>
                 <div className="flex-col h-full space-y-0">
@@ -75,7 +97,7 @@ function Header() {
                 </div>
                 <li className="list-none"> <Link to="/logout"> <Button className="bg-red-600 hover:bg-red-700"> Logout </Button> </Link> </li>
               </div>
-            </>
+            </Link>
           ) : (
             <>
               <li className="list-none"> <Link to="/login"> <Button> Login </Button> </Link> </li>

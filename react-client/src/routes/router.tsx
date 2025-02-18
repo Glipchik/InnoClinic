@@ -5,7 +5,6 @@ import { SigninOidc } from '../features/auth/SigninOidc';
 import { Login } from '../features/auth/Login';
 import { Logout } from '../features/auth/Logout';
 import { Register } from '../features/auth/Register';
-import { HomePage } from '../pages/home/HomePage'
 import Layout from '../shared/ui/Layout'
 import { AppointmentsPage } from "../pages/appointments/AppointmentsPage";
 import { SilentRenew } from "../features/auth/SilentRenew";
@@ -16,6 +15,9 @@ import { ServicesPage } from "../pages/services/ServicesPage";
 import { PrivateRoute } from "../shared/routes/PrivateRoute/index";
 import { ForbiddenPage } from "../pages/errors/ForbiddenPage";
 import { DoctorsPage } from "../pages/doctors/DoctorsPage";
+import { PatientsPage } from "../pages/patients/PatientsPage";
+import { ReceptionistsPage } from "../pages/receptionists/ReceptionistsPage";
+import ProfilePage from "../pages/profile/ProfilePage";
 
 const router = createBrowserRouter([
   {
@@ -23,11 +25,23 @@ const router = createBrowserRouter([
     element: <Layout />,
     children: [
       {
-        path: "",
+        path: "profiles",
         children: [
           {
             path: "doctors",
             element: <PrivateRoute requiredRole="Receptionist"> <DoctorsPage /> </PrivateRoute>
+          },
+          {
+            path: "patients",
+            element: <PrivateRoute requiredRole="Receptionist"> <PatientsPage /> </PrivateRoute>
+          },
+          {
+            path: "receptionists",
+            element: <PrivateRoute requiredRole="Receptionist"> <ReceptionistsPage /> </PrivateRoute>
+          },
+          {
+            path: "me",
+            element: <PrivateRoute requiredRole="Receptionist,Patient,Doctor"> <ProfilePage /> </PrivateRoute>
           }
         ]
       },

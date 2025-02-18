@@ -1,10 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 import Receptionist from '../../../entities/receptionist';
+import PaginatedList from '../../../models/paginatedList';
+import ReceptionistModel from '../../../models/receptionists/ReceptionistModel';
 
 interface FetchReceptionistsState {
   loading: boolean;
   error: string | null;
-  data: Receptionist | Receptionist[] | null 
+  data: Receptionist | Receptionist[] | null | PaginatedList<ReceptionistModel>
 }
 
 const initialState : FetchReceptionistsState = {

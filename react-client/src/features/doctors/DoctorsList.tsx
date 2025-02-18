@@ -5,7 +5,7 @@ import { Pagination } from "../../shared/ui/controls/Pagination";
 import PaginatedList from "../../models/paginatedList";
 import EditDoctorModel from "../../models/doctors/EditDoctorModel";
 import DoctorModel from "../../models/doctors/DoctorModel";
-import { EditDoctorForm } from "./EditDoctorForm";
+import { EditDoctorForm } from "./index";
 import { DoctorStatus } from "../../entities/enums/doctorStatus";
 import Select from "../../shared/ui/forms/Select";
 import Loading from "../../shared/ui/controls/Loading";
@@ -125,6 +125,7 @@ export function DoctorsList({ token }: DoctorsListProps) {
             <li key={doctorModel.id} className="flex flex-col p-6 bg-white rounded-lg shadow-lg hover:shadow-2xl transition-shadow">
               {editingDoctorId === doctorModel.id ? (
                 <EditDoctorForm
+                  token={token}
                   editDoctorModel={{
                     id: doctorModel.id,
                     careerStartYear: (doctorModel.careerStartYear).toString(),

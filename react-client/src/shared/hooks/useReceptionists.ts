@@ -4,9 +4,9 @@ import { fetchReceptionistsFailure, fetchReceptionistsSuccess, fetchReceptionist
 import { RootState } from "../../store/store";
 import CreateReceptionistModel from "../../models/receptionists/CreateReceptionistModel";
 import { createReceptionistFailure, createReceptionistRequest, createReceptionistSuccess } from "../../store/slices/receptionists/createReceptionistSlice";
-import Receptionist from "../../entities/receptionist";
 import { editReceptionistFailure, editReceptionistRequest, editReceptionistSuccess } from "../../store/slices/receptionists/editReceptionistSlice";
 import { deleteReceptionistFailure, deleteReceptionistRequest, deleteReceptionistSuccess } from "../../store/slices/receptionists/deleteReceptionistSlice";
+import EditReceptionistModel from "../../models/receptionists/EditReceptionistModel";
 
 export const useReceptionists = (token: string | null) => {
   const dispatch = useDispatch()
@@ -79,11 +79,11 @@ export const useReceptionists = (token: string | null) => {
     (state: RootState) => state.editReceptionistReducer
   );
 
-  const editReceptionist = async (receptionist: Receptionist) => {
+  const editReceptionist = async (editReceptionistModel: EditReceptionistModel) => {
     if (token) {
       try {
         dispatch(editReceptionistRequest())
-        await PUT(receptionist, token)
+        await PUT(editReceptionistModel, token)
         dispatch(editReceptionistSuccess())
       } catch (error: unknown) {
         let errorMessage = "An unknown error occurred";

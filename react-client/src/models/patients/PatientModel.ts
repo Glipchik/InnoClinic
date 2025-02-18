@@ -5,6 +5,6 @@ export default interface Patient {
   firstName: string,
   lastName: string,
   middleName: string | null,
-  dateOfBirth: Date,
+  dateOfBirth: string,
   account: Account,
 }

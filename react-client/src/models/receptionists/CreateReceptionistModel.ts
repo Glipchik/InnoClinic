@@ -1,8 +1,10 @@
+import CreateAccountModelForProfile from "../accounts/CreateAccountModelForProfile";
+
 export default interface CreateReceptionistModel {
-  id: string,
   firstName: string,
   lastName: string,
   middleName: string | null,
-  accountId: string,
+  account: CreateAccountModelForProfile,
   officeId: string,
+  photo: File | null
 }

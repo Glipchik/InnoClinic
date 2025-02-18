@@ -80,7 +80,7 @@ namespace Profiles.API.Controllers
         /// <response code="500">If there was an internal server error</response>
         [HttpGet("with-pagination")]
         [Authorize(Roles = "Receptionist")]
-        public async Task<PaginatedList<ReceptionistDto>> Get(ReceptionistQueryParametresModel receptionistQueryParametresModel, CancellationToken cancellationToken,  [FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 10)
+        public async Task<PaginatedList<ReceptionistDto>> Get([FromQuery] ReceptionistQueryParametresModel receptionistQueryParametresModel, CancellationToken cancellationToken,  [FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 10)
         {
             var receptionists = await _receptionistService.GetAll(cancellationToken, receptionistQueryParametresModel, pageIndex, pageSize);
             _logger.LogInformation("Requested receptionists list");

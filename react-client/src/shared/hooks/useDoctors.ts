@@ -4,7 +4,6 @@ import { fetchDoctorsFailure, fetchDoctorsSuccess, fetchDoctorsRequest } from ".
 import { RootState } from "../../store/store";
 import CreateDoctorModel from "../../models/doctors/CreateDoctorModel";
 import { createDoctorFailure, createDoctorRequest, createDoctorSuccess } from "../../store/slices/doctors/createDoctorSlice";
-import Doctor from "../../entities/doctor";
 import { editDoctorFailure, editDoctorRequest, editDoctorSuccess } from "../../store/slices/doctors/editDoctorSlice";
 import { deleteDoctorFailure, deleteDoctorRequest, deleteDoctorSuccess } from "../../store/slices/doctors/deleteDoctorSlice";
 import EditDoctorModel from "../../models/doctors/EditDoctorModel";

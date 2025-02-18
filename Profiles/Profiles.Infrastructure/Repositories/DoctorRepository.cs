@@ -79,6 +79,9 @@ namespace Profiles.Infrastructure.Repositories
         public async Task<Doctor> GetByAccountIdAsync(Guid accountId, CancellationToken cancellationToken)
         {
             return await _context.Set<Doctor>().AsNoTracking()
+                .Include(d => d.Specialization)
+                .Include(d => d.Account)
+                .Include(d => d.Office)
                 .FirstOrDefaultAsync(d => d.AccountId == accountId, cancellationToken: cancellationToken);
         }
 

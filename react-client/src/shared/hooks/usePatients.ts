@@ -7,6 +7,7 @@ import { createPatientFailure, createPatientRequest, createPatientSuccess } from
 import Patient from "../../entities/patient";
 import { editPatientFailure, editPatientRequest, editPatientSuccess } from "../../store/slices/patients/editPatientSlice";
 import { deletePatientFailure, deletePatientRequest, deletePatientSuccess } from "../../store/slices/patients/deletePatientSlice";
+import EditPatientModel from "../../models/patients/EditPatientModel";
 
 export const usePatients = (token: string | null) => {
   const dispatch = useDispatch()
@@ -79,11 +80,11 @@ export const usePatients = (token: string | null) => {
     (state: RootState) => state.editPatientReducer
   );
 
-  const editPatient = async (patient: Patient) => {
+  const editPatient = async (editPatientModel: EditPatientModel) => {
     if (token) {
       try {
         dispatch(editPatientRequest())
-        await PUT(patient, token)
+        await PUT(editPatientModel, token)
         dispatch(editPatientSuccess())
       } catch (error: unknown) {
         let errorMessage = "An unknown error occurred";

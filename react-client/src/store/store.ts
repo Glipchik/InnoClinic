@@ -38,6 +38,10 @@ import editReceptionistReducer from './slices/receptionists/editReceptionistSlic
 import deleteReceptionistReducer from './slices/receptionists/deleteReceptionistSlice';
 import createReceptionistReducer from './slices/receptionists/createReceptionistSlice';
 
+import fetchProfileReducer from './slices/profile/fetchProfileSlice';
+import editProfileReducer from './slices/profile/editProfileSlice';
+import deleteProfileReducer from './slices/profile/deleteProfileSlice';
+
 export const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -80,6 +84,10 @@ export const store = configureStore({
     editServiceCategoriesReducer: editServiceCategoriesReducer,
     deleteServiceCategoriesReducer: deleteServiceCategoriesReducer,
     createServiceCategoriesReducer: createServiceCategoriesReducer,
+
+    fetchProfileReducer: fetchProfileReducer,
+    editProfileReducer: editProfileReducer,
+    deleteProfileReducer: deleteProfileReducer
   }
 });
 

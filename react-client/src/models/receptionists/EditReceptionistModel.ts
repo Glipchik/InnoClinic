@@ -1,9 +1,8 @@
-export default interface EditDoctorModelByDoctor {
+export default interface EditReceptionistModel {
   id: string,
   firstName: string,
   lastName: string,
   middleName: string | null,
-  careerStartYear: string,
-  dateOfBirth: string,
+  officeId: string,
   photo: File | null
 }

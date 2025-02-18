@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { DoctorForm } from "../../features/doctors/index"
+import { CreateDoctorForm } from "../../features/doctors/index"
 import { UserManagerContext } from "../../shared/contexts/UserManagerContext";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
@@ -17,7 +17,6 @@ function DoctorsPage() {
   const [token, setToken] = useState<string | null>(null)
   const [isCreating, setIsCreating] = useState<boolean>(false);
   const [listKey, setListKey] = useState(0);
-
   
   const {
     fetchDoctorsError, fetchDoctorsLoading,
@@ -66,28 +65,29 @@ function DoctorsPage() {
 
       
       <div className="flex flex-col items-center m-4">
-        {token && isCreating && <DoctorForm onCancel={() => setIsCreating(false)} onSubmit={(createDoctorModel : CreateDoctorModel) => {
-          createDoctor(createDoctorModel as CreateDoctorModel).then(() => {
-            setIsCreating(false)
-            setListKey(prevKey => prevKey + 1)
-          });
-        }} createDoctorModel={{ 
-          firstName: "",
-          lastName: "", 
-          middleName: "",
-          officeId: "", 
-          specializationId: "", 
-          status: DoctorStatus.AtWork,  
-          dateOfBirth: (new Date()).toString(), 
-          careerStartYear: (new Date()).toString(),
-          account: {
-            email: "",
-            phoneNumber: "",
-          } as CreateAccountModelForProfile,
-          photo: null } as CreateDoctorModel} /> }
-
-        {createDoctorLoading && <Loading label="Creating Doctor..." />}
-        {createDoctorError && <ErrorBox value={createDoctorError} />}
+        {token && isCreating && <CreateDoctorForm
+          token={token}
+          onCancel={() => setIsCreating(false)}
+          onSubmit={(createDoctorModel : CreateDoctorModel) => {
+            createDoctor(createDoctorModel as CreateDoctorModel).then(() => {
+              setIsCreating(false)
+              setListKey(prevKey => prevKey + 1)
+            });
+          }}
+          createDoctorModel={{ 
+            firstName: "",
+            lastName: "", 
+            middleName: "",
+            officeId: "", 
+            specializationId: "", 
+            status: DoctorStatus.AtWork,  
+            dateOfBirth: (new Date()).toString(), 
+            careerStartYear: (new Date()).toString(),
+            account: {
+              email: "",
+              phoneNumber: "",
+            } as CreateAccountModelForProfile,
+            photo: null } as CreateDoctorModel} /> }
       </div>
       
       <div className="min-h-dvh m-4">

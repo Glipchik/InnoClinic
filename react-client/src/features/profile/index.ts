@@ -1,0 +1,1 @@
+export { EditDoctorByDoctorForm } from './EditDoctorByDoctorForm'

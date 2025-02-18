@@ -72,6 +72,8 @@ namespace Profiles.Infrastructure.Repositories
         public async Task<Receptionist> GetByAccountIdAsync(Guid accountId, CancellationToken cancellationToken)
         {
             return await _context.Set<Receptionist>().AsNoTracking()
+                .Include(d => d.Account)
+                .Include(d => d.Office)
                 .FirstOrDefaultAsync(r => r.AccountId == accountId, cancellationToken: cancellationToken);
         }
 

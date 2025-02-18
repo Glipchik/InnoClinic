@@ -21,7 +21,9 @@ const PrivateRoute = ({ requiredRole, children }: PrivateRouteProps) => {
           setIsForbidden(false)
         } else {
           setIsAuthorized(true)
-          if (!user.profile.role.includes(requiredRole)) {
+          if (requiredRole.includes(user.profile.role)) {
+            console.log(requiredRole)
+            console.log(user.profile.role)
             setIsForbidden(false)
           } else {
             setIsForbidden(true)
@@ -39,7 +41,7 @@ const PrivateRoute = ({ requiredRole, children }: PrivateRouteProps) => {
     userManager?.signinRedirect()
   }
 
-  if (!isForbidden && isAuthorized) {
+  if (isForbidden && isAuthorized) {
     return <Navigate to="/forbidden" />;
   }
 

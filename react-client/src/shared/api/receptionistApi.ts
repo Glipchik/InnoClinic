@@ -4,6 +4,7 @@ import axios from 'axios';
 import PaginatedList from '../../models/paginatedList';
 import ReceptionistModel from '../../models/receptionists/ReceptionistModel';
 import CreateReceptionistModel from '../../models/receptionists/CreateReceptionistModel';
+import EditReceptionistModel from '../../models/receptionists/EditReceptionistModel';
 
 async function GET(id: string | null, token: string): Promise<AxiosResponse<Receptionist | Receptionist[]>> {
   if (id === null) {
@@ -32,11 +33,43 @@ async function GETWithPagination(officeId: string | null, pageIndex: number | nu
 }
 
 async function POST(createReceptionistModel: CreateReceptionistModel, token: string): Promise<AxiosResponse> {
-  return await axios.post<CreateReceptionistModel>(`${import.meta.env.VITE_PROFILES_BASE_URL}/api/Receptionists`, createReceptionistModel, { headers: { Authorization: `Bearer ${token}` } });
+  const formData = new FormData();
+  
+  Object.entries(createReceptionistModel).forEach(([key, value]) => {
+    if (value !== null && value !== undefined) {
+      if (typeof value === "object" && value !== null) {
+        Object.entries(value).forEach(([nestedKey, nestedValue]) => {
+          if (nestedValue !== null && nestedValue !== undefined) {
+            formData.append(`${key}.${nestedKey}`, nestedValue as string);
+          }
+        });
+      } else {
+        formData.append(key, value as string);
+      }
+    }
+  });
+
+  if (createReceptionistModel.photo) {
+    formData.append("photo", createReceptionistModel.photo);
+  }
+
+  return await axios.post<FormData>(`${import.meta.env.VITE_PROFILES_BASE_URL}/api/Receptionists`, formData, { headers: { Authorization: `Bearer ${token}` } });
 }
 
-async function PUT(receptionist: Receptionist, token: string): Promise<AxiosResponse> {
-  return await axios.put<Receptionist>(`${import.meta.env.VITE_PROFILES_BASE_URL}/api/Receptionists/as-receptionist`, receptionist, { headers: { Authorization: `Bearer ${token}` } });
+async function PUT(editReceptionistModel: EditReceptionistModel, token: string): Promise<AxiosResponse> {
+  const formData = new FormData();
+  
+  Object.entries(editReceptionistModel).forEach(([key, value]) => {
+    if (value !== null && value !== undefined) {
+      formData.append(key, value as string);
+    }
+  });
+
+  if (editReceptionistModel.photo) {
+    formData.append("photo", editReceptionistModel.photo);
+  }
+  
+  return await axios.put<FormData>(`${import.meta.env.VITE_PROFILES_BASE_URL}/api/Receptionists/as-receptionist`, formData, { headers: { Authorization: `Bearer ${token}` } });
 }
 
 async function DELETE(id: string, token: string): Promise<AxiosResponse> {
