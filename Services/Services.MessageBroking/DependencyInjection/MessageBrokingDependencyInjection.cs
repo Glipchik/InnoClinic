@@ -1,4 +1,6 @@
-﻿using MassTransit;
+﻿using Events.Doctor;
+using Events.Specialization;
+using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
 using Services.Consumers.Consumers.DoctorConsumers;
 using Services.Consumers.Mapper;
@@ -41,11 +43,11 @@ namespace Services.Consumers.Consumers.DependencyInjection
 
         private static void ConfigureDoctorEndpoints(IBusRegistrationContext context, IRabbitMqBusFactoryConfigurator cfg)
         {
-            cfg.ReceiveEndpoint("doctor-created", e =>
+            cfg.ReceiveEndpoint("services-doctor-created", e =>
             {
                 e.ConfigureConsumer<CreateDoctorConsumer>(context);
             });
-            cfg.ReceiveEndpoint("doctor-updated", e =>
+            cfg.ReceiveEndpoint("services-doctor-updated", e =>
             {
                 e.ConfigureConsumer<UpdateDoctorConsumer>(context);
             });

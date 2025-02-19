@@ -48,11 +48,11 @@ namespace Offices.MessageBroking.DependencyInjection
 
         private static void ConfigureDoctorEndpoints(IBusRegistrationContext context, IRabbitMqBusFactoryConfigurator cfg)
         {
-            cfg.ReceiveEndpoint("doctor-created", e =>
+            cfg.ReceiveEndpoint("offices-doctor-created", e =>
             {
                 e.ConfigureConsumer<CreateDoctorConsumer>(context);
             });
-            cfg.ReceiveEndpoint("doctor-updated", e =>
+            cfg.ReceiveEndpoint("offices-doctor-updated", e =>
             {
                 e.ConfigureConsumer<UpdateDoctorConsumer>(context);
             });
@@ -60,15 +60,15 @@ namespace Offices.MessageBroking.DependencyInjection
 
         private static void ConfigureReceptionistEndpoints(IBusRegistrationContext context, IRabbitMqBusFactoryConfigurator cfg)
         {
-            cfg.ReceiveEndpoint("receptionist-created", e =>
+            cfg.ReceiveEndpoint("offices-receptionist-created", e =>
             {
                 e.ConfigureConsumer<CreateReceptionistConsumer>(context);
             });
-            cfg.ReceiveEndpoint("receptionist-updated", e =>
+            cfg.ReceiveEndpoint("offices-receptionist-updated", e =>
             {
                 e.ConfigureConsumer<UpdateReceptionistConsumer>(context);
             });
-            cfg.ReceiveEndpoint("receptionist-deleted", e =>
+            cfg.ReceiveEndpoint("offices-receptionist-deleted", e =>
             {
                 e.ConfigureConsumer<DeleteReceptionistConsumer>(context);
             });
