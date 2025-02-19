@@ -79,7 +79,7 @@ export function ServiceForm({ createServiceModel, onSubmit, onCancel }: ServiceF
       <div className="flex flex-col">
         {fetchSpecializationsLoading && <Loading label="Loading specializations..." />}
         {fetchSpecializationsError && <p className="text-red-500">Error: {fetchSpecializationsError}</p>}
-        <Select
+        {fetchSpecializationsData && <Select
           disabled={false}
           label="Specialization"
           id="specializationId"
@@ -92,7 +92,7 @@ export function ServiceForm({ createServiceModel, onSubmit, onCancel }: ServiceF
             (fetchSpecializationsData as Specialization[]).map((spec: Specialization) => (
               <option key={spec.id} value={spec.id} label={spec.specializationName} />
             ))}
-        </Select>
+        </Select>}
         {formik.touched.specializationId && formik.errors.specializationId ? (
           <div className="text-red-500">{formik.errors.specializationId}</div>
         ) : null}
@@ -102,7 +102,7 @@ export function ServiceForm({ createServiceModel, onSubmit, onCancel }: ServiceF
       <div className="flex flex-col">
         {fetchServiceCategoriesLoading && <Loading label="Loading specializations..." />}
         {fetchServiceCategoriesError && <p className="text-red-500">Error: {fetchServiceCategoriesError}</p>}
-        <Select
+        {fetchServiceCategoriesData && <Select
           disabled={false}
           label="Service Category"
           id="serviceCategoryId"
@@ -115,7 +115,7 @@ export function ServiceForm({ createServiceModel, onSubmit, onCancel }: ServiceF
             (fetchServiceCategoriesData as ServiceCategory[]).map((spec: ServiceCategory) => (
               <option key={spec.id} value={spec.id} label={spec.categoryName} />
             ))}
-        </Select>
+        </Select>}
         {formik.touched.specializationId && formik.errors.specializationId ? (
           <div className="text-red-500">{formik.errors.specializationId}</div>
         ) : null}
@@ -123,7 +123,7 @@ export function ServiceForm({ createServiceModel, onSubmit, onCancel }: ServiceF
 
       {/* Service Price Input */}
       <div className="flex flex-col">
-        <label htmlFor="input-field" className="text-gray-700 font-medium">"Service Price"</label>
+        <label htmlFor="input-field" className="text-gray-700 font-medium">Service Price</label>
         <input 
           className="form-control mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           type="number"
