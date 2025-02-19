@@ -3,16 +3,19 @@ using Appointments.Application.Models;
 using Appointments.Application.Services.Abstractions;
 using Appointments.Domain.Entities;
 using Appointments.Domain.Repositories.Abstractions;
+using Appointments.MessageBroking.Producers.Abstractions.AppointmentProducers;
 using AutoMapper;
 
 namespace Appointments.Application.Services
 {
     public class AppointmentService(
             IUnitOfWork unitOfWork,
-            IMapper mapper) : IAppointmentService
+            IMapper mapper,
+            IAppointmentProducer appointmentProducer) : IAppointmentService
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
+        private readonly IAppointmentProducer _appointmentProducer = appointmentProducer;
 
         private readonly TimeOnly _startOfTheWorkingDay = new TimeOnly(10, 0, 0);
         private readonly TimeOnly _endOfTheWorkingDay = new TimeOnly(16, 0, 0);
@@ -30,6 +33,9 @@ namespace Appointments.Application.Services
 
             var approvedAppointment = await _unitOfWork.AppointmentRepository.ApproveAsync(appointmentId, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            await _appointmentProducer.PublishAppointmentUpdated(approvedAppointment, cancellationToken);
+
             return _mapper.Map<AppointmentModel>(approvedAppointment);
         }
 
@@ -72,6 +78,9 @@ namespace Appointments.Application.Services
 
             var createdAppointment = await _unitOfWork.AppointmentRepository.CreateAsync(newAppointment, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            await _appointmentProducer.PublishAppointmentCreated(createdAppointment, cancellationToken);
+
             return _mapper.Map<AppointmentModel>(createdAppointment);
         }
 
@@ -101,8 +110,11 @@ namespace Appointments.Application.Services
             appointment.Time = doctorSchedule.ElementAt(updateAppointmentModel.TimeSlotId).Start;
             appointment.IsApproved = false;
 
-            var updatedAppointment = _unitOfWork.AppointmentRepository.Update(appointment, cancellationToken);
+            var updatedAppointment = await _unitOfWork.AppointmentRepository.UpdateAsync(appointment, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            await _appointmentProducer.PublishAppointmentUpdated(updatedAppointment, cancellationToken);
+
             return _mapper.Map<AppointmentModel>(updatedAppointment);
         }
 
@@ -198,6 +210,7 @@ namespace Appointments.Application.Services
             
             await _unitOfWork.AppointmentRepository.DeleteAsync(id, cancellationToken);
 
+            await _appointmentProducer.PublishAppointmentDeleted(id, cancellationToken);
             return _mapper.Map<AppointmentModel>(appointment);
         }
     }
