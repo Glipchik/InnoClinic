@@ -50,7 +50,7 @@ export function SpecializationsList({ token }: SpecializationsListProps) {
                 />
               ) : (
                 <>
-                  <p className="place-self-start text-3xl font-semibold">Address: {specialization.specializationName}</p>
+                  <p className="place-self-start text-3xl font-semibold">Specialization Name: {specialization.specializationName}</p>
                   <p className="place-self-start text-2xl">Is active: {specialization.isActive ? 'Yes' : 'No'}</p>
                   <div className="flex space-x-4">
                     <Button onClick={() => handleEdit(specialization.id)}>Edit</Button>
