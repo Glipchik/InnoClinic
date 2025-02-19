@@ -70,7 +70,7 @@ export function ReceptionistsList({ token }: ReceptionistsListProps) {
         {fetchOfficesLoading && <Loading label="Loading offices..." />}
         {fetchOfficesError && <p className="text-red-500">Error: {fetchOfficesError}</p>}
 
-        <Select
+        {fetchOfficesData && <Select
           label="Office"
           id="officeId"
           name="officeId"
@@ -84,7 +84,7 @@ export function ReceptionistsList({ token }: ReceptionistsListProps) {
             (fetchOfficesData as Office[]).map((office: Office) => (
               <option key={office.id} value={office.id} label={office.address} />
             ))}
-        </Select>
+        </Select>}
       </div>
 
       {fetchReceptionistsData && (

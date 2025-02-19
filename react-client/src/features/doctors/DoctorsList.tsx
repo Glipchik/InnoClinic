@@ -77,7 +77,7 @@ export function DoctorsList({ token }: DoctorsListProps) {
 
         {fetchSpecializationsError && <p className="text-red-500">Error: {fetchSpecializationsError}</p>}
 
-        <Select
+        {fetchSpecializationsData && <Select
           label="Specialization"
           id="specializationId"
           name="specializationId"
@@ -91,7 +91,7 @@ export function DoctorsList({ token }: DoctorsListProps) {
             (fetchSpecializationsData as Specialization[]).map((spec: Specialization) => (
               <option key={spec.id} value={spec.id} label={spec.specializationName} />
             ))}
-        </Select>
+        </Select>}
 
       </div>
 
@@ -102,7 +102,7 @@ export function DoctorsList({ token }: DoctorsListProps) {
 
         {fetchOfficesError && <p className="text-red-500">Error: {fetchOfficesError}</p>}
 
-        <Select
+        {fetchOfficesData && <Select
           label="Office"
           id="officeId"
           name="officeId"
@@ -116,7 +116,7 @@ export function DoctorsList({ token }: DoctorsListProps) {
             (fetchOfficesData as Office[]).map((office: Office) => (
               <option key={office.id} value={office.id} label={office.address} />
             ))}
-        </Select>
+        </Select>}
       </div>
 
       {fetchDoctorsData && (

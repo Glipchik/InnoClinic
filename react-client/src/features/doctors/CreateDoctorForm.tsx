@@ -131,7 +131,7 @@ export function CreateDoctorForm({ createDoctorModel, onSubmit, onCancel, token 
       <div className="flex flex-col">
         {fetchSpecializationsLoading && <Loading label="Loading specializations..." />}
         {fetchSpecializationsError && <p className="text-red-500">Error: {fetchSpecializationsError}</p>}
-        <Select
+        {fetchSpecializationsData && <Select
           disabled={false}
           label="Specialization"
           id="specializationId"
@@ -144,7 +144,7 @@ export function CreateDoctorForm({ createDoctorModel, onSubmit, onCancel, token 
             (fetchSpecializationsData as Specialization[]).map((spec: Specialization) => (
               <option key={spec.id} value={spec.id} label={spec.specializationName} />
             ))}
-        </Select>
+        </Select>}
         {formik.touched.specializationId && formik.errors.specializationId ? (
           <div className="text-red-500">{formik.errors.specializationId}</div>
         ) : null}
@@ -154,7 +154,7 @@ export function CreateDoctorForm({ createDoctorModel, onSubmit, onCancel, token 
       <div className="flex flex-col">
         {fetchOfficesLoading && <Loading label="Loading offices..." />}
         {fetchOfficesError && <p className="text-red-500">Error: {fetchOfficesError}</p>}
-        <Select
+        {fetchOfficesData && <Select
           disabled={false}
           label="Office"
           id="officeId"
@@ -167,7 +167,7 @@ export function CreateDoctorForm({ createDoctorModel, onSubmit, onCancel, token 
             (fetchOfficesData as Office[]).map((office: Office) => (
               <option key={office.id} value={office.id} label={office.address} />
             ))}
-        </Select>
+        </Select>}
         {formik.touched.officeId && formik.errors.officeId ? (
           <div className="text-red-500">{formik.errors.officeId}</div>
         ) : null}

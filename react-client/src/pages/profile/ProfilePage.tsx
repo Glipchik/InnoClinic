@@ -158,7 +158,7 @@ export default function ProfilePage() {
             onSubmit={async (editDoctorModelByDoctor: EditDoctorModelByDoctor) => {
               await editDoctorsProfile(editDoctorModelByDoctor);
               setIsEditing(false);
-              fetchPatientsProfile();
+              fetchDoctorsProfile();
             }}
           />
         ) : (
@@ -208,7 +208,7 @@ export default function ProfilePage() {
             onSubmit={async (editReceptionistModel: EditReceptionistModel) => {
               await editReceptionistsProfile(editReceptionistModel);
               setIsEditing(false);
-              fetchPatientsProfile();
+              fetchReceptionistsProfile();
             }}
           />
         ) : (
