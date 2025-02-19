@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication;
 using IdentityModel;
 using Documents.API.Mapper;
 using Documents.API.Validators;
+using Results.MessageBroking.DependencyInjection;
 
 namespace Documents.API.DependencyInjection
 {
@@ -15,6 +16,8 @@ namespace Documents.API.DependencyInjection
         public static IServiceCollection AddApiDependencyInjection(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddInfrastructureDependencyInjection(configuration);
+
+            services.AddMessageBrokingDependencyInjection();
 
             services.AddControllers();
 
