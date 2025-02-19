@@ -211,7 +211,6 @@ namespace Appointments.Application.Services
             await _unitOfWork.AppointmentRepository.DeleteAsync(id, cancellationToken);
 
             await _appointmentProducer.PublishAppointmentDeleted(id, cancellationToken);
-
             return _mapper.Map<AppointmentModel>(appointment);
         }
     }

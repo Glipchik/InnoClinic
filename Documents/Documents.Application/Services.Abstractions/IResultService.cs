@@ -10,7 +10,7 @@ namespace Documents.Application.Services.Abstractions
         Task<ResultModel> Get(Guid id, CancellationToken cancellationToken);
         Task<IEnumerable<ResultModel>> GetAll(CancellationToken cancellationToken);
         Task<IEnumerable<ResultModel>> GetAllByPatientId(Guid patientId, CancellationToken cancellationToken);
-        Task<IEnumerable<ResultModel>> GetAllByDoctorid(Guid doctorId, CancellationToken cancellationToken);
+        Task<IEnumerable<ResultModel>> GetAllByDoctorId(Guid doctorId, CancellationToken cancellationToken);
         Task<ResultModel> Delete(Guid id, CancellationToken cancellationToken);
         Task<ResultModel> SendResultByEmail(Guid id, string email, CancellationToken cancellationToken);
         Task<byte[]> GeneratePdf(Guid resultId, CancellationToken cancellationToken);

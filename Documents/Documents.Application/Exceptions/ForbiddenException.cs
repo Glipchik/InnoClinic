@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Appointments.Application.Exceptions
+namespace Documents.Application.Exceptions
 {
     public class ForbiddenException : BadRequestException
     {
