@@ -28,7 +28,7 @@ namespace Authorization.MessageBroking.DependencyInjection
 
         private static void ConfigureAccountEndpoints(IBusRegistrationContext context, IRabbitMqBusFactoryConfigurator cfg)
         {
-            cfg.ReceiveEndpoint("account-deleted", e =>
+            cfg.ReceiveEndpoint("authorization-account-deleted", e =>
             {
                 e.ConfigureConsumer<DeleteAccountConsumer>(context);
             });
