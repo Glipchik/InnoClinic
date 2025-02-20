@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from "react";
-import { CreateAppointmentForm } from "../../features/appointments/CreateAppointmentForm/index";
+import { CreateAppointmentForm } from "../../features/create-appointment-form/index";
 import { UserManagerContext } from "../../shared/contexts/UserManagerContext";
 import { useSelector } from "react-redux";
-import { RootState } from "../../store/store";
+import { RootState } from "../../store";
 import Button from "../../shared/ui/controls/Button";
 import { useAppointments } from "../../shared/hooks/useAppointments";
 import Loading from "../../shared/ui/controls/Loading";

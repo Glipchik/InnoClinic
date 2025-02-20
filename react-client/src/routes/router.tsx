@@ -6,10 +6,10 @@ import { Login } from '../features/auth/Login';
 import { Logout } from '../features/auth/Logout';
 import { Register } from '../features/auth/Register';
 import { HomePage } from '../pages/home/HomePage'
-import Layout from '../shared/ui/Layout'
+import Layout from '../shared/ui/layout'
 import { AppointmentsPage } from "../pages/appointments/AppointmentsPage";
 import { SilentRenew } from "../features/auth/SilentRenew";
-import { PrivateRoute } from "../shared/routes/PrivateRoute/index";
+import PrivateRoute from "../shared/routes/PrivateRoute/index";
 import { ForbiddenPage } from "../pages/errors/ForbiddenPage";
 
 const router = createBrowserRouter([
@@ -20,6 +20,7 @@ const router = createBrowserRouter([
       {
         path: "home",
         element: <HomePage />,
+        index: true
       },
       {
         path: "",

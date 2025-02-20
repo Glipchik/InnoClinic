@@ -1,0 +1,29 @@
+import { Outlet } from "react-router-dom";
+import { UserManagerContext } from '../../contexts/UserManagerContext';
+import Header from "../header"
+import Footer from "../footer"
+import { useContext, useEffect } from "react";
+
+const Layout = () => {
+  const userManager = useContext(UserManagerContext);
+
+  useEffect(() => {
+    if (userManager) {
+      userManager.events.addUserLoaded((user) => {
+        localStorage.setItem("token", user.access_token)
+      })
+    }
+  }, [userManager])
+
+  return (
+    <div>
+      <Header />
+      <main>
+        <Outlet />
+      </main>
+      <Footer />
+    </div>
+  );
+}
+
+export default Layout;

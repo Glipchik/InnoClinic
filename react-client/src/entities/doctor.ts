@@ -4,7 +4,7 @@ export default interface Doctor {
   id: string,
   firstName: string,
   lastName: string,
-  middleName: string | null,
+  middleName?: string,
   specializationId: string,
   accountId: string,
   officeId: string,
