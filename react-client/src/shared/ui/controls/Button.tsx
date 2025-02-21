@@ -5,14 +5,16 @@ interface ButtonProps {
   onClick?: () => void;
   className?: string;
   type?: "submit" | "reset" | "button" | undefined;
+  disabled?: boolean
 }
 
-const Button: React.FC<ButtonProps> = ({ children, onClick, className, type }) => {
+const Button: React.FC<ButtonProps> = ({ children, onClick, className, type, disabled }) => {
   return (
     <button
       onClick={onClick}
-      className={`px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none cursor-pointer ${className}`}
+      className={`px-4 py-2 bg-blue-500 text-white rounded disabled:bg-blue-300 hover:bg-blue-600 focus:outline-none cursor-pointer ${className}`}
       type={type}
+      disabled={disabled}
     >
       {children}
     </button>

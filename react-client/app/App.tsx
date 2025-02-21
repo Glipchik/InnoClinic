@@ -2,9 +2,9 @@ import "./App.css";
 import { UserManagerContext } from '../src/shared/contexts/UserManagerContext';
 import { RouterProvider } from "react-router-dom";
 import { Log, UserManager, WebStorageStateStore } from 'oidc-client';
-import router from "../src/routes/router";
-import { store } from '../src/store';
+import router from "./routes/router";
 import { Provider } from 'react-redux';
+import store from "../src/store";
 
 Log.logger = console
 Log.level = Log.INFO

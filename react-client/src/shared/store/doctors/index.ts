@@ -1,14 +1,15 @@
-import { Action, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import Doctor from '../../../entities/doctor';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AxiosResponse, AxiosError } from 'axios';
-import { takeLatest } from 'redux-saga';
+import { takeLatest } from 'redux-saga/effects';
 import { call, CallEffect, put, PutEffect } from 'redux-saga/effects';
-import { GETAll } from '../../api/specializations';
+import { GETAll } from '../../api/doctors';
+import { AnyAction } from 'redux-saga';
+import DoctorModel from '../../api/doctors/models/doctorModel';
 
 interface DoctorsState {
   loading: boolean
   error?: string
-  data?: Doctor[] 
+  data?: DoctorModel[] 
 }
 
 const initialState : DoctorsState = {
@@ -21,10 +22,10 @@ const fetchDoctorsSlice = createSlice({
   name: 'FetchDoctorsSlice',
   initialState,
   reducers: {
-    fetchDoctorsRequest: state => {
+    fetchDoctorsRequest: (state, action: PayloadAction<string>) => {
       state.loading = true;
     },
-    fetchDoctorsSuccess: (state, action: PayloadAction<Doctor[]>) => {
+    fetchDoctorsSuccess: (state, action: PayloadAction<DoctorModel[]>) => {
       state.loading = false;
       state.data = action.payload;
     },
@@ -35,17 +36,18 @@ const fetchDoctorsSlice = createSlice({
   }
 });
 
-type ApiResponse = AxiosResponse<Doctor[]>;
+type ApiResponse = AxiosResponse<DoctorModel[]>;
 
 type ApiError = AxiosError<{
   detail?: string;
   title?: string;
 }>;
 
-function* fetchDoctors() : Generator<CallEffect<ApiResponse> | PutEffect, void, ApiResponse> {
+function* fetchDoctors(action: AnyAction) : Generator<CallEffect<ApiResponse> | PutEffect, void, ApiResponse> {
   try {
-    const response : ApiResponse  = yield call(GETAll);
-    yield put(fetchDoctorsSuccess(response.data))
+    const specializationId = action.payload
+    const response : ApiResponse  = yield call(GETAll, specializationId);
+    yield put(fetchDoctorsSlice.actions.fetchDoctorsSuccess(response.data))
   } catch (error) {
     let errorMessage = "An unknown error occurred";
 
@@ -53,7 +55,7 @@ function* fetchDoctors() : Generator<CallEffect<ApiResponse> | PutEffect, void, 
       const problemDetails = (error as ApiError).response!.data;
       errorMessage = problemDetails.detail || problemDetails.title || errorMessage;
     }
-    yield put(fetchDoctorsFailure(errorMessage))
+    yield put(fetchDoctorsSlice.actions.fetchDoctorsFailure(errorMessage))
   }
 }
 
@@ -61,6 +63,6 @@ function* watchFetchDoctors() {
   yield takeLatest(fetchDoctorsSlice.actions.fetchDoctorsRequest.type, fetchDoctors);
 }
 
-export const { fetchDoctorsRequest, fetchDoctorsSuccess, fetchDoctorsFailure } = fetchDoctorsSlice.actions;
+export const { fetchDoctorsRequest } = fetchDoctorsSlice.actions;
 export const fetchDoctorsSliceReducer = fetchDoctorsSlice.reducer
 export { watchFetchDoctors }

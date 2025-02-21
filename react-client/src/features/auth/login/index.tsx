@@ -1,14 +1,13 @@
 import { useContext, useEffect } from 'react';
-import { UserManagerContext } from '../../shared/contexts/UserManagerContext';
+import { UserManagerContext } from '../../../shared/contexts/UserManagerContext';
 import { useNavigate } from 'react-router-dom';
 
-function Login() {
+const Login = () => {
   const userManager = useContext(UserManagerContext);
   const navigate = useNavigate();
-
+  
   useEffect(() => {
     if (!userManager) return;
-
     async function redirectToLogin() {
       try {
         await userManager?.signinRedirect();
@@ -16,7 +15,6 @@ function Login() {
         console.error("Error while login:", error);
       }
     }
-
     redirectToLogin();
   }, [userManager, navigate]);
 

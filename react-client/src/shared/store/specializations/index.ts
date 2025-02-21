@@ -1,16 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import Specialization from '../../../entities/specialization';
 import { AxiosError } from "axios";
-import { Action } from "redux";
-import { takeLatest } from "redux-saga";
 import { AxiosResponse } from "axios";
 import { call, CallEffect, put, PutEffect } from "redux-saga/effects";
 import { GETAll } from '../../api/specializations';
+import { takeLatest } from 'redux-saga/effects';
+import SpecializationModel from '../../api/specializations/models/specializationModel';
 
 interface FetchSpecializationsState {
   loading: boolean;
   error?: string;
-  data?: Specialization[]
+  data?: SpecializationModel[]
 }
 
 const initialState : FetchSpecializationsState = {
@@ -26,7 +25,7 @@ const fetchSpecializationsSlice = createSlice({
     fetchSpecializationsRequest: state => {
       state.loading = true;
     },
-    fetchSpecializationsSuccess: (state, action: PayloadAction<Specialization[]>) => {
+    fetchSpecializationsSuccess: (state, action: PayloadAction<SpecializationModel[]>) => {
       state.loading = false;
       state.data = action.payload;
     },
@@ -37,7 +36,7 @@ const fetchSpecializationsSlice = createSlice({
   }
 });
 
-type ApiResponse = AxiosResponse<Specialization[]>;
+type ApiResponse = AxiosResponse<SpecializationModel[]>;
 
 type ApiError = AxiosError<{
   detail?: string;
@@ -47,7 +46,7 @@ type ApiError = AxiosError<{
 function* fetchSpecializations() : Generator<CallEffect<ApiResponse> | PutEffect, void, ApiResponse> {
   try {
     const response : ApiResponse  = yield call(GETAll);
-    yield put(fetchSpecializationsSuccess(response.data))
+    yield put(fetchSpecializationsSlice.actions.fetchSpecializationsSuccess(response.data))
   } catch (error) {
     let errorMessage = "An unknown error occurred";
 
@@ -55,7 +54,7 @@ function* fetchSpecializations() : Generator<CallEffect<ApiResponse> | PutEffect
       const problemDetails = (error as ApiError).response!.data;
       errorMessage = problemDetails.detail || problemDetails.title || errorMessage;
     }
-    yield put(fetchSpecializationsFailure(errorMessage))
+    yield put(fetchSpecializationsSlice.actions.fetchSpecializationsFailure(errorMessage))
   }
 }
 
@@ -63,6 +62,6 @@ function* watchFetchSpecializations() {
   yield takeLatest(fetchSpecializationsSlice.actions.fetchSpecializationsRequest.type, fetchSpecializations);
 }
 
-export const { fetchSpecializationsRequest, fetchSpecializationsSuccess, fetchSpecializationsFailure } = fetchSpecializationsSlice.actions;
+export const { fetchSpecializationsRequest } = fetchSpecializationsSlice.actions;
 export const fetchSpecializationsSliceReducer = fetchSpecializationsSlice.reducer
 export { watchFetchSpecializations }

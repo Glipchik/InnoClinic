@@ -12,6 +12,12 @@ const Layout = () => {
       userManager.events.addUserLoaded((user) => {
         localStorage.setItem("token", user.access_token)
       })
+      userManager.events.addUserUnloaded(() => {
+        localStorage.removeItem("token")
+      })
+      userManager.events.addAccessTokenExpired(() => {
+        userManager.signinSilent()
+      })
     }
   }, [userManager])
 

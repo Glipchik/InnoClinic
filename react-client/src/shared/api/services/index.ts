@@ -1,5 +1,6 @@
-import Service from "../../../entities/service";
 import tokenInterceptor from "../interceptors/tokenInterceptor";
+import ServiceModel from "./models/serviceModel";
+import axios from "axios";
 
 const axiosInstance = axios.create({
   baseURL: `${import.meta.env.VITE_SERVICES_BASE_URL}/api/Services`,
@@ -15,11 +16,11 @@ const GETAll = async (specializationId?: string) => {
   if (specializationId) {
     url += specializationId;
   }
-  return await axios.get<{ data: Service[] }>(url);
+  return await axiosInstance.get<{ data: ServiceModel[] }>(url);
 }
 
 const GETById = async (id: string) => {
-  return await axios.get<{ data: Service }>(`/${id}`);
+  return await axiosInstance.get<{ data: ServiceModel }>(`/${id}`);
 }
 
 export { GETAll, GETById }

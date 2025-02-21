@@ -1,14 +1,15 @@
-import { Action, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import Service from '../../../entities/service';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AxiosResponse, AxiosError } from 'axios';
-import { takeLatest } from 'redux-saga';
+import { takeLatest } from 'redux-saga/effects';
 import { call, CallEffect, put, PutEffect } from 'redux-saga/effects';
-import { GETAll } from '../../api/specializations';
+import { GETAll } from '../../api/services';
+import { AnyAction } from 'redux-saga';
+import ServiceModel from '../../api/services/models/serviceModel';
 
 interface ServicesState {
   loading: boolean
   error?: string
-  data?: Service[] 
+  data?: ServiceModel[] 
 }
 
 const initialState : ServicesState = {
@@ -21,10 +22,10 @@ const fetchServicesSlice = createSlice({
   name: 'FetchServicesSlice',
   initialState,
   reducers: {
-    fetchServicesRequest: state => {
+    fetchServicesRequest: (state, action: PayloadAction<string>) => {
       state.loading = true;
     },
-    fetchServicesSuccess: (state, action: PayloadAction<Service[]>) => {
+    fetchServicesSuccess: (state, action: PayloadAction<ServiceModel[]>) => {
       state.loading = false;
       state.data = action.payload;
     },
@@ -35,17 +36,18 @@ const fetchServicesSlice = createSlice({
   }
 });
 
-type ApiResponse = AxiosResponse<Service[]>;
+type ApiResponse = AxiosResponse<ServiceModel[]>;
 
 type ApiError = AxiosError<{
   detail?: string;
   title?: string;
 }>;
 
-function* fetchServices() : Generator<CallEffect<ApiResponse> | PutEffect, void, ApiResponse> {
+function* fetchServices(action: AnyAction) : Generator<CallEffect<ApiResponse> | PutEffect, void, ApiResponse> {
   try {
-    const response : ApiResponse  = yield call(GETAll);
-    yield put(fetchServicesSuccess(response.data))
+    const specializationId = action.payload
+    const response : ApiResponse  = yield call(GETAll, specializationId);
+    yield put(fetchServicesSlice.actions.fetchServicesSuccess(response.data))
   } catch (error) {
     let errorMessage = "An unknown error occurred";
 
@@ -53,7 +55,7 @@ function* fetchServices() : Generator<CallEffect<ApiResponse> | PutEffect, void,
       const problemDetails = (error as ApiError).response!.data;
       errorMessage = problemDetails.detail || problemDetails.title || errorMessage;
     }
-    yield put(fetchServicesFailure(errorMessage))
+    yield put(fetchServicesSlice.actions.fetchServicesFailure(errorMessage))
   }
 }
 
@@ -61,6 +63,6 @@ function* watchFetchServices() {
   yield takeLatest(fetchServicesSlice.actions.fetchServicesRequest.type, fetchServices);
 }
 
-export const { fetchServicesRequest, fetchServicesSuccess, fetchServicesFailure } = fetchServicesSlice.actions;
+export const { fetchServicesRequest } = fetchServicesSlice.actions;
 export const fetchServicesSliceReducer = fetchServicesSlice.reducer
 export { watchFetchServices }

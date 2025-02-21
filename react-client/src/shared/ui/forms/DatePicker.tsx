@@ -11,7 +11,7 @@ interface DatePickerProps {
   className?: string;
 }
 
-const formatDate = (date: Date | string): string => {
+const formatDate = (date?: Date | string): string => {
   if (!date) return "";
   if (typeof date === "string") return date;
 

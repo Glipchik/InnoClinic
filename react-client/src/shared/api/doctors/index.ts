@@ -1,5 +1,6 @@
-import Doctor from "../../../entities/doctor";
 import tokenInterceptor from "../interceptors/tokenInterceptor";
+import DoctorModel from "./models/doctorModel";
+import axios from "axios";
 
 const axiosInstance = axios.create({
   baseURL: `${import.meta.env.VITE_PROFILES_BASE_URL}/api/Doctors`,
@@ -11,15 +12,15 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(tokenInterceptor)
 
 const GETAll = async (specializationId?: string) => {
-  let url = ''
+  let url = '?'
   if (specializationId) {
-    url += specializationId;
+    url += `specializationId=${specializationId}`;
   }
-  return await axios.get<{ data: Doctor[] }>(url);
+  return await axiosInstance.get<{ data: DoctorModel[] }>(url);
 }
 
 const GETById = async (id: string) => {
-  return await axios.get<{ data: Doctor }>(`/${id}`);
+  return await axiosInstance.get<{ data: DoctorModel }>(`/${id}`);
 }
 
 export { GETAll, GETById }

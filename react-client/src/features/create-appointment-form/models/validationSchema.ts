@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { MIN_APPOINTMENT_DATE } from '../helpers/dateUtils';
+import { MIN_APPOINTMENT_DATE } from '../lib/dateUtils';
 
 export const validationSchema = Yup.object({
   serviceId: Yup.string().required("Service is required"),

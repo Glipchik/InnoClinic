@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AxiosResponse, AxiosError } from 'axios';
-import { takeLatest } from 'redux-saga';
+import { takeLatest } from 'redux-saga/effects';
 import { call, CallEffect, put, PutEffect } from 'redux-saga/effects';
 import { GET } from '../../api/doctor-schedule';
 import TimeSlot from '../../../entities/timeSlot';
@@ -22,7 +22,7 @@ const fetchDoctorScheduleSlice = createSlice({
   name: 'FetchDoctorScheduleSlice',
   initialState,
   reducers: {
-    fetchDoctorScheduleRequest: (state) => {
+    fetchDoctorScheduleRequest: (state, action: PayloadAction<{ doctorId: string, date: Date }>) => {
       state.loading = true;
     },
     fetchDoctorScheduleSuccess: (state, action: PayloadAction<TimeSlot[]>) => {
@@ -49,7 +49,7 @@ function* fetchDoctorSchedule(
   try {
     const { doctorId, date } = action.payload;
     const response = yield call(GET, doctorId, date);
-    yield put(fetchDoctorScheduleSuccess(response.data))
+    yield put(fetchDoctorScheduleSlice.actions.fetchDoctorScheduleSuccess(response.data))
   } catch (error) {
     let errorMessage = "An unknown error occurred";
 
@@ -57,7 +57,7 @@ function* fetchDoctorSchedule(
       const problemDetails = (error as ApiError).response!.data;
       errorMessage = problemDetails.detail || problemDetails.title || errorMessage;
     }
-    yield put(fetchDoctorScheduleFailure(errorMessage))
+    yield put(fetchDoctorScheduleSlice.actions.fetchDoctorScheduleFailure(errorMessage))
   }
 }
 
@@ -65,6 +65,6 @@ function* watchFetchDoctorSchedule() {
   yield takeLatest(fetchDoctorScheduleSlice.actions.fetchDoctorScheduleRequest.type, fetchDoctorSchedule);
 }
 
-export const { fetchDoctorScheduleRequest, fetchDoctorScheduleSuccess, fetchDoctorScheduleFailure } = fetchDoctorScheduleSlice.actions;
+export const { fetchDoctorScheduleRequest } = fetchDoctorScheduleSlice.actions;
 export const fetchDoctorScheduleSliceReducer = fetchDoctorScheduleSlice.reducer
 export { watchFetchDoctorSchedule }

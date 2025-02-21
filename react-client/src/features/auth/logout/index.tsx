@@ -1,22 +1,21 @@
 import { useContext, useEffect } from 'react';
-import { UserManagerContext } from '../../shared/contexts/UserManagerContext';
+import { UserManagerContext } from '../../../shared/contexts/UserManagerContext';
 import { useNavigate } from 'react-router-dom';
 
-function Logout() {
+const Logout = () => {
   const userManager = useContext(UserManagerContext);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!userManager) return;
-
     async function redirectToLogout() {
       try {
         await userManager?.signoutRedirect();
+        localStorage.removeItem('token')
       } catch (error) {
         console.error("Error while logout:", error);
       }
     }
-
     redirectToLogout();
   }, [userManager, navigate]);
 
