@@ -12,17 +12,18 @@ interface DoctorSelectProps {
   value?: string | number;
   disabled?: boolean;
   className?: string;
+  error?: string;
 }
 
-const DoctorSelect = ({id, name, onChange, value, disabled, className} : DoctorSelectProps) => {
-  const { loading, error, data } = useSelector(
+const DoctorSelect = ({id, name, onChange, value, disabled, className, error} : DoctorSelectProps) => {
+  const { loading, error: fetchError, data } = useSelector(
     (state: RootState) => state.fetchDoctors
   );
 
   return (
-    <>
+    <div className="flex flex-col">
       {loading && <Loading label="Loading doctors..." />}
-      {error && <p className="text-red-500">{error}</p>}
+      {fetchError && <p className="text-red-500">{fetchError}</p>}
       <Select
         disabled={disabled}
         label="Doctor"
@@ -38,7 +39,8 @@ const DoctorSelect = ({id, name, onChange, value, disabled, className} : DoctorS
             <option key={doc.id} value={doc.id} label={doc.firstName + ' ' + doc.lastName} />
           ))}
       </Select>
-    </>
+      {error && <div className="text-red-500 mt-1">{error}</div>}
+    </div>
   )
 }
 

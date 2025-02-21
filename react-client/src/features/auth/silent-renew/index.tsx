@@ -3,14 +3,14 @@ import { UserManagerContext } from "../../../shared/contexts/UserManagerContext"
 import { useNavigate } from "react-router-dom"
 import { useDispatch } from "react-redux"
 
-function SilentRenew() {
+const SilentRenew = () => {
   const userManager = useContext(UserManagerContext)
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
   useEffect(() => {
     if (!userManager) return
-    async function silentRenew() {
+    const silentRenew = async () => {
       try {
         await userManager!.signinSilentCallback()
       } catch (error) {

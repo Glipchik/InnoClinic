@@ -11,16 +11,17 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(tokenInterceptor)
 
-const GETAll = async (specializationId?: string) => {
-  let url = '?'
-  if (specializationId) {
-    url += `specializationId=${specializationId}`;
+export const doctorsApi = {
+  GETAll: async (specializationId?: string) => {
+    let url = '?'
+    if (specializationId) {
+      url += `specializationId=${specializationId}`;
+    }
+    return await axiosInstance.get<{ data: DoctorModel[] }>(url);
+  },
+  GETById: async (id: string) => {
+    return await axiosInstance.get<{ data: DoctorModel }>(`/${id}`);
   }
-  return await axiosInstance.get<{ data: DoctorModel[] }>(url);
 }
 
-const GETById = async (id: string) => {
-  return await axiosInstance.get<{ data: DoctorModel }>(`/${id}`);
-}
-
-export { GETAll, GETById }
+export default doctorsApi

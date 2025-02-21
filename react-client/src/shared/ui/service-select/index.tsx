@@ -12,17 +12,18 @@ interface ServiceSelectProps {
   value?: string | number;
   disabled?: boolean;
   className?: string;
+  error?: string;
 }
 
-const ServiceSelect = ({id, name, onChange, value, disabled, className} : ServiceSelectProps) => {
-  const { loading, error, data } = useSelector(
+const ServiceSelect = ({id, name, onChange, value, disabled, className, error} : ServiceSelectProps) => {
+  const { loading, error: fetchError, data } = useSelector(
     (state: RootState) => state.fetchServices
   );
 
   return (
-    <>
+    <div className="flex flex-col">
       {loading && <Loading label="Loading services..." />}
-      {error && <p className="text-red-500">{error}</p>}
+      {fetchError && <p className="text-red-500">{fetchError}</p>}
       <Select
         disabled={disabled}
         label="Service"
@@ -38,7 +39,8 @@ const ServiceSelect = ({id, name, onChange, value, disabled, className} : Servic
             <option key={service.id} value={service.id} label={service.serviceName} />
           ))}
       </Select>
-    </>
+      {error && <div className="text-red-500 mt-1">{error}</div>}
+    </div>
   )
 }
 

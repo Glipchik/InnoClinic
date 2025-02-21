@@ -11,12 +11,13 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(tokenInterceptor)
 
-const GETAll = async () => {
-  return await axiosInstance.get<{ data: SpecializationModel[] }>('');
+const specializationsApi = {
+  GETAll: async () => {
+    return await axiosInstance.get<{ data: SpecializationModel[] }>('');
+  },
+  GETById: async (id: string) => {
+    return await axiosInstance.get<{ data: SpecializationModel }>(`/${id}`);
+  }
 }
 
-const GETById = async (id: string) => {
-  return await axiosInstance.get<{ data: SpecializationModel }>(`/${id}`);
-}
-
-export { GETAll, GETById }
+export default specializationsApi

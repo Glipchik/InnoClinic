@@ -8,7 +8,7 @@ const Register = () => {
 
   useEffect(() => {
     if (!userManager) return;
-    async function redirectToRegister() {
+    const redirectToRegister = async () => {
       try {
         await userManager?.signinRedirect();
       } catch (error) {

@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AxiosResponse, AxiosError } from 'axios';
 import { takeLatest } from 'redux-saga/effects';
 import { call, CallEffect, put, PutEffect } from 'redux-saga/effects';
-import { GET } from '../../api/doctor-schedule';
+import timeSlotsApi from '../../api/doctor-schedule';
 import TimeSlot from '../../../entities/timeSlot';
 import { AnyAction } from 'redux-saga';
 
@@ -48,7 +48,7 @@ function* fetchDoctorSchedule(
 ): Generator<CallEffect<ApiResponse> | PutEffect, void, ApiResponse> {
   try {
     const { doctorId, date } = action.payload;
-    const response = yield call(GET, doctorId, date);
+    const response = yield call(timeSlotsApi.GET, doctorId, date);
     yield put(fetchDoctorScheduleSlice.actions.fetchDoctorScheduleSuccess(response.data))
   } catch (error) {
     let errorMessage = "An unknown error occurred";

@@ -11,16 +11,17 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(tokenInterceptor)
 
-const GETAll = async (specializationId?: string) => {
-  let url = ''
-  if (specializationId) {
-    url += specializationId;
+const servicesApi = {
+  GETAll: async (specializationId?: string) => {
+    let url = ''
+    if (specializationId) {
+      url += specializationId;
+    }
+    return await axiosInstance.get<{ data: ServiceModel[] }>(url);
+  },
+  GETById: async (id: string) => {
+    return await axiosInstance.get<{ data: ServiceModel }>(`/${id}`);
   }
-  return await axiosInstance.get<{ data: ServiceModel[] }>(url);
 }
 
-const GETById = async (id: string) => {
-  return await axiosInstance.get<{ data: ServiceModel }>(`/${id}`);
-}
-
-export { GETAll, GETById }
+export default servicesApi

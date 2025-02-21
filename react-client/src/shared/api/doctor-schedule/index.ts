@@ -11,10 +11,12 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(tokenInterceptor)
 
-const GET = async (doctorId?: string, date?: Date) => {
-  const formattedDate = date!.toISOString().split('T')[0];
+export const timeSlotsApi = {
+  GET: async (doctorId?: string, date?: Date) => {
+    const formattedDate = date!.toISOString().split('T')[0];
 
-  return await axiosInstance.get<{ data: TimeSlot[] }>(`?doctorId=${doctorId}&date=${formattedDate}`);
+    return await axiosInstance.get<{ data: TimeSlot[] }>(`?doctorId=${doctorId}&date=${formattedDate}`);
+  }
 }
 
-export { GET }
+export default timeSlotsApi

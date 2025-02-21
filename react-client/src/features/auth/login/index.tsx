@@ -5,10 +5,10 @@ import { useNavigate } from 'react-router-dom';
 const Login = () => {
   const userManager = useContext(UserManagerContext);
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     if (!userManager) return;
-    async function redirectToLogin() {
+    const redirectToLogin = async () => {
       try {
         await userManager?.signinRedirect();
       } catch (error) {

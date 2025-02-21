@@ -10,7 +10,7 @@ const Header = () => {
   useEffect(() => {
     if (!userManager) return;
 
-    async function fetchUser() {
+    const fetchUser = async () => {
       const currentUser = await userManager?.getUser();
       setUser(currentUser);
     }

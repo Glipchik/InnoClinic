@@ -8,7 +8,7 @@ const SigninOidc = () => {
 
   useEffect(() => {
     if (!userManager) return
-    async function signinAsync() {
+    const signinAsync = async () => {
       try {
         const user = await userManager!.signinRedirectCallback()
         if (user) {

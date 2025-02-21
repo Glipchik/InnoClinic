@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AxiosResponse, AxiosError } from 'axios';
 import { takeLatest } from 'redux-saga/effects';
 import { call, CallEffect, put, PutEffect } from 'redux-saga/effects';
-import { GETAll } from '../../api/doctors';
+import doctorsApi from '../../api/doctors';
 import { AnyAction } from 'redux-saga';
 import DoctorModel from '../../api/doctors/models/doctorModel';
 
@@ -46,7 +46,7 @@ type ApiError = AxiosError<{
 function* fetchDoctors(action: AnyAction) : Generator<CallEffect<ApiResponse> | PutEffect, void, ApiResponse> {
   try {
     const specializationId = action.payload
-    const response : ApiResponse  = yield call(GETAll, specializationId);
+    const response : ApiResponse  = yield call(doctorsApi.GETAll, specializationId);
     yield put(fetchDoctorsSlice.actions.fetchDoctorsSuccess(response.data))
   } catch (error) {
     let errorMessage = "An unknown error occurred";

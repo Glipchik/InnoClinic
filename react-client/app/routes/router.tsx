@@ -1,16 +1,16 @@
 import {
   createBrowserRouter
-} from "react-router-dom";
-import { Login } from '../../src/features/auth/login';
-import { Logout } from '../../src/features/auth/logout';
-import { HomePage } from '../../src/pages/home/HomePage'
+} from "react-router-dom"
+import { Login } from '../../src/features/auth/login'
+import { Logout } from '../../src/features/auth/logout'
 import Layout from '../../src/shared/ui/layout'
-import { AppointmentsPage } from "../../src/pages/appointments/AppointmentsPage";
-import PrivateRoute from "../../src/shared/routes/PrivateRoute/index";
-import { ForbiddenPage } from "../../src/pages/errors/ForbiddenPage";
-import { SilentRenew } from "../../src/features/auth/silent-renew";
-import { Register } from "../../src/features/auth/register";
-import { SigninOidc } from "../../src/features/auth/signin-oidc";
+import PrivateRoute from "../../src/shared/routes/PrivateRoute/index"
+import { SilentRenew } from "../../src/features/auth/silent-renew"
+import { Register } from "../../src/features/auth/register"
+import { SigninOidc } from "../../src/features/auth/signin-oidc"
+import { HomePage } from "../../src/pages/home"
+import { ForbiddenPage } from "../../src/pages/errors/forbidden"
+import { AppointmentsPage } from "../../src/pages/appointments"
 
 const router = createBrowserRouter([
   {

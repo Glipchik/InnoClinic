@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AxiosError } from "axios";
 import { AxiosResponse } from "axios";
 import { call, CallEffect, put, PutEffect } from "redux-saga/effects";
-import { GETAll } from '../../api/specializations';
+import specializationsApi from '../../api/specializations';
 import { takeLatest } from 'redux-saga/effects';
 import SpecializationModel from '../../api/specializations/models/specializationModel';
 
@@ -45,7 +45,7 @@ type ApiError = AxiosError<{
 
 function* fetchSpecializations() : Generator<CallEffect<ApiResponse> | PutEffect, void, ApiResponse> {
   try {
-    const response : ApiResponse  = yield call(GETAll);
+    const response : ApiResponse  = yield call(specializationsApi.GETAll);
     yield put(fetchSpecializationsSlice.actions.fetchSpecializationsSuccess(response.data))
   } catch (error) {
     let errorMessage = "An unknown error occurred";

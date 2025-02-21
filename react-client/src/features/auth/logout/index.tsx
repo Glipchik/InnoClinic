@@ -8,7 +8,7 @@ const Logout = () => {
 
   useEffect(() => {
     if (!userManager) return;
-    async function redirectToLogout() {
+      const redirectToLogout = async () => {
       try {
         await userManager?.signoutRedirect();
         localStorage.removeItem('token')

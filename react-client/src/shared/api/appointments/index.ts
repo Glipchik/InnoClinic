@@ -12,16 +12,16 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(tokenInterceptor)
 
-const GETAll = async () => {
-  return await axiosInstance.get<{ data: AppointmentModel[] }>('');
+export const appointmentsApi = {
+  GETAll: async () => {
+    return await axiosInstance.get<{ data: AppointmentModel[] }>('');
+  },
+  GETById: async (id: string) => {
+    return await axiosInstance.get<{ data: AppointmentModel }>(`/${id}`);
+  },
+  POST: async (createAppointmentModel?: CreateAppointmentModel) => {
+    return await axiosInstance.post<CreateAppointmentModel>('', createAppointmentModel);
+  }
 }
 
-const GETById = async (id: string) => {
-  return await axiosInstance.get<{ data: AppointmentModel }>(`/${id}`);
-}
-
-const POST = async (createAppointmentModel?: CreateAppointmentModel) => {
-  return await axiosInstance.post<CreateAppointmentModel>('', createAppointmentModel);
-}
-
-export { GETAll, GETById, POST }
+export default appointmentsApi

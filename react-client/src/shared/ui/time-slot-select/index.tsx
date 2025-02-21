@@ -12,17 +12,18 @@ interface TimeSlotSelectProps {
   value?: string | number;
   disabled?: boolean;
   className?: string;
+  error?: string;
 }
 
-const TimeSlotSelect = ({id, name, onChange, value, disabled, className} : TimeSlotSelectProps) => {
-  const { loading, error, data } = useSelector(
+const TimeSlotSelect = ({id, name, onChange, value, disabled, className, error} : TimeSlotSelectProps) => {
+  const { loading, error: fetchError, data } = useSelector(
     (state: RootState) => state.fetchDoctorSchedule
   );
 
   return (
-    <>
+    <div className="flex flex-col">
       {loading && <Loading label="Loading Time Slots..." />}
-      {error && <p className="text-red-500">{error}</p>}
+      {fetchError && <p className="text-red-500">{fetchError}</p>}
       <Select
         disabled={disabled}
         label="Available Time Slots"
@@ -38,7 +39,8 @@ const TimeSlotSelect = ({id, name, onChange, value, disabled, className} : TimeS
             <option key={ts.id} value={ts.id} label={ts.start} />
           ))}
       </Select>
-    </>
+      {error && <div className="text-red-500 mt-1">{error}</div>}
+    </div>
   )
 }
 

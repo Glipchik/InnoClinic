@@ -5,7 +5,7 @@ import { call, CallEffect, put, PutEffect } from 'redux-saga/effects';
 import TimeSlot from '../../../entities/timeSlot';
 import { AnyAction } from 'redux-saga';
 import CreateAppointmentModel from '../../../features/create-appointment-form/models/createAppointmentModel';
-import { POST } from '../../../shared/api/appointments';
+import appointmentsApi from '../../../shared/api/appointments';
 
 interface CreateAppointmentState {
   loading: boolean
@@ -46,7 +46,7 @@ function* createAppointment(
 ): Generator<CallEffect<ApiResponse> | PutEffect, void, ApiResponse> {
   try {
     const createAppointment : CreateAppointmentModel = action.payload;
-    const response = yield call(POST, createAppointment);
+    const response = yield call(appointmentsApi.POST, createAppointment);
     yield put(createAppointmentSlice.actions.createAppointmentSuccess(response.data))
   } catch (error) {
     let errorMessage = "An unknown error occurred";

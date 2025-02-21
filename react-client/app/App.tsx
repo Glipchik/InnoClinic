@@ -26,7 +26,7 @@ const config = {
 
 const userManager = new UserManager(config)
 
-function App() {
+const App = () => {
   return (
     <Provider store={store}>
       <UserManagerContext.Provider value={userManager}>

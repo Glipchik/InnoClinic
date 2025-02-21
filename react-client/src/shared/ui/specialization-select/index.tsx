@@ -12,17 +12,18 @@ interface SpecializationSelectProps {
   value?: string | number;
   disabled?: boolean;
   className?: string;
+  error?: string;
 }
 
-const SpecializationSelect = ({id, name, onChange, value, disabled, className} : SpecializationSelectProps) => {
-  const { loading, error, data } = useSelector(
+const SpecializationSelect = ({id, name, onChange, value, disabled, className, error} : SpecializationSelectProps) => {
+  const { loading, error: fetchError , data } = useSelector(
     (state: RootState) => state.fetchSpecializations
   );
 
   return (
-    <>
+    <div className="flex flex-col">
       {loading && <Loading label="Loading specializations..." />}
-      {error && <p className="text-red-500">{error}</p>}
+      {fetchError && <p className="text-red-500">{fetchError}</p>}
       <Select
         disabled={disabled}
         label="Specialization"
@@ -38,7 +39,8 @@ const SpecializationSelect = ({id, name, onChange, value, disabled, className} :
             <option key={spec.id} value={spec.id} label={spec.specializationName} />
           ))}
       </Select>
-    </>
+      {error && <div className="text-red-500 mt-1">{error}</div>}
+    </div>
   )
 }
 
