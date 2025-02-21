@@ -3,7 +3,7 @@ import { useState, useEffect } from "react"
 import { validationSchema } from "./models/validationSchema"
 import { MIN_APPOINTMENT_DATE } from "./lib/dateUtils"
 import DatePicker from "../../shared/ui/forms/DatePicker"
-import { Form, Formik } from 'formik'
+import { Form, Formik, FormikErrors } from 'formik'
 import { useDispatch, useSelector } from "react-redux"
 import { fetchSpecializationsRequest } from "../../shared/store/specializations"
 import { fetchServicesRequest } from "../../shared/store/services"
@@ -51,7 +51,9 @@ const CreateAppointmentForm = ({ onCancel }: CreateAppointmentFormProps) => {
     doctorId: "",
   };
 
-  const handleSpecializationChange = (e: React.ChangeEvent<HTMLSelectElement>, setFieldValue: any) => {
+  const handleSpecializationChange = (e: React.ChangeEvent<HTMLSelectElement>, 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setFieldValue: (field: string, value: any, shouldValidate?: boolean) => Promise<void | FormikErrors<CreateAppointmentFormModel>>) => {
     const specializationId = e.target.value;
     setFieldValue("specializationId", specializationId, true);
     if (specializationId) {
@@ -60,7 +62,9 @@ const CreateAppointmentForm = ({ onCancel }: CreateAppointmentFormProps) => {
     }
   };
 
-  const handleDoctorChange = (e: React.ChangeEvent<HTMLSelectElement>, setFieldValue: any) => {
+  const handleDoctorChange = (e: React.ChangeEvent<HTMLSelectElement>, 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setFieldValue: (field: string, value: any, shouldValidate?: boolean) => Promise<void | FormikErrors<CreateAppointmentFormModel>>) => {
     const doctorId = e.target.value;
     setFieldValue("doctorId", doctorId, true);
     if (doctorId && date) {
@@ -68,7 +72,10 @@ const CreateAppointmentForm = ({ onCancel }: CreateAppointmentFormProps) => {
     }
   };
 
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>, setFieldValue: any, doctorId?: string) => {
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>, 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setFieldValue: (field: string, value: any, shouldValidate?: boolean) => Promise<void | FormikErrors<CreateAppointmentFormModel>>,
+    doctorId: string) => {
     const selectedDate = e.target.value;
     setDate(selectedDate);
     setFieldValue("date", selectedDate, true);
