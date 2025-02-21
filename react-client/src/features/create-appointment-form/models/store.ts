@@ -21,9 +21,8 @@ const createAppointmentSlice = createSlice({
   name: 'CreateAppointmentSlice',
   initialState,
   reducers: {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     createAppointmentRequest: (state, action: PayloadAction<CreateAppointmentModel>) => {
-      state.loading = true;
+      state.loading = !!action;
     },
     createAppointmentSuccess: (state) => {
       state.loading = false;
