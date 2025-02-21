@@ -9,7 +9,7 @@ import DoctorModel from '../../api/doctors/models/doctorModel';
 interface DoctorsState {
   loading: boolean
   error?: string
-  data?: DoctorModel[] 
+  data?: DoctorModel[]
 }
 
 const initialState : DoctorsState = {
@@ -22,9 +22,8 @@ const fetchDoctorsSlice = createSlice({
   name: 'FetchDoctorsSlice',
   initialState,
   reducers: {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fetchDoctorsRequest: (state, action: PayloadAction<string>) => {
-      state.loading = true;
+    fetchDoctorsRequest: (state, action: PayloadAction<{ specializationId: string }>) => {
+      state.loading = !!action;
     },
     fetchDoctorsSuccess: (state, action: PayloadAction<DoctorModel[]>) => {
       state.loading = false;
@@ -46,7 +45,7 @@ type ApiError = AxiosError<{
 
 function* fetchDoctors(action: AnyAction) : Generator<CallEffect<ApiResponse> | PutEffect, void, ApiResponse> {
   try {
-    const specializationId = action.payload
+    const {specializationId} = action.payload
     const response : ApiResponse  = yield call(doctorsApi.GETAll, specializationId);
     yield put(fetchDoctorsSlice.actions.fetchDoctorsSuccess(response.data))
   } catch (error) {

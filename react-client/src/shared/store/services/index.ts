@@ -9,7 +9,7 @@ import ServiceModel from '../../api/services/models/serviceModel';
 interface ServicesState {
   loading: boolean
   error?: string
-  data?: ServiceModel[] 
+  data?: ServiceModel[]
 }
 
 const initialState : ServicesState = {
@@ -22,9 +22,8 @@ const fetchServicesSlice = createSlice({
   name: 'FetchServicesSlice',
   initialState,
   reducers: {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fetchServicesRequest: (state, action: PayloadAction<string>) => {
-      state.loading = true;
+    fetchServicesRequest: (state, action: PayloadAction<{ specializationId: string }>) => {
+      state.loading = !!action;
     },
     fetchServicesSuccess: (state, action: PayloadAction<ServiceModel[]>) => {
       state.loading = false;
@@ -46,7 +45,7 @@ type ApiError = AxiosError<{
 
 function* fetchServices(action: AnyAction) : Generator<CallEffect<ApiResponse> | PutEffect, void, ApiResponse> {
   try {
-    const specializationId = action.payload
+    const {specializationId} = action.payload
     const response : ApiResponse  = yield call(servicesApi.GETAll, specializationId);
     yield put(fetchServicesSlice.actions.fetchServicesSuccess(response.data))
   } catch (error) {

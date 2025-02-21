@@ -9,22 +9,19 @@ import { AnyAction } from 'redux-saga';
 interface DoctorScheduleState {
   loading: boolean
   error?: string
-  data?: TimeSlot[] 
+  data?: TimeSlot[]
 }
 
 const initialState : DoctorScheduleState = {
-  loading: false,
-  error: undefined,
-  data: undefined
+  loading: false
 };
 
 const fetchDoctorScheduleSlice = createSlice({
   name: 'FetchDoctorScheduleSlice',
   initialState,
   reducers: {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     fetchDoctorScheduleRequest: (state, action: PayloadAction<{ doctorId: string, date: Date }>) => {
-      state.loading = true;
+      state.loading = !!action;
     },
     fetchDoctorScheduleSuccess: (state, action: PayloadAction<TimeSlot[]>) => {
       state.loading = false;

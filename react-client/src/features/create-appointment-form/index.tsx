@@ -33,11 +33,11 @@ interface CreateAppointmentFormModel {
   date: string;
 }
 
-const CreateAppointmentForm = ({ onCancel }: CreateAppointmentFormProps) => {
+const InnerForm = ({ onCancel }: { onCancel: () => void }) => {
   const dispatch = useDispatch();
+  const { values, touched, errors, setFieldValue, handleChange } = useFormikContext<CreateAppointmentFormModel>();
   const [date, setDate] = useState<string | null>(null);
   const { loading, error } = useSelector((state: RootState) => state.createAppointment);
-  const { values, touched, errors, setFieldValue, handleChange } = useFormikContext<CreateAppointmentFormModel>();
 
   useEffect(() => {
     dispatch(fetchSpecializationsRequest());
@@ -47,8 +47,8 @@ const CreateAppointmentForm = ({ onCancel }: CreateAppointmentFormProps) => {
     const specializationId = e.target.value;
     setFieldValue("specializationId", specializationId, true);
     if (specializationId) {
-      dispatch(fetchServicesRequest(specializationId));
-      dispatch(fetchDoctorsRequest(specializationId));
+      dispatch(fetchServicesRequest({ specializationId }));
+      dispatch(fetchDoctorsRequest({ specializationId }));
     }
   };
 
@@ -69,67 +69,77 @@ const CreateAppointmentForm = ({ onCancel }: CreateAppointmentFormProps) => {
     }
   };
 
+  return (
+    <Form className="flex w-[40%] flex-col gap-6 p-6 bg-white shadow-lg rounded-lg max-w-lg m-6">
+      <SpecializationSelect
+        disabled={false}
+        id="specialization-select-for-create-appointment-form-id"
+        name="specializationId"
+        value={values.specializationId}
+        onChange={handleSpecializationChange}
+        error={touched.specializationId ? errors.specializationId : undefined}
+      />
+      <ServiceSelect
+        id="service-select-for-create-appointment-form-id"
+        disabled={values.specializationId ? false : true}
+        name="serviceId"
+        onChange={handleChange}
+        value={values.serviceId}
+        className={values.specializationId ? "" : "opacity-50 cursor-not-allowed"}
+        error={touched.serviceId ? errors.serviceId : undefined}
+      />
+      <DoctorSelect 
+        id="doctor-select-for-create-appointment-form-id"
+        disabled={values.specializationId ? false : true}
+        name="doctorId"
+        onChange={handleDoctorChange}
+        value={values.doctorId}
+        className={values.specializationId ? "" : "opacity-50 cursor-not-allowed"}
+        error={touched.doctorId ? errors.doctorId : undefined}
+      />
+      <DatePicker
+        label="Choose a date for the appointment"
+        id="select-date-for-create-appointment-form-id"
+        name="date"
+        value={values.date}
+        onChange={handleDateChange}
+        disabled={false}
+        error={touched.date ? errors.date : undefined}
+      />
+      <TimeSlotSelect
+        id="time-slot-select-for-create-appointment-form-id"
+        disabled={(values.date && values.doctorId) ? false : true}
+        name="timeSlotId"
+        onChange={handleChange}
+        value={values.timeSlotId}
+        className={(values.date && values.doctorId) ? "" : "opacity-50 cursor-not-allowed"}
+        error={touched.timeSlotId ? errors.timeSlotId : undefined}
+      />
+      <CancelAndSubmit onCancel={onCancel} /> 
+      {loading && <Loading label="Loading specializations..." />}
+      {error && <ErrorBox value={error}></ErrorBox>}
+    </Form>
+  );
+};
+
+const CreateAppointmentForm = ({ onCancel }: CreateAppointmentFormProps) => {
+  const dispatch = useDispatch();
+  
+  const initialValues: CreateAppointmentFormModel = {
+    serviceId: "",
+    specializationId: "",
+    date: MIN_APPOINTMENT_DATE.toISOString().split("T")[0],
+    timeSlotId: -1,
+    doctorId: "",
+  };
+
   const onSubmit = (values: CreateAppointmentModel) => {
     dispatch(createAppointmentRequest(values));
   };
 
   return (
-    <Formik initialValues={{
-      serviceId: "",
-      specializationId: "",
-      date: MIN_APPOINTMENT_DATE.toISOString().split("T")[0],
-      timeSlotId: -1,
-      doctorId: "",
-    }} validationSchema={validationSchema} onSubmit={onSubmit}>
-      <Form className="flex w-[40%] flex-col gap-6 p-6 bg-white shadow-lg rounded-lg max-w-lg m-6">
-        <SpecializationSelect
-          disabled={false}
-          id="specialization-select-for-create-appointment-form-id"
-          name="specializationId"
-          value={values.specializationId}
-          onChange={handleSpecializationChange}
-          error={touched.specializationId ? errors.specializationId : undefined}
-        />
-        <ServiceSelect
-          id="service-select-for-create-appointment-form-id"
-          disabled={values.specializationId ? false : true}
-          name="serviceId"
-          onChange={handleChange}
-          value={values.serviceId}
-          className={values.specializationId ? "" : "opacity-50 cursor-not-allowed"}
-          error={touched.serviceId ? errors.serviceId : undefined}
-        />
-        <DoctorSelect 
-          id="doctor-select-for-create-appointment-form-id"
-          disabled={values.specializationId ? false : true}
-          name="doctorId"
-          onChange={handleDoctorChange}
-          value={values.doctorId}
-          className={values.specializationId ? "" : "opacity-50 cursor-not-allowed"}
-          error={touched.doctorId ? errors.doctorId : undefined}
-        />
-        <DatePicker
-          label="Choose a date for the appointment"
-          id="select-date-for-create-appointment-form-id"
-          name="date"
-          value={values.date}
-          onChange={handleDateChange}
-          disabled={false}
-          error={touched.date ? errors.date : undefined}
-        />
-        <TimeSlotSelect
-          id="time-slot-select-for-create-appointment-form-id"
-          disabled={(values.date && values.doctorId) ? false : true}
-          name="timeSlotId"
-          onChange={handleChange}
-          value={values.timeSlotId}
-          className={(values.date && values.doctorId) ? "" : "opacity-50 cursor-not-allowed"}
-          error={touched.timeSlotId ? errors.timeSlotId : undefined}
-        />
-        <CancelAndSubmit onCancel={onCancel} /> 
-        {loading && <Loading label="Loading specializations..." />}
-        {error && <ErrorBox value={error}></ErrorBox>}
-      </Form>
+    <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
+      <InnerForm onCancel={onCancel} />
     </Formik>
   );
 };
