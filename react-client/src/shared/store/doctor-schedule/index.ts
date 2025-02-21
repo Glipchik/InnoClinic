@@ -22,6 +22,7 @@ const fetchDoctorScheduleSlice = createSlice({
   name: 'FetchDoctorScheduleSlice',
   initialState,
   reducers: {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     fetchDoctorScheduleRequest: (state, action: PayloadAction<{ doctorId: string, date: Date }>) => {
       state.loading = true;
     },

@@ -22,6 +22,7 @@ const fetchServicesSlice = createSlice({
   name: 'FetchServicesSlice',
   initialState,
   reducers: {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     fetchServicesRequest: (state, action: PayloadAction<string>) => {
       state.loading = true;
     },
