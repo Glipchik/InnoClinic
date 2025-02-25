@@ -1,4 +1,6 @@
-export default interface Appointment {
+import { DoctorStatus } from "../../../../entities/enums/doctorStatus";
+
+export default interface DoctorModel {
   id: string,
   firstName: string,
   lastName: string,
@@ -8,5 +10,5 @@ export default interface Appointment {
   officeId: string,
   careerStartYear: Date,
   dateOfBirth: Date,
-  isApproved: boolean
+  Status: DoctorStatus
 }

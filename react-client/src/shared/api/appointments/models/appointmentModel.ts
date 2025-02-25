@@ -1,4 +1,4 @@
-export default interface Appointment {
+export default interface AppointmentModel {
   id: string,
   firstName: string,
   lastName: string,
