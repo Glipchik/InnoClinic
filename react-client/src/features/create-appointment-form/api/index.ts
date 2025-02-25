@@ -1,6 +1,6 @@
-import CreateAppointmentModel from "../../../features/create-appointment-form/models/createAppointmentModel";
-import tokenInterceptor from "../interceptors/tokenInterceptor";
-import AppointmentModel from "./models/appointmentModel";
+import CreateAppointmentModel from "../models/createAppointmentModel";
+import tokenInterceptor from "../../../shared/api/interceptors/tokenInterceptor";
+import AppointmentModel from "../models/appointmentModel";
 import axios from "axios";
 
 const axiosInstance = axios.create({

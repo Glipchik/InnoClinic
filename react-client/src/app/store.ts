@@ -1,11 +1,11 @@
 import { combineReducers } from 'redux';
 import createSagaMiddleware from 'redux-saga';
-import { watchFetchSpecializations, fetchSpecializationsSliceReducer } from './shared/store/specializations';
+import { watchFetchSpecializations, fetchSpecializationsSliceReducer } from '@shared/store/specializations';
 import { configureStore } from '@reduxjs/toolkit';
-import { fetchServicesSliceReducer, watchFetchServices } from './shared/store/services';
-import { fetchDoctorsSliceReducer, watchFetchDoctors } from './shared/store/doctors';
-import { fetchDoctorScheduleSliceReducer, watchFetchDoctorSchedule } from './shared/store/doctor-schedule';
-import { createAppointmentSliceReducer, watchCreateAppointment } from './features/create-appointment-form/models/store';
+import { fetchServicesSliceReducer, watchFetchServices } from '@shared/store/services';
+import { fetchDoctorsSliceReducer, watchFetchDoctors } from '@shared/store/doctors';
+import { fetchDoctorScheduleSliceReducer, watchFetchDoctorSchedule } from '@shared/store/doctor-schedule';
+import { createAppointmentSliceReducer, watchCreateAppointment } from '@features/create-appointment-form/store';
 
 const rootReducer = combineReducers({
   fetchSpecializations: fetchSpecializationsSliceReducer,

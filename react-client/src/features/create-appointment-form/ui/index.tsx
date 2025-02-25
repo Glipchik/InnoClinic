@@ -1,25 +1,25 @@
 import type React from "react";
 import { useState, useEffect } from "react";
 import { useFormikContext } from "formik";
-import { validationSchema } from "./models/validationSchema";
-import { MIN_APPOINTMENT_DATE } from "./lib/dateUtils";
-import DatePicker from "../../shared/ui/forms/DatePicker";
+import { validationSchema } from "../models/validationSchema";
+import { MIN_APPOINTMENT_DATE } from "../lib/dateUtils";
+import DatePicker from "../../../shared/ui/forms/DatePicker";
 import { Form, Formik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchSpecializationsRequest } from "../../shared/store/specializations";
-import { fetchServicesRequest } from "../../shared/store/services";
-import { fetchDoctorsRequest } from "../../shared/store/doctors";
-import { fetchDoctorScheduleRequest } from "../../shared/store/doctor-schedule";
-import SpecializationSelect from "../../shared/ui/specialization-select";
-import ServiceSelect from "../../shared/ui/service-select";
-import DoctorSelect from "../../shared/ui/doctor-select";
-import TimeSlotSelect from "../../shared/ui/time-slot-select";
-import CreateAppointmentModel from "./models/createAppointmentModel";
-import { createAppointmentRequest } from "./models/store";
-import { RootState } from "../../store";
-import Loading from "../../shared/ui/controls/Loading";
-import ErrorBox from "../../shared/ui/containers/ErrorBox";
-import CancelAndSubmit from "../../shared/ui/widgets/cancel-and-submit";
+import { fetchSpecializationsRequest } from "../../../shared/store/specializations";
+import { fetchServicesRequest } from "../../../shared/store/services";
+import { fetchDoctorsRequest } from "../../../shared/store/doctors";
+import { fetchDoctorScheduleRequest } from "../../../shared/store/doctor-schedule";
+import SpecializationSelect from "../../../shared/ui/specialization-select";
+import ServiceSelect from "../../../shared/ui/service-select";
+import DoctorSelect from "../../../shared/ui/doctor-select";
+import TimeSlotSelect from "../../../shared/ui/time-slot-select";
+import CreateAppointmentModel from "../models/createAppointmentModel";
+import { createAppointmentRequest } from "../store";
+import { RootState } from "@app/store";
+import Loading from "../../../shared/ui/controls/Loading";
+import Label from "../../../shared/ui/containers/Label";
+import CancelAndSubmit from "../../../shared/ui/widgets/cancel-and-submit";
 
 interface CreateAppointmentFormProps {
   onCancel: () => void;
@@ -88,7 +88,7 @@ const InnerForm = ({ onCancel }: { onCancel: () => void }) => {
         className={values.specializationId ? "" : "opacity-50 cursor-not-allowed"}
         error={touched.serviceId ? errors.serviceId : undefined}
       />
-      <DoctorSelect 
+      <DoctorSelect
         id="doctor-select-for-create-appointment-form-id"
         disabled={values.specializationId ? false : true}
         name="doctorId"
@@ -115,16 +115,16 @@ const InnerForm = ({ onCancel }: { onCancel: () => void }) => {
         className={(values.date && values.doctorId) ? "" : "opacity-50 cursor-not-allowed"}
         error={touched.timeSlotId ? errors.timeSlotId : undefined}
       />
-      <CancelAndSubmit onCancel={onCancel} /> 
+      <CancelAndSubmit onCancel={onCancel} />
       {loading && <Loading label="Loading specializations..." />}
-      {error && <ErrorBox value={error}></ErrorBox>}
+      {error && <Label value={error} type="error"></Label>}
     </Form>
   );
 };
 
 const CreateAppointmentForm = ({ onCancel }: CreateAppointmentFormProps) => {
   const dispatch = useDispatch();
-  
+
   const initialValues: CreateAppointmentFormModel = {
     serviceId: "",
     specializationId: "",

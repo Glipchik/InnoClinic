@@ -15,8 +15,8 @@ interface SpecializationSelectProps {
   error?: string;
 }
 
-const SpecializationSelect = ({id, name, onChange, value, disabled, className, error} : SpecializationSelectProps) => {
-  const { loading, error: fetchError , data } = useSelector(
+const SpecializationSelect = ({ id, name, onChange, value, disabled, className, error }: SpecializationSelectProps) => {
+  const { loading, error: fetchError, data } = useSelector(
     (state: RootState) => state.fetchSpecializations
   );
 

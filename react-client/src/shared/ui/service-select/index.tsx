@@ -15,7 +15,7 @@ interface ServiceSelectProps {
   error?: string;
 }
 
-const ServiceSelect = ({id, name, onChange, value, disabled, className, error} : ServiceSelectProps) => {
+const ServiceSelect = ({ id, name, onChange, value, disabled, className, error }: ServiceSelectProps) => {
   const { loading, error: fetchError, data } = useSelector(
     (state: RootState) => state.fetchServices
   );

@@ -15,7 +15,7 @@ interface DoctorSelectProps {
   error?: string;
 }
 
-const DoctorSelect = ({id, name, onChange, value, disabled, className, error} : DoctorSelectProps) => {
+const DoctorSelect = ({ id, name, onChange, value, disabled, className, error }: DoctorSelectProps) => {
   const { loading, error: fetchError, data } = useSelector(
     (state: RootState) => state.fetchDoctors
   );

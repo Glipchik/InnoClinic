@@ -1,4 +1,4 @@
-import { CreateAppointmentForm } from "../../../../../features/create-appointment-form"
+import { CreateAppointmentForm } from "../../../../../features/create-appointment-form/ui"
 import Button from "../../../../../shared/ui/controls/Button"
 
 interface CreateAppointmentProps {
@@ -7,7 +7,7 @@ interface CreateAppointmentProps {
   isDisabled: boolean
 }
 
-const CreateAppointment = ({ onCancel, onClick, isDisabled } : CreateAppointmentProps) => {
+const CreateAppointment = ({ onCancel, onClick, isDisabled }: CreateAppointmentProps) => {
   return (
     <>
       <div className="flex justify-end m-4">
@@ -16,7 +16,7 @@ const CreateAppointment = ({ onCancel, onClick, isDisabled } : CreateAppointment
         </Button>
       </div>
       <div className="flex flex-col items-center">
-        {isDisabled && <CreateAppointmentForm onCancel={onCancel} /> }
+        {isDisabled && <CreateAppointmentForm onCancel={onCancel} />}
       </div>
     </>
   )

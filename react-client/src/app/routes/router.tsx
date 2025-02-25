@@ -1,16 +1,16 @@
 import {
   createBrowserRouter
 } from "react-router-dom"
-import { Login } from '../../src/features/auth/login'
-import { Logout } from '../../src/features/auth/logout'
-import Layout from '../../src/shared/ui/layout'
-import PrivateRoute from "../../src/shared/routes/PrivateRoute/index"
-import { SilentRenew } from "../../src/features/auth/silent-renew"
-import { Register } from "../../src/features/auth/register"
-import { SigninOidc } from "../../src/features/auth/signin-oidc"
-import { HomePage } from "../../src/pages/home"
-import { ForbiddenPage } from "../../src/pages/errors/forbidden"
-import { AppointmentsPage } from "../../src/pages/appointments"
+import { Login } from '@features/auth/login'
+import { Logout } from '@features/auth/logout'
+import Layout from '@shared/ui/layout'
+import PrivateRoute from "@shared/routes/PrivateRoute/index"
+import { SilentRenew } from "@features//auth/silent-renew"
+import { Register } from "@features//auth/register"
+import { SigninOidc } from "@features//auth/signin-oidc"
+import { HomePage } from "@pages/home"
+import { ForbiddenPage } from "@pages/errors/forbidden"
+import { AppointmentsPage } from "@pages/appointments"
 
 const router = createBrowserRouter([
   {
@@ -19,6 +19,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "home",
+        index: true,
         element: <HomePage />
       },
       {

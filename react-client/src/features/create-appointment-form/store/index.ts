@@ -5,7 +5,7 @@ import { call, CallEffect, put, PutEffect } from 'redux-saga/effects';
 import TimeSlot from '../../../entities/timeSlot';
 import { AnyAction } from 'redux-saga';
 import CreateAppointmentModel from '../../../features/create-appointment-form/models/createAppointmentModel';
-import appointmentsApi from '../../../shared/api/appointments';
+import appointmentsApi from '../api';
 
 interface CreateAppointmentState {
   loading: boolean
