@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import { validationSchema } from "./validationSchema";
+import { validationSchema } from "../offices-list/models/validationSchema";
 import Input from "../../shared/ui/forms/Input";
 import Button from "../../shared/ui/controls/Button";
 import CreateOfficeModel from "../../models/offices/CreateOfficeModel";

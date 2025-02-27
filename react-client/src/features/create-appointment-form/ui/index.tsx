@@ -30,7 +30,6 @@ const CreateAppointmentForm = ({ onCancel }: CreateAppointmentFormProps) => {
   };
 
   const onSubmit = (values: CreateAppointmentModel) => {
-    console.log(values)
     dispatch(createAppointmentRequest(values));
   };
 

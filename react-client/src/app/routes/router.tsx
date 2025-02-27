@@ -3,7 +3,6 @@ import {
 } from "react-router-dom"
 import { Login } from '@features/auth/login'
 import { Logout } from '@features/auth/logout'
-import Layout from '@shared/ui/layout'
 import PrivateRoute from "@shared/routes/PrivateRoute/index"
 import { SilentRenew } from "@features//auth/silent-renew"
 import { Register } from "@features//auth/register"
@@ -11,6 +10,7 @@ import { SigninOidc } from "@features//auth/signin-oidc"
 import { HomePage } from "@pages/home"
 import { ForbiddenPage } from "@pages/errors/forbidden"
 import { AppointmentsPage } from "@pages/appointments"
+import Layout from "@shared/ui/Layout"
 
 const router = createBrowserRouter([
   {
