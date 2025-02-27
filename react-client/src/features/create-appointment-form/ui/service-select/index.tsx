@@ -1,53 +1,55 @@
 import { ChangeEvent, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Select from "../forms/Select";
-import SpecializationModel from "../../../models/specializations/specializationModel";
 import { RootState } from "@app/store";
-import { fetchSpecializationsRequest } from "@shared/store/slices/fetch-specializations";
+import Select from "@shared/ui/forms/Select";
+import ServiceModel from "@models/services/serviceModel";
+import { fetchServicesRequest } from "@shared/store/slices/fetch-services";
 
-interface SpecializationSelectProps {
+interface ServiceSelectProps {
   id?: string;
   name?: string;
   onChange?: (event: ChangeEvent<HTMLSelectElement>) => void;
   value?: string | number;
   disabled?: boolean;
   className?: string;
-  isLoadingRequired: boolean
+  isLoadingRequired: boolean;
+  specializationId?: string
   error?: string
 }
 
-const SpecializationSelect = ({ id, name, onChange, value, disabled, className, isLoadingRequired, error }: SpecializationSelectProps) => {
+const ServiceSelect = ({ id, name, onChange, value, disabled, className, isLoadingRequired, error, specializationId }: ServiceSelectProps) => {
   const { loading, error: fetchError, data } = useSelector(
-    (state: RootState) => state.fetchSpecializations
+    (state: RootState) => state.fetchServices
   );
 
   const dispatch = useDispatch();
-
+  
   useEffect(() => {
     if (isLoadingRequired) {
-      dispatch(fetchSpecializationsRequest())
+      if (specializationId)
+        dispatch(fetchServicesRequest({specializationId}))
     }
   }, [isLoadingRequired, dispatch])
-
+    
   return (
     <Select
       disabled={disabled}
-      label="Specialization"
+      label="Service"
       id={id}
       name={name}
       onChange={onChange}
       value={value}
       className={className}
-      data={data}
-      defaultValueLabel="Select specialization"
       error={fetchError + '\n' + error}
       isLoading={loading}
-      mapData={(item: SpecializationModel) => ({ 
+      defaultValueLabel="Select Time Slot"
+      data={data}
+      mapData={(item: ServiceModel) => ({ 
         id: item.id, 
-        label: item.specializationName 
+        label: item.serviceName 
       })}
     />
   )
 }
 
-export default SpecializationSelect
+export default ServiceSelect

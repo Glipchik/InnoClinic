@@ -1,5 +1,5 @@
+import { UserManagerContext } from '@shared/contexts/UserManagerContext';
 import { useContext, useEffect } from 'react';
-import { UserManagerContext } from '../../../shared/contexts/UserManagerContext';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {

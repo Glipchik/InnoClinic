@@ -1,4 +1,5 @@
 import React, { ChangeEvent } from 'react';
+import Label from '../containers/Label';
 
 interface DatePickerProps {
   label?: string;
@@ -32,7 +33,7 @@ const DatePicker: React.FC<DatePickerProps> = ({ label, id, name, onChange, onBl
       disabled={disabled}
       className={`mt-1 p-2 text-black border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${className || ''}`}
     />
-    {error && <div className="text-red-500 mt-1">{error}</div>}
+    {error && <Label type="error" value={error} />}
   </div>
 );
 
