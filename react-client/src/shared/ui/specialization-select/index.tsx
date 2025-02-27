@@ -1,46 +1,55 @@
-import { ChangeEvent } from "react";
-import { useSelector } from "react-redux";
-import Loading from "../controls/Loading";
+import { ChangeEvent, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Select from "../forms/Select";
-import { RootState } from "../../../store";
-import SpecializationModel from "../../api/specializations/models/specializationModel";
+import SpecializationModel from "../../../models/specializations/specializationModel";
+import { RootState } from "@app/store";
+import { fetchSpecializationsRequest } from "@shared/store/slices/fetch-specializations";
 
 interface SpecializationSelectProps {
   id?: string;
   name?: string;
   onChange?: (event: ChangeEvent<HTMLSelectElement>) => void;
+  onBlur?: (event: ChangeEvent<HTMLSelectElement>) => void;
   value?: string | number;
   disabled?: boolean;
   className?: string;
-  error?: string;
+  isLoadingRequired: boolean
+  error?: string
 }
 
-const SpecializationSelect = ({id, name, onChange, value, disabled, className, error} : SpecializationSelectProps) => {
-  const { loading, error: fetchError , data } = useSelector(
+const SpecializationSelect = ({ id, name, onChange, onBlur, value, disabled, className, isLoadingRequired, error }: SpecializationSelectProps) => {
+  const { loading, error: fetchError, data } = useSelector(
     (state: RootState) => state.fetchSpecializations
   );
 
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (isLoadingRequired) {
+      dispatch(fetchSpecializationsRequest())
+    }
+  }, [isLoadingRequired, dispatch])
+
   return (
-    <div className="flex flex-col">
-      {loading && <Loading label="Loading specializations..." />}
-      {fetchError && <p className="text-red-500">{fetchError}</p>}
-      <Select
-        disabled={disabled}
-        label="Specialization"
-        id={id}
-        name={name}
-        onChange={onChange}
-        value={value}
-        className={className}
-      >
-        <option value="" label="Select specialization" />
-        {data &&
-          (data as SpecializationModel[]).map((spec: SpecializationModel) => (
-            <option key={spec.id} value={spec.id} label={spec.specializationName} />
-          ))}
-      </Select>
-      {error && <div className="text-red-500 mt-1">{error}</div>}
-    </div>
+    <Select
+      disabled={disabled}
+      label="Specialization"
+      id={id}
+      name={name}
+      onChange={onChange}
+      onBlur={onBlur}
+      value={value}
+      className={className}
+      data={data}
+      defaultValueLabel="Select specialization"
+      validationError={error}
+      fetchError={fetchError}
+      isLoading={loading}
+      mapData={(item: SpecializationModel) => ({ 
+        id: item.id, 
+        label: item.specializationName 
+      })}
+    />
   )
 }
 

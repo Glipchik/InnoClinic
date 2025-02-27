@@ -1,4 +1,5 @@
 import React, { ChangeEvent } from 'react';
+import Label from '../containers/Label';
 
 interface InputProps {
   value: string;
@@ -8,9 +9,10 @@ interface InputProps {
   type: string;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   id?: string;
+  error?: string
 }
 
-const Input: React.FC<InputProps> = ({ value, label, name, placeholder, type, onChange, id }) => (
+const Input: React.FC<InputProps> = ({ value, label, name, placeholder, type, onChange, id, error }) => (
   <div className="form-group flex flex-col">
     {label && <label htmlFor="input-field" className="text-gray-700 font-medium">{label}</label>}
     <input
@@ -22,6 +24,7 @@ const Input: React.FC<InputProps> = ({ value, label, name, placeholder, type, on
       placeholder={placeholder}
       onChange={onChange}
     />
+    {error && <Label type="error" value={error} />}
   </div>
 );
 

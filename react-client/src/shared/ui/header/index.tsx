@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from "react";
-import { UserManagerContext } from '../../contexts/UserManagerContext';
 import { User } from 'oidc-client';
-import Logo from "../widgets/logo";
-import UserInfo from "../widgets/user-info";
+import { UserManagerContext } from "@shared/contexts/UserManagerContext";
+import Logo from "@widgets/logo";
+import UserInfo from "@widgets/user-info";
 
 const Header = () => {
   const userManager = useContext(UserManagerContext);
