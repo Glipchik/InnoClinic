@@ -6,10 +6,10 @@ servicesAxiosInstance.interceptors.request.use(tokenInterceptor)
 
 const specializationsApi = {
   getAll: async () => {
-    return await servicesAxiosInstance.get<{ data: SpecializationModel[] }>('');
+    return await servicesAxiosInstance.get<{ data: SpecializationModel[] }>('Specializations');
   },
   getById: async (id: string) => {
-    return await servicesAxiosInstance.get<{ data: SpecializationModel }>(`/${id}`);
+    return await servicesAxiosInstance.get<{ data: SpecializationModel }>(`Specializations/${id}`);
   }
 }
 

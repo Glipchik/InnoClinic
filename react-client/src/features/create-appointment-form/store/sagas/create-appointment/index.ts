@@ -18,8 +18,9 @@ function* createAppointment(
   action: AnyAction
 ): Generator<CallEffect<ApiResponse> | PutEffect, void, ApiResponse> {
   try {
-    const createAppointment : CreateAppointmentModel = action.payload;
-    const response = yield call(appointmentsApi.post, createAppointment);
+    const createAppointmentModel : CreateAppointmentModel = action.payload;
+    console.log(createAppointmentModel)
+    const response = yield call(appointmentsApi.post, createAppointmentModel);
     yield put(createAppointmentSuccess(response.data))
   } catch (error) {
     let errorMessage = "An unknown error occurred";

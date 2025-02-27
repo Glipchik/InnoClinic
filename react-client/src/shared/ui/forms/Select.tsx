@@ -7,10 +7,12 @@ interface SelectProps {
   id?: string;
   name?: string;
   onChange?: (event: ChangeEvent<HTMLSelectElement>) => void;
+  onBlur?: (event: ChangeEvent<HTMLSelectElement>) => void;
   value?: string | number;
   disabled?: boolean;
   className?: string;
-  error?: string;
+  validationError?: string,
+  fetchError?: string
   isLoading?: boolean;
   data?: unknown[];
   defaultValueLabel?: string;
@@ -22,10 +24,12 @@ const Select: React.FC<SelectProps> = ({
     id, 
     name, 
     onChange, 
+    onBlur,
     value,
     disabled, 
     className,
-    error,
+    fetchError,
+    validationError,
     isLoading,
     data,
     defaultValueLabel,
@@ -34,13 +38,15 @@ const Select: React.FC<SelectProps> = ({
   <div className="form-group flex flex-col">
     {label && <label htmlFor={id} className="font-medium">{label}</label>}
     {isLoading && <Loading label="Loading..." />}
-    {error && <Label type="error" value={error} />}
+    {validationError && <Label type="error" value={validationError} />}
+    {fetchError && <Label type="error" value={fetchError} />}
     <select
       id={id}
       value={value}
       name={name}
       className={`mt-1 p-2 text-black border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${className || ''}`}
       onChange={onChange}
+      onBlur={onBlur}
       disabled={disabled}
     >
       {defaultValueLabel && <option value="" label={defaultValueLabel} />}

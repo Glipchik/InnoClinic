@@ -9,6 +9,7 @@ interface ServiceSelectProps {
   id?: string;
   name?: string;
   onChange?: (event: ChangeEvent<HTMLSelectElement>) => void;
+  onBlur?: (event: ChangeEvent<HTMLSelectElement>) => void;
   value?: string | number;
   disabled?: boolean;
   className?: string;
@@ -17,7 +18,7 @@ interface ServiceSelectProps {
   error?: string
 }
 
-const ServiceSelect = ({ id, name, onChange, value, disabled, className, isLoadingRequired, error, specializationId }: ServiceSelectProps) => {
+const ServiceSelect = ({ id, name, onChange, value, disabled, className, isLoadingRequired, error, specializationId, onBlur }: ServiceSelectProps) => {
   const { loading, error: fetchError, data } = useSelector(
     (state: RootState) => state.fetchServices
   );
@@ -38,11 +39,13 @@ const ServiceSelect = ({ id, name, onChange, value, disabled, className, isLoadi
       id={id}
       name={name}
       onChange={onChange}
+      onBlur={onBlur}
       value={value}
       className={className}
-      error={fetchError + '\n' + error}
+      validationError={error}
+      fetchError={fetchError}
       isLoading={loading}
-      defaultValueLabel="Select Time Slot"
+      defaultValueLabel="Select Service"
       data={data}
       mapData={(item: ServiceModel) => ({ 
         id: item.id, 

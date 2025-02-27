@@ -6,12 +6,12 @@ profilesAxiosInstance.interceptors.request.use(tokenInterceptor)
 
 const doctorsApi = {
   getAll: async (specializationId?: string) => {
-    return await profilesAxiosInstance.get<{ data: DoctorModel[] }>('', { params: {
+    return await profilesAxiosInstance.get<{ data: DoctorModel[] }>('Doctors', { params: {
       specializationId
     }});
   },
   getById: async (id: string) => {
-    return await profilesAxiosInstance.get<{ data: DoctorModel }>(`/${id}`);
+    return await profilesAxiosInstance.get<{ data: DoctorModel }>(`Doctors/${id}`);
   }
 }
 

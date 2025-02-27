@@ -13,7 +13,7 @@ import { CreateAppointmentFormModel } from "..";
 import FormFooter from "@widgets/form-footer";
 
 const InnerForm = ({ onCancel }: { onCancel: () => void }) => {
-  const { values, touched, errors, handleChange } = useFormikContext<CreateAppointmentFormModel>();
+  const { values, touched, errors, handleChange, handleBlur } = useFormikContext<CreateAppointmentFormModel>();
   const { loading, error, success } = useSelector((state: RootState) => state.createAppointment);
 
   return (
@@ -24,7 +24,8 @@ const InnerForm = ({ onCancel }: { onCancel: () => void }) => {
         name="specializationId"
         value={values.specializationId}
         onChange={handleChange}
-        error={touched.specializationId ? errors.specializationId : undefined}
+        onBlur={handleBlur}
+        error={(touched.specializationId && errors.specializationId) ? errors.specializationId : undefined}
         isLoadingRequired={true}
       />
       <ServiceSelect
@@ -32,9 +33,10 @@ const InnerForm = ({ onCancel }: { onCancel: () => void }) => {
         disabled={values.specializationId ? false : true}
         name="serviceId"
         onChange={handleChange}
+        onBlur={handleBlur}
         value={values.serviceId}
         className={values.specializationId ? "" : "opacity-50 cursor-not-allowed"}
-        error={touched.serviceId ? errors.serviceId : undefined}
+        error={(touched.serviceId && errors.serviceId) ? errors.serviceId : undefined}
         specializationId={values.specializationId}
         isLoadingRequired={!!values.specializationId}
       />
@@ -43,9 +45,10 @@ const InnerForm = ({ onCancel }: { onCancel: () => void }) => {
         disabled={values.specializationId ? false : true}
         name="doctorId"
         onChange={handleChange}
+        onBlur={handleBlur}
         value={values.doctorId}
         className={values.specializationId ? "" : "opacity-50 cursor-not-allowed"}
-        error={touched.doctorId ? errors.doctorId : undefined}
+        error={(touched.doctorId && errors.doctorId) ? errors.doctorId : undefined}
         isLoadingRequired={!!values.specializationId}
         specializationId={values.specializationId}
       />
@@ -55,23 +58,25 @@ const InnerForm = ({ onCancel }: { onCancel: () => void }) => {
         name="date"
         value={values.date}
         onChange={handleChange}
+        onBlur={handleBlur}
         disabled={false}
-        error={touched.date ? errors.date : undefined}
+        error={(touched.date && errors.date) ? errors.date : undefined}
       />
       <TimeSlotSelect
         id="time-slot-select-for-create-appointment-form"
         disabled={(values.date && values.doctorId) ? false : true}
         name="timeSlotId"
         onChange={handleChange}
+        onBlur={handleBlur}
         value={values.timeSlotId}
         className={(values.date && values.doctorId) ? "" : "opacity-50 cursor-not-allowed"}
-        error={touched.timeSlotId ? errors.timeSlotId : undefined}
+        error={(touched.timeSlotId && errors.timeSlotId) ? errors.timeSlotId : undefined}
         date={values.date}
         doctorId={values.doctorId}
         isLoadingRequired={!!values.doctorId && !!values.date}
       />
       <FormFooter onCancel={onCancel} />
-      {loading && <Loading label="Loading specializations..." />}
+      {loading && <Loading label="Creating appointment..." />}
       {error && <Label value={error} type="error"></Label>}
       {success && <Label value="Appointment was created successfully" type="success"></Label>}
     </Form>

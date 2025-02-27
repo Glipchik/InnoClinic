@@ -7,13 +7,13 @@ appointmentsAxiosInstance.interceptors.request.use(tokenInterceptor)
 
 const appointmentsApi = {
   getAll: async () => {
-    return await appointmentsAxiosInstance.get<{ data: AppointmentModel[] }>('');
+    return await appointmentsAxiosInstance.get<{ data: AppointmentModel[] }>('Appointments');
   },
   getById: async (id: string) => {
-    return await appointmentsAxiosInstance.get<{ data: AppointmentModel }>(`/${id}`);
+    return await appointmentsAxiosInstance.get<{ data: AppointmentModel }>(`Appointments/${id}`);
   },
   post: async (createAppointmentModel?: CreateAppointmentModel) => {
-    return await appointmentsAxiosInstance.post<CreateAppointmentModel>('', createAppointmentModel);
+    return await appointmentsAxiosInstance.post<CreateAppointmentModel>('Appointments', createAppointmentModel);
   }
 }
 

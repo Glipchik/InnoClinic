@@ -9,6 +9,7 @@ interface DoctorSelectProps {
   id?: string;
   name?: string;
   onChange?: (event: ChangeEvent<HTMLSelectElement>) => void;
+  onBlur?: (event: ChangeEvent<HTMLSelectElement>) => void;
   value?: string | number;
   disabled?: boolean;
   className?: string;
@@ -17,7 +18,7 @@ interface DoctorSelectProps {
   error?: string
 }
 
-const DoctorSelect = ({ id, name, onChange, value, disabled, className, error, isLoadingRequired, specializationId }: DoctorSelectProps) => {
+const DoctorSelect = ({ id, name, onChange, value, disabled, className, error, isLoadingRequired, specializationId, onBlur }: DoctorSelectProps) => {
   const { loading, error: fetchError, data } = useSelector(
     (state: RootState) => state.fetchDoctors
   );
@@ -38,9 +39,11 @@ const DoctorSelect = ({ id, name, onChange, value, disabled, className, error, i
       id={id}
       name={name}
       onChange={onChange}
+      onBlur={onBlur}
       value={value}
       className={className}
-      error={fetchError + '\n' + error}
+      validationError={error}
+      fetchError={fetchError}
       isLoading={loading}
       defaultValueLabel="Select Doctor"
       data={data}

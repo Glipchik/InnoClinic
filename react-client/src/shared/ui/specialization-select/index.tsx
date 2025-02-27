@@ -9,6 +9,7 @@ interface SpecializationSelectProps {
   id?: string;
   name?: string;
   onChange?: (event: ChangeEvent<HTMLSelectElement>) => void;
+  onBlur?: (event: ChangeEvent<HTMLSelectElement>) => void;
   value?: string | number;
   disabled?: boolean;
   className?: string;
@@ -16,7 +17,7 @@ interface SpecializationSelectProps {
   error?: string
 }
 
-const SpecializationSelect = ({ id, name, onChange, value, disabled, className, isLoadingRequired, error }: SpecializationSelectProps) => {
+const SpecializationSelect = ({ id, name, onChange, onBlur, value, disabled, className, isLoadingRequired, error }: SpecializationSelectProps) => {
   const { loading, error: fetchError, data } = useSelector(
     (state: RootState) => state.fetchSpecializations
   );
@@ -36,11 +37,13 @@ const SpecializationSelect = ({ id, name, onChange, value, disabled, className, 
       id={id}
       name={name}
       onChange={onChange}
+      onBlur={onBlur}
       value={value}
       className={className}
       data={data}
       defaultValueLabel="Select specialization"
-      error={fetchError + '\n' + error}
+      validationError={error}
+      fetchError={fetchError}
       isLoading={loading}
       mapData={(item: SpecializationModel) => ({ 
         id: item.id, 

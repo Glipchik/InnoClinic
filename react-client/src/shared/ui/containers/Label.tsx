@@ -4,17 +4,20 @@ interface LabelProps {
   className?: string;
 }
 
-const Label: React.FC<LabelProps> = ({ value, className, type='usual' }) => {
-  const color = type === 'error' ? 'red' :
-    type === 'success' ? 'green' : 
-    type === 'warning' ? 'yellow' : 'gray'
-  
+const Label: React.FC<LabelProps> = ({ value, className, type }) => {
+  const colorClasses = {
+    error: "bg-red-200 text-red-700",
+    success: "bg-green-200 text-green-700",
+    warning: "bg-yellow-200 text-yellow-700",
+    usual: "bg-gray-200 text-gray-700",
+  };
+
   return (
-    <div
-      className={`flex bg-${color}-200 text-${color}-700 rounded-xl w-full p-4 ${className || ''}`}>
+    <div className={`flex ${colorClasses[type]} rounded-lg w-full p-3 ${className || ''}`}>
       {value}
     </div>
   );
-}
+};
+
 
 export default Label;

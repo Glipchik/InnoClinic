@@ -9,6 +9,7 @@ interface TimeSlotSelectProps {
   id?: string;
   name?: string;
   onChange?: (event: ChangeEvent<HTMLSelectElement>) => void;
+  onBlur?: (event: ChangeEvent<HTMLSelectElement>) => void;
   value?: string | number;
   disabled?: boolean;
   className?: string;
@@ -18,7 +19,7 @@ interface TimeSlotSelectProps {
   error?: string
 }
 
-const TimeSlotSelect = ({id, name, onChange, value, disabled, className, isLoadingRequired, error, date, doctorId} : TimeSlotSelectProps) => {
+const TimeSlotSelect = ({id, name, onChange, value, disabled, className, isLoadingRequired, error, date, doctorId, onBlur} : TimeSlotSelectProps) => {
   const { loading, error: fetchError, data } = useSelector(
     (state: RootState) => state.fetchDoctorSchedule
   );
@@ -39,9 +40,11 @@ const TimeSlotSelect = ({id, name, onChange, value, disabled, className, isLoadi
       id={id}
       name={name}
       onChange={onChange}
+      onBlur={onBlur}
       value={value}
       className={className}
-      error={fetchError + '\n' + error}
+      validationError={error}
+      fetchError={fetchError}
       isLoading={loading}
       defaultValueLabel="Select Time Slot"
       data={data}
