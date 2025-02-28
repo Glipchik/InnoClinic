@@ -5,12 +5,12 @@ import DatePicker from "@shared/ui/forms/DatePicker";
 import SpecializationSelect from "@shared/ui/specialization-select";
 import { useFormikContext } from "formik";
 import { useSelector } from "react-redux";
-import { Form } from "react-router-dom";
 import DoctorSelect from "../doctor-select";
 import ServiceSelect from "../service-select";
 import TimeSlotSelect from "../time-slot-select";
 import { CreateAppointmentFormModel } from "../form";
 import FormFooter from "@widgets/form-footer";
+import { Form } from "react-router-dom";
 
 const InnerForm = ({ onCancel }: { onCancel: () => void }) => {
   const { values, touched, errors, handleChange, handleBlur } = useFormikContext<CreateAppointmentFormModel>();
