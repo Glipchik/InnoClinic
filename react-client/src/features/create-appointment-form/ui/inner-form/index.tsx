@@ -9,7 +9,7 @@ import { Form } from "react-router-dom";
 import DoctorSelect from "../doctor-select";
 import ServiceSelect from "../service-select";
 import TimeSlotSelect from "../time-slot-select";
-import { CreateAppointmentFormModel } from "..";
+import { CreateAppointmentFormModel } from "../form";
 import FormFooter from "@widgets/form-footer";
 
 const InnerForm = ({ onCancel }: { onCancel: () => void }) => {
