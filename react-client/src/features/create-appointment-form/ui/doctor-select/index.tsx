@@ -1,6 +1,6 @@
 import { RootState } from "@app/store";
+import { fetchDoctorsRequest } from "@features/create-appointment-form/store/fetch-doctors";
 import DoctorModel from "@models/doctors/doctorModel";
-import { fetchDoctorsRequest } from "@shared/store/slices/fetch-doctors";
 import Select from "@shared/ui/forms/Select";
 import { ChangeEvent, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Select from "../forms/Select";
 import SpecializationModel from "../../../models/specializations/specializationModel";
 import { RootState } from "@app/store";
-import { fetchSpecializationsRequest } from "@shared/store/slices/fetch-specializations";
+import { fetchSpecializationsRequest } from "@shared/store/fetch-specializations";
 
 interface SpecializationSelectProps {
   id?: string;

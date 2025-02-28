@@ -6,7 +6,7 @@ appointmentsAxiosInstance.interceptors.request.use(tokenInterceptor)
 
 const timeSlotsApi = {
   get: async (doctorId?: string, date?: string) => {
-    return await appointmentsAxiosInstance.get<{ data: TimeSlot[] }>('Appointments/Schedule', { params: {
+    return await appointmentsAxiosInstance.get<TimeSlot[]>('Appointments/Schedule', { params: {
       doctorId,
       date
     }});
