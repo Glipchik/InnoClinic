@@ -1,8 +1,8 @@
 import { Outlet } from "react-router-dom";
 import { useContext, useEffect } from "react";
 import { UserManagerContext } from "@shared/contexts/UserManagerContext";
-import Footer from "../footer";
 import Header from "../header";
+import Footer from "../footer";
 
 const Layout = () => {
   const userManager = useContext(UserManagerContext);

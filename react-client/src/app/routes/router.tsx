@@ -10,7 +10,9 @@ import { SigninOidc } from "@features//auth/signin-oidc"
 import { HomePage } from "@pages/home"
 import { ForbiddenPage } from "@pages/errors/forbidden"
 import { AppointmentsPage } from "@pages/appointments"
-import Layout from "@shared/ui/Layout"
+import Layout from "@shared/ui/layout"
+import { OfficesPage } from "@pages/offices"
+import { EditOfficePage } from "@pages/edit-office"
 
 const router = createBrowserRouter([
   {
@@ -24,7 +26,16 @@ const router = createBrowserRouter([
       },
       {
         path: "offices",
-        element: <PrivateRoute requiredRole="Receptionist"> <OfficesPage /> </PrivateRoute>,
+        children: [
+          {
+            path: "",
+            element: <PrivateRoute requiredRole="Receptionist"> <OfficesPage /> </PrivateRoute>,
+          },
+          {
+            path: "edit/:id",
+            element: <PrivateRoute requiredRole="Receptionist"> <EditOfficePage /> </PrivateRoute>,
+          },
+        ]
       },
       {
         path: "",
