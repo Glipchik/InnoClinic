@@ -8,11 +8,12 @@ interface InputProps {
   placeholder?: string;
   type: string;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: (e: ChangeEvent<HTMLInputElement>) => void;
   id?: string;
   error?: string
 }
 
-const Input: React.FC<InputProps> = ({ value, label, name, placeholder, type, onChange, id, error }) => (
+const Input: React.FC<InputProps> = ({ value, label, name, placeholder, type, onChange, id, error, onBlur }) => (
   <div className="form-group flex flex-col">
     {label && <label htmlFor="input-field" className="text-gray-700 font-medium">{label}</label>}
     <input
@@ -23,6 +24,7 @@ const Input: React.FC<InputProps> = ({ value, label, name, placeholder, type, on
       className="form-control mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
       placeholder={placeholder}
       onChange={onChange}
+      onBlur={onBlur}
     />
     {error && <Label type="error" value={error} />}
   </div>
