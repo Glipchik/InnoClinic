@@ -1,16 +1,11 @@
 import { combineReducers } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import { configureStore } from '@reduxjs/toolkit';
-import { fetchSpecializationsSliceReducer } from '@shared/store/slices/fetch-specializations';
-import { fetchServicesSliceReducer } from '@shared/store/slices/fetch-services';
-import { fetchDoctorsSliceReducer } from '@shared/store/slices/fetch-doctors';
-import { fetchDoctorScheduleSliceReducer } from '@features/create-appointment-form/store/slices/fetch-doctor-schedule';
-import { createAppointmentSliceReducer } from '@features/create-appointment-form/store/slices/create-appointment';
-import { watchCreateAppointment } from '@features/create-appointment-form/store/sagas/create-appointment';
-import { watchFetchDoctorSchedule } from '@features/create-appointment-form/store/sagas/fetch-doctor-schedule';
-import { watchFetchDoctors } from '@shared/store/sagas/fetch-doctors';
-import { watchFetchServices } from '@shared/store/sagas/fetch-services';
-import { watchFetchSpecializations } from '@shared/store/sagas/fetch-specializations';
+import { fetchDoctorScheduleSliceReducer, watchFetchDoctorSchedule } from '@features/create-appointment-form/store/fetch-doctor-schedule';
+import { createAppointmentSliceReducer, watchCreateAppointment } from '@features/create-appointment-form/store/create-appointment';
+import { fetchDoctorsSliceReducer, watchFetchDoctors } from '@features/create-appointment-form/store/fetch-doctors';
+import { fetchServicesSliceReducer, watchFetchServices } from '@features/create-appointment-form/store/fetch-services';
+import { fetchSpecializationsSliceReducer, watchFetchSpecializations } from '@shared/store/fetch-specializations';
 
 const rootReducer = combineReducers({
   fetchSpecializations: fetchSpecializationsSliceReducer,

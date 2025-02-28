@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { MIN_APPOINTMENT_DATE } from "../lib/dateUtils";
 import CreateAppointmentModel from "../models/createAppointmentModel";
 import { validationSchema } from "../models/validationSchema";
-import { createAppointmentRequest } from "../store/slices/create-appointment";
+import { createAppointmentRequest } from "../store/create-appointment";
 import InnerForm from "./inner-form";
 
 interface CreateAppointmentFormProps {

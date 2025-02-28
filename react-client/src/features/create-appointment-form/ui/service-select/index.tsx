@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@app/store";
 import Select from "@shared/ui/forms/Select";
 import ServiceModel from "@models/services/serviceModel";
-import { fetchServicesRequest } from "@shared/store/slices/fetch-services";
+import { fetchServicesRequest } from "@features/create-appointment-form/store/fetch-services";
 
 interface ServiceSelectProps {
   id?: string;
