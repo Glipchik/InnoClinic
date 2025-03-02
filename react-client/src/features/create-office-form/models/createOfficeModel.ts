@@ -1,4 +1,4 @@
-export default interface CreateOfficeModel {
+export interface CreateOfficeModel {
   address: string,
   registryPhoneNumber: string,
   isActive: boolean

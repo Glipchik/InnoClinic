@@ -10,6 +10,7 @@ import { fetchOfficesSliceReducer, watchFetchOffices } from '@features/offices-l
 import { deleteOfficeSliceReducer, watchDeleteOffice } from '@features/offices-list/store/delete-office';
 import { editOfficeSliceReducer, watchEditOffice } from '@features/edit-office-form/store/edit-office';
 import { fetchOfficeByIdSliceReducer, watchFetchOfficeById } from '@features/edit-office-form/store/fetch-office';
+import { createOfficeSliceReducer, watchCreateOffice } from '@features/create-office-form/store/create-office';
 
 const rootReducer = combineReducers({
   fetchSpecializations: fetchSpecializationsSliceReducer,
@@ -20,7 +21,8 @@ const rootReducer = combineReducers({
   fetchOffices: fetchOfficesSliceReducer,
   deleteOffice: deleteOfficeSliceReducer,
   editOffice: editOfficeSliceReducer,
-  fetchOfficeById: fetchOfficeByIdSliceReducer
+  fetchOfficeById: fetchOfficeByIdSliceReducer,
+  createOffice: createOfficeSliceReducer
 });
 
 const sagaMiddleware = createSagaMiddleware();
@@ -39,6 +41,7 @@ sagaMiddleware.run(watchFetchOffices);
 sagaMiddleware.run(watchDeleteOffice);
 sagaMiddleware.run(watchEditOffice);
 sagaMiddleware.run(watchFetchOfficeById);
+sagaMiddleware.run(watchCreateOffice);
 
 export default store;
 export type RootState = ReturnType<typeof store.getState>;

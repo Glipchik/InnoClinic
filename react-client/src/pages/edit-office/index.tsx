@@ -1,4 +1,4 @@
-import { EditOfficeForm } from "@features/edit-office-form/ui";
+import { EditOfficeForm } from "@features/edit-office-form";
 import Label from "@shared/ui/containers/Label";
 import { useParams } from "react-router-dom";
 
