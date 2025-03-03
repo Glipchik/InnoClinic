@@ -29,11 +29,16 @@ const editSpecializationSlice = createSlice({
     editSpecializationFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
+    },
+    resetState: (state) => {
+      state.loading = false;
+      state.error = undefined
+      state.success = undefined
     }
   }
 });
 
-export const { editSpecializationRequest } = editSpecializationSlice.actions;
+export const { editSpecializationRequest, resetState } = editSpecializationSlice.actions;
 export const editSpecializationSliceReducer = editSpecializationSlice.reducer
 
 function* editSpecialization(action: AnyAction) : Generator<CallEffect<AxiosResponse> | PutEffect, void, AxiosResponse> {

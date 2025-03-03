@@ -2,19 +2,22 @@ import { RootState } from "@app/store";
 import Label from "@shared/ui/containers/Label";
 import Loading from "@shared/ui/controls/Loading";
 import { Form, useFormikContext } from "formik";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import FormFooter from "@widgets/form-footer";
 import Input from "@shared/ui/forms/Input";
 import EditSpecializationModel from "@features/edit-specialization-form/models/editSpecializationModel";
 import { useEffect } from "react";
+import { resetState } from "@features/edit-specialization-form/store/edit-specialization";
 
 const InnerForm = () => {
   const { values, touched, errors, handleChange, handleBlur } = useFormikContext<EditSpecializationModel>();
   const { loading, error, success } = useSelector((state: RootState) => state.editSpecialization);
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const handleCancel = () => {
+    dispatch(resetState())
     navigate(-1)
   }
 
