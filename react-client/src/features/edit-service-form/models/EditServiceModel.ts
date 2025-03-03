@@ -1,8 +1,8 @@
-export default interface Service {
-  id: string,
+export default interface EditServiceModel {
+  id: string;
   serviceName: string,
   serviceCategoryId: string,
   specializationId: string,
-  price: number,
+  price: string,
   isActive: boolean
 }

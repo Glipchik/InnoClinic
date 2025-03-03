@@ -21,6 +21,12 @@ import { fetchServiceCategoryByIdSliceReducer, watchFetchServiceCategoryById } f
 import { fetchServiceCategoriesWithPaginationSliceReducer, watchFetchServiceCategoriesWithPagination } from '@shared/store/fetch-service-categories-with-pagination';
 import { deleteServiceCategorySliceReducer, watchDeleteServiceCategory } from '@features/service-categories-list/store/delete-service-category';
 import { createServiceCategorySliceReducer, watchCreateServiceCategory } from '@features/create-service-category-form/store/create-service-category';
+import { createServiceSliceReducer, watchCreateService } from '@features/create-service-form/store/create-service';
+import { fetchServiceCategoriesSliceReducer, watchFetchServiceCategories } from '@shared/store/fetch-service-categories';
+import { fetchServiceByIdSliceReducer, watchFetchServiceById } from '@features/edit-service-form/store/fetch-service';
+import { editServiceSliceReducer, watchEditService } from '@features/edit-service-form/store/edit-service';
+import { deleteServiceSliceReducer, watchDeleteService } from '@features/services-list/store/delete-service';
+import { fetchServicesWithPaginationSliceReducer, watchFetchServicesWithPagination } from '@shared/store/fetch-services-with-pagination';
 
 const rootReducer = combineReducers({
   fetchSpecializations: fetchSpecializationsSliceReducer,
@@ -42,7 +48,13 @@ const rootReducer = combineReducers({
   fetchServiceCategoryById: fetchServiceCategoryByIdSliceReducer,
   fetchServiceCategoriesWithPagination: fetchServiceCategoriesWithPaginationSliceReducer,
   deleteServiceCategory: deleteServiceCategorySliceReducer,
-  createServiceCategory: createServiceCategorySliceReducer
+  createServiceCategory: createServiceCategorySliceReducer,
+  createService: createServiceSliceReducer,
+  fetchServiceCategories: fetchServiceCategoriesSliceReducer,
+  fetchServiceById: fetchServiceByIdSliceReducer,
+  editService: editServiceSliceReducer,
+  deleteService: deleteServiceSliceReducer,
+  fetchServicesWithPagination: fetchServicesWithPaginationSliceReducer
 });
 
 const sagaMiddleware = createSagaMiddleware();
@@ -72,6 +84,12 @@ sagaMiddleware.run(watchFetchServiceCategoryById);
 sagaMiddleware.run(watchFetchServiceCategoriesWithPagination);
 sagaMiddleware.run(watchDeleteServiceCategory);
 sagaMiddleware.run(watchCreateServiceCategory);
+sagaMiddleware.run(watchCreateService);
+sagaMiddleware.run(watchFetchServiceCategories);
+sagaMiddleware.run(watchFetchServiceById);
+sagaMiddleware.run(watchEditService);
+sagaMiddleware.run(watchDeleteService);
+sagaMiddleware.run(watchFetchServicesWithPagination);
 
 export default store;
 export type RootState = ReturnType<typeof store.getState>;

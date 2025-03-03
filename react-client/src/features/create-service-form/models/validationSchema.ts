@@ -3,7 +3,8 @@ import * as Yup from 'yup';
 export const validationSchema = Yup.object({
   serviceName: Yup.string()
     .required("Service Name is required")
-    .min(3, "Service Name must be at least 3 characters"),
+    .min(3, "Service Name must be at least 3 characters")
+    .max(100, "Service Name must be less than 100 characters"),
 
   serviceCategoryId: Yup.string().required("Service Category is required"),
   specializationId: Yup.string().required("Specialization is required"),

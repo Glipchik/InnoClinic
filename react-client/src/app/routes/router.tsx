@@ -17,6 +17,8 @@ import { SpecializationsPage } from "@pages/specializations"
 import { EditSpecializationPage } from "@pages/edit-specialization"
 import { EditServiceCategoryPage } from "@pages/edit-service-category"
 import { ServiceCategoriesPage } from "@pages/service-categories"
+import { ServicesPage } from "@pages/services"
+import { EditServicePage } from "@pages/edit-service"
 
 const router = createBrowserRouter([
   {
@@ -69,7 +71,16 @@ const router = createBrowserRouter([
       },
       {
         path: "services",
-        element: <PrivateRoute requiredRole="Receptionist"> <ServicesPage /> </PrivateRoute>,
+        children: [
+          {
+            path: "",
+            element: <PrivateRoute requiredRole="Receptionist"> <ServicesPage /> </PrivateRoute>,
+          },
+          {
+            path: "edit/:id",
+            element: <PrivateRoute requiredRole="Receptionist"> <EditServicePage /> </PrivateRoute>,
+          },
+        ]
       },
       {
         path: "",
