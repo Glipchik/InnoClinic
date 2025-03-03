@@ -14,17 +14,10 @@ interface EditOfficeFormProps {
   officeId: string
 }
 
-export interface EditOfficeFormModel {
-  id: string,
-  address: string,
-  registryPhoneNumber: string,
-  isActive: boolean
-}
-
 const EditOfficeForm = ({ officeId }: EditOfficeFormProps) => {
   const dispatch = useDispatch();
   const { loading, error, data } = useSelector((state: RootState) => state.fetchOfficeById);
-  const [initialValues, setInitialValues] = useState<EditOfficeFormModel | null>(null);
+  const [initialValues, setInitialValues] = useState<EditOfficeModel | null>(null);
 
   useEffect(() => {
     dispatch(fetchOfficeByIdRequest({officeId}));

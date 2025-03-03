@@ -5,11 +5,11 @@ import { Form, useFormikContext } from "formik";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import FormFooter from "@widgets/form-footer";
-import { EditOfficeFormModel } from "..";
 import Input from "@shared/ui/forms/Input";
+import { EditOfficeModel } from "@features/edit-office-form/models/editOfficeModel";
 
 const InnerForm = () => {
-  const { values, touched, errors, handleChange, handleBlur } = useFormikContext<EditOfficeFormModel>();
+  const { values, touched, errors, handleChange, handleBlur } = useFormikContext<EditOfficeModel>();
   const { loading, error, success } = useSelector((state: RootState) => state.editOffice);
   const navigate = useNavigate()
 
