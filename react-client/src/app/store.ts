@@ -16,6 +16,11 @@ import { fetchSpecializationsWithPaginationSliceReducer, watchFetchSpecializatio
 import { editSpecializationSliceReducer, watchEditSpecialization } from '@features/edit-specialization-form/store/edit-specialization';
 import { fetchSpecializationByIdSliceReducer, watchFetchSpecializationById } from '@features/edit-specialization-form/store/fetch-specialization';
 import { createSpecializationSliceReducer, watchCreateSpecialization } from '@features/create-specialization-form/store/create-specialization';
+import { editServiceCategorySliceReducer, watchEditServiceCategory } from '@features/edit-service-category-form/store/edit-service-category';
+import { fetchServiceCategoryByIdSliceReducer, watchFetchServiceCategoryById } from '@features/edit-service-category-form/store/fetch-service-category';
+import { fetchServiceCategoriesWithPaginationSliceReducer, watchFetchServiceCategoriesWithPagination } from '@shared/store/fetch-service-categories-with-pagination';
+import { deleteServiceCategorySliceReducer, watchDeleteServiceCategory } from '@features/service-categories-list/store/delete-service-category';
+import { createServiceCategorySliceReducer, watchCreateServiceCategory } from '@features/create-service-category-form/store/create-service-category';
 
 const rootReducer = combineReducers({
   fetchSpecializations: fetchSpecializationsSliceReducer,
@@ -32,7 +37,12 @@ const rootReducer = combineReducers({
   fetchSpecializationsWithPagination: fetchSpecializationsWithPaginationSliceReducer,
   editSpecialization: editSpecializationSliceReducer,
   fetchSpecializationById: fetchSpecializationByIdSliceReducer,
-  createSpecialization: createSpecializationSliceReducer
+  createSpecialization: createSpecializationSliceReducer,
+  editServiceCategory: editServiceCategorySliceReducer,
+  fetchServiceCategoryById: fetchServiceCategoryByIdSliceReducer,
+  fetchServiceCategoriesWithPagination: fetchServiceCategoriesWithPaginationSliceReducer,
+  deleteServiceCategory: deleteServiceCategorySliceReducer,
+  createServiceCategory: createServiceCategorySliceReducer
 });
 
 const sagaMiddleware = createSagaMiddleware();
@@ -57,6 +67,11 @@ sagaMiddleware.run(watchFetchSpecializationsWithPagination);
 sagaMiddleware.run(watchEditSpecialization);
 sagaMiddleware.run(watchFetchSpecializationById);
 sagaMiddleware.run(watchCreateSpecialization);
+sagaMiddleware.run(watchEditServiceCategory);
+sagaMiddleware.run(watchFetchServiceCategoryById);
+sagaMiddleware.run(watchFetchServiceCategoriesWithPagination);
+sagaMiddleware.run(watchDeleteServiceCategory);
+sagaMiddleware.run(watchCreateServiceCategory);
 
 export default store;
 export type RootState = ReturnType<typeof store.getState>;

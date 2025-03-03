@@ -38,6 +38,7 @@ const Header = () => {
           <ul className="flex flex-row space-x-4">
             <li className="list-none"> <Link to="/offices" className="text-xl"> Offices </Link> </li>
             <li className="list-none"> <Link to="/specializations" className="text-xl"> Specializations </Link> </li>
+            <li className="list-none"> <Link to="/service-categories" className="text-xl"> Service Categories </Link> </li>
           </ul>
         )}
       </div>
