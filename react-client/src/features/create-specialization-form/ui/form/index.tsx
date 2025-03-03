@@ -6,7 +6,7 @@ import { createSpecializationRequest } from "../../store/create-specialization";
 import CreateSpecializationModel from "@features/create-specialization-form/models/createSpecializationModel";
 
 interface CreateSpecializationFormProps {
-  onCancel: () => void;
+  close: () => void;
 }
 
 export interface CreateSpecializationFormModel {
@@ -15,7 +15,7 @@ export interface CreateSpecializationFormModel {
   isActive: boolean
 }
 
-const CreateSpecializationForm = ({ onCancel }: CreateSpecializationFormProps) => {
+const CreateSpecializationForm = ({ close }: CreateSpecializationFormProps) => {
   const dispatch = useDispatch();
 
   const onSubmit = (values: CreateSpecializationModel) => {
@@ -29,7 +29,7 @@ const CreateSpecializationForm = ({ onCancel }: CreateSpecializationFormProps) =
 
   return (
     <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
-      <InnerForm onCancel={onCancel} />
+      <InnerForm close={close} />
     </Formik>
   );
 };

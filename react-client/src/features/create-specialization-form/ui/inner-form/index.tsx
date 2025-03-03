@@ -10,17 +10,18 @@ import { useEffect } from "react";
 import { fetchSpecializationsWithPaginationRequest } from "@shared/store/fetch-specializations-with-pagination";
 
 interface InnerFormProps {
-  onCancel: () => void
+  close: () => void
 }
 
-const InnerForm = ({ onCancel }: InnerFormProps) => {
+const InnerForm = ({ close }: InnerFormProps) => {
   const { values, touched, errors, handleChange, handleBlur } = useFormikContext<CreateSpecializationModel>();
   const { loading, error, success } = useSelector((state: RootState) => state.createSpecialization);
   const dispatch = useDispatch()
-  
+
   useEffect(() => {
     if (success) {
       dispatch(fetchSpecializationsWithPaginationRequest({}))
+      close()
     }
   }, [success, dispatch]);
 
@@ -29,7 +30,7 @@ const InnerForm = ({ onCancel }: InnerFormProps) => {
       <Input
         label="Specialization Name"
         type="text"
-        name="specializationName"   
+        name="specializationName"
         onChange={handleChange}
         value={values.specializationName}
         error={(touched.specializationName && errors.specializationName) ? errors.specializationName : undefined}
@@ -46,7 +47,7 @@ const InnerForm = ({ onCancel }: InnerFormProps) => {
         />
         Is active
       </label>
-      <FormFooter onCancel={onCancel} />
+      <FormFooter onCancel={close} />
       {loading && <Loading label="Creating specialization..." />}
       {error && <Label value={error} type="error"></Label>}
       {success && success === true && <Label value="Specialization was created successfully" type="success"></Label>}

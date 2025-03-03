@@ -13,7 +13,7 @@ export const CreateSpecialization = () => {
         </Button>
       </div>
       <div className="flex flex-col items-center">
-        {isCreating && <CreateSpecializationForm onCancel={() => setIsCreating(false)} />}
+        {isCreating && <CreateSpecializationForm close={() => setIsCreating(false)} />}
       </div>
     </>
   )
