@@ -13,9 +13,6 @@ const officesApi = {
       pageSize
     }});
   },
-  getById: async (officeId?: string) => {
-    return await officesAxiosInstance.get<OfficeModel>(`Offices/${officeId}`);
-  },
   delete: async (id: string) => {
     return await servicesAxiosInstance.delete(`Offices/${id}`);
   },
