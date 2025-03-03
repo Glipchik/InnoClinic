@@ -2,7 +2,7 @@ import Button from "@shared/ui/controls/Button";
 import { useState } from "react";
 import { CreateOfficeForm } from "./form";
 
-const CreateOffice = () => {
+export const CreateOffice = () => {
   const [isCreating, setIsCreating] = useState<boolean>(false);
   
   return (
@@ -18,5 +18,3 @@ const CreateOffice = () => {
     </>
   )
 }
-
-export default CreateOffice
