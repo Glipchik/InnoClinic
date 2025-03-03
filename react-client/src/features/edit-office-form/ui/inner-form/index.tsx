@@ -27,6 +27,7 @@ const InnerForm = () => {
   return (
     <Form className="flex w-[40%] flex-col gap-6 p-6 bg-white shadow-lg rounded-lg max-w-lg m-6">
       <Input
+        label="Address"
         type="text"
         name="address"   
         onChange={handleChange}
@@ -36,6 +37,7 @@ const InnerForm = () => {
         id="address-input-for-edit-office-form"
       />
       <Input
+        label="Registry Phone Number"
         type="text"
         name="registryPhoneNumber"   
         onChange={handleChange}

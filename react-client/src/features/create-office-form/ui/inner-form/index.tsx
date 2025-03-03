@@ -10,10 +10,10 @@ import { fetchOfficesRequest } from "@shared/store/fetch-offices";
 import { useEffect } from "react";
 
 interface InnerFormProps {
-  onCancel: () => void
+  close: () => void
 }
 
-const InnerForm = ({ onCancel }: InnerFormProps) => {
+const InnerForm = ({ close }: InnerFormProps) => {
   const { values, touched, errors, handleChange, handleBlur } = useFormikContext<CreateOfficeModel>();
   const { loading, error, success } = useSelector((state: RootState) => state.createOffice);
   const dispatch = useDispatch()
@@ -21,6 +21,7 @@ const InnerForm = ({ onCancel }: InnerFormProps) => {
   useEffect(() => {
     if (success) {
       dispatch(fetchOfficesRequest({}))
+      close()
     }
   }, [success, dispatch]);
 
@@ -56,7 +57,7 @@ const InnerForm = ({ onCancel }: InnerFormProps) => {
         />
         Is active
       </label>
-      <FormFooter onCancel={onCancel} />
+      <FormFooter onCancel={close} />
       {loading && <Loading label="Creating office..." />}
       {error && <Label value={error} type="error"></Label>}
       {success && success === true && <Label value="Office was created successfully" type="success"></Label>}

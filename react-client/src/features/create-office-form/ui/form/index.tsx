@@ -6,7 +6,7 @@ import { CreateOfficeModel } from "../../models/createOfficeModel";
 import { createOfficeRequest } from "../../store/create-office";
 
 interface CreateOfficeFormProps {
-  onCancel: () => void;
+  close: () => void;
 }
 
 export interface CreateOfficeFormModel {
@@ -15,7 +15,7 @@ export interface CreateOfficeFormModel {
   isActive: boolean
 }
 
-const CreateOfficeForm = ({ onCancel }: CreateOfficeFormProps) => {
+const CreateOfficeForm = ({ close }: CreateOfficeFormProps) => {
   const dispatch = useDispatch();
 
   const onSubmit = (values: CreateOfficeModel) => {
@@ -30,7 +30,7 @@ const CreateOfficeForm = ({ onCancel }: CreateOfficeFormProps) => {
 
   return (
     <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
-      <InnerForm onCancel={onCancel} />
+      <InnerForm close={close} />
     </Formik>
   );
 };
