@@ -16,6 +16,7 @@ export function OfficesList() {
   const pageSize = 2;
   const dispatch = useDispatch();
   const { loading, error, data } = useSelector((state: RootState) => state.fetchOffices);
+  const { loading: deleteLoading, error: deleteError, success } = useSelector((state: RootState) => state.deleteOffice);
 
   const handleConfirm = () => {
     if (officeIdToDelete) {
@@ -30,6 +31,10 @@ export function OfficesList() {
 
   return (
     <div className="flex flex-col my-auto">
+      {deleteLoading && <Loading label="Deleting office..." />}
+      {deleteError && <Label value={`Deleting: ${deleteError}`} type="error"></Label>}
+      {success && <Label value={`Successfully deleted office`} type="error"></Label>}
+
       {loading && <Loading label="Fetching offices..." />}
       {error && <Label value={error} type="error"></Label>}
       {data && (

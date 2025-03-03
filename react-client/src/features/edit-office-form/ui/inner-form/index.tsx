@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import FormFooter from "@widgets/form-footer";
 import Input from "@shared/ui/forms/Input";
 import { EditOfficeModel } from "@features/edit-office-form/models/editOfficeModel";
+import { useEffect } from "react";
 
 const InnerForm = () => {
   const { values, touched, errors, handleChange, handleBlur } = useFormikContext<EditOfficeModel>();
@@ -16,6 +17,12 @@ const InnerForm = () => {
   const handleCancel = () => {
     navigate(-1)
   }
+  
+  useEffect(() => {
+    if (success) {
+      navigate(-1)
+    }
+  }, [success, navigate]);
 
   return (
     <Form className="flex w-[40%] flex-col gap-6 p-6 bg-white shadow-lg rounded-lg max-w-lg m-6">
