@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchOfficesRequest } from "@features/offices-list/store/fetch-offices";
+import { fetchOfficesRequest } from "@shared/store/fetch-offices";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@app/store";
 import { Pagination } from "@widgets/pagination";
@@ -20,7 +20,7 @@ export function OfficesList() {
 
   const handleConfirm = () => {
     if (officeIdToDelete) {
-      dispatch(deleteOfficeRequest({officeId: officeIdToDelete}))
+      dispatch(deleteOfficeRequest({ officeId: officeIdToDelete }))
     }
     setModalOpen(false);
   };

@@ -8,8 +8,8 @@ officesAxiosInstance.interceptors.request.use(tokenInterceptor)
 const officesApi = {
   getAll: async (pageIndex?: number, pageSize?: number) => {
     return await officesAxiosInstance.get<PaginatedList<OfficeModel>>('Offices', { params: {
-      pageIndex,
-      pageSize
+      pageIndex: pageIndex ?? 1,
+      pageSize: pageSize ?? 2
     }});
   },
   delete: async (id: string) => {

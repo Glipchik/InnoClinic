@@ -2,10 +2,12 @@ import { RootState } from "@app/store";
 import Label from "@shared/ui/containers/Label";
 import Loading from "@shared/ui/controls/Loading";
 import { Form, useFormikContext } from "formik";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import FormFooter from "@widgets/form-footer";
 import Input from "@shared/ui/forms/Input";
 import { CreateOfficeModel } from "@features/create-office-form/models/createOfficeModel";
+import { fetchOfficesRequest } from "@shared/store/fetch-offices";
+import { useEffect } from "react";
 
 interface InnerFormProps {
   onCancel: () => void
@@ -14,12 +16,20 @@ interface InnerFormProps {
 const InnerForm = ({ onCancel }: InnerFormProps) => {
   const { values, touched, errors, handleChange, handleBlur } = useFormikContext<CreateOfficeModel>();
   const { loading, error, success } = useSelector((state: RootState) => state.createOffice);
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (success) {
+      dispatch(fetchOfficesRequest({}))
+    }
+  }, [success, dispatch]);
 
   return (
     <Form className="flex w-[40%] flex-col gap-6 p-6 bg-white shadow-lg rounded-lg max-w-lg m-6">
       <Input
+        label="Address"
         type="text"
-        name="address"   
+        name="address"
         onChange={handleChange}
         value={values.address}
         error={(touched.address && errors.address) ? errors.address : undefined}
@@ -27,8 +37,9 @@ const InnerForm = ({ onCancel }: InnerFormProps) => {
         id="address-input-for-create-office-form"
       />
       <Input
+        label="Registry Phone Number"
         type="text"
-        name="registryPhoneNumber"   
+        name="registryPhoneNumber"
         onChange={handleChange}
         value={values.registryPhoneNumber}
         error={(touched.registryPhoneNumber && errors.registryPhoneNumber) ? errors.registryPhoneNumber : undefined}
