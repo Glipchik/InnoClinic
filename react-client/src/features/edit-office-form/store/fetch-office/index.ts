@@ -1,4 +1,4 @@
-import officesApi from '@features/offices-list/api/offices';
+import officesApi from '@features/edit-office-form/api/offices';
 import OfficeModel from '@models/offices/OfficeModel';
 import { AnyAction, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import handleError, { ApiError } from '@shared/lib/errorHandler';
