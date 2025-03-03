@@ -1,0 +1,1 @@
+export { EditSpecializationForm } from './ui'

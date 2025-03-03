@@ -4,7 +4,7 @@ import Button from "../../shared/ui/controls/Button";
 import { SpecializationForm } from "./SpecializationForm";
 import Specialization from "../../entities/specialization";
 import { Pagination } from "../../shared/ui/controls/Pagination";
-import CreateSpecializationModel from "../../models/specializations/createSpecializationModel";
+import CreateSpecializationModel from "../create-specialization-form/models/createSpecializationModel";
 import PaginatedList from "../../models/paginatedList";
 
 interface SpecializationsListProps {
@@ -33,7 +33,7 @@ export function SpecializationsList({ token }: SpecializationsListProps) {
 
   return (
     <div className="my-auto">
-      
+
       {fetchSpecializationsData && (
         <ul className="w-full flex flex-row justify-center items-center space-x-4">
           {(fetchSpecializationsData as PaginatedList<Specialization>).items.map((specialization) => (

@@ -3,11 +3,11 @@ import Button from "@shared/ui/controls/Button";
 import { Link } from "react-router-dom";
 
 interface OfficeCardProps {
-  officeModel: OfficeModel
+  item: OfficeModel
   onDelete: () => void
 }
 
-const OfficeCard = ({ officeModel, onDelete }: OfficeCardProps) => {
+const OfficeCard = ({ item: officeModel, onDelete }: OfficeCardProps) => {
   return (
     <li key={officeModel.id} className="flex flex-col p-6 bg-white rounded-lg shadow-lg hover:shadow-2xl transition-shadow">
       <div className="flex flex-col space-y-3">
@@ -19,9 +19,9 @@ const OfficeCard = ({ officeModel, onDelete }: OfficeCardProps) => {
           <p className="text-lg">Is active: {officeModel.isActive ? 'Yes' : 'No'}</p>
         </div>
         <div className="flex justify-between mt-4">
-            <Button>
+          <Button>
             <Link to={`/offices/edit/${officeModel.id}`}> Edit </Link>
-            </Button>
+          </Button>
           <Button onClick={onDelete} className="bg-red-600 hover:bg-red-700">
             Delete
           </Button>

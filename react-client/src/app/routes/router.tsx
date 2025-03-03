@@ -13,6 +13,8 @@ import { AppointmentsPage } from "@pages/appointments"
 import Layout from "@shared/ui/layout"
 import { OfficesPage } from "@pages/offices"
 import { EditOfficePage } from "@pages/edit-office"
+import { SpecializationsPage } from "@pages/specializations"
+import { EditSpecializationPage } from "@pages/edit-specialization"
 
 const router = createBrowserRouter([
   {
@@ -39,7 +41,16 @@ const router = createBrowserRouter([
       },
       {
         path: "specializations",
-        element: <PrivateRoute requiredRole="Receptionist"> <SpecializationsPage /> </PrivateRoute>,
+        children: [
+          {
+            path: "",
+            element: <PrivateRoute requiredRole="Receptionist"> <SpecializationsPage /> </PrivateRoute>,
+          },
+          {
+            path: "edit/:id",
+            element: <PrivateRoute requiredRole="Receptionist"> <EditSpecializationPage /> </PrivateRoute>,
+          },
+        ]
       },
       {
         path: "",
