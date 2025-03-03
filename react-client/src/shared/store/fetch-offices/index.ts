@@ -1,4 +1,4 @@
-import officesApi from '@features/offices-list/api/offices';
+import officesApi from '@shared/api/offices';
 import OfficeModel from '@models/offices/OfficeModel';
 import PaginatedList from '@models/paginatedList';
 import { AnyAction, createSlice, PayloadAction } from '@reduxjs/toolkit';
