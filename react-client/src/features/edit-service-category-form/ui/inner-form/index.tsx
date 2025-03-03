@@ -2,19 +2,22 @@ import { RootState } from "@app/store";
 import Label from "@shared/ui/containers/Label";
 import Loading from "@shared/ui/controls/Loading";
 import { Form, useFormikContext } from "formik";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import FormFooter from "@widgets/form-footer";
 import Input from "@shared/ui/forms/Input";
 import { useEffect } from "react";
 import EditServiceCategoryModel from "@features/edit-service-category-form/models/editServiceCategoryModel";
+import { resetState } from "@features/edit-service-category-form/store/edit-service-category";
 
 const InnerForm = () => {
   const { values, touched, errors, handleChange, handleBlur } = useFormikContext<EditServiceCategoryModel>();
   const { loading, error, success } = useSelector((state: RootState) => state.editServiceCategory);
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const handleCancel = () => {
+    dispatch(resetState())
     navigate(-1)
   }
 
