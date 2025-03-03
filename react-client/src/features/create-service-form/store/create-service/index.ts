@@ -6,7 +6,7 @@ import { AxiosResponse } from 'axios';
 import { CallEffect, PutEffect, call, put, takeLatest } from 'redux-saga/effects';
 
 interface CreateServiceState {
-  success: boolean
+  success?: boolean
   loading: boolean
   error?: string
 }
@@ -32,11 +32,16 @@ const createServiceSlice = createSlice({
       state.success = false
       state.loading = false;
       state.error = action.payload;
+    },
+    resetState: (state) => {
+      state.error = undefined
+      state.success = undefined
+      state.loading = false
     }
   }
 });
 
-export const { createServiceRequest } = createServiceSlice.actions;
+export const { createServiceRequest, resetState } = createServiceSlice.actions;
 export const createServiceSliceReducer = createServiceSlice.reducer
 
 type ApiResponse = AxiosResponse<CreateServiceModel>;

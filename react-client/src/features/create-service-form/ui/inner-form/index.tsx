@@ -3,15 +3,27 @@ import Label from "@shared/ui/containers/Label";
 import Loading from "@shared/ui/controls/Loading";
 import SpecializationSelect from "@shared/ui/specialization-select";
 import { Form, useFormikContext } from "formik";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import FormFooter from "@widgets/form-footer";
 import ServiceCategorySelect from "../../../../shared/ui/service-category-select";
 import CreateServiceModel from "@features/create-service-form/models/createServiceModel";
 import Input from "@shared/ui/forms/Input";
+import { useEffect } from "react";
+import { resetState } from "@features/create-service-form/store/create-service";
+import { fetchServicesWithPaginationRequest } from "@shared/store/fetch-services-with-pagination";
 
 const InnerForm = ({ close }: { close: () => void }) => {
   const { values, touched, errors, handleChange, handleBlur } = useFormikContext<CreateServiceModel>();
-  const { loading, error, success } = useSelector((state: RootState) => state.createService);
+  const { loading, error, success } = useSelector((state: RootState) => state.createService);  
+  const dispatch = useDispatch()
+  
+  useEffect(() => {
+    if (success) {
+      dispatch(fetchServicesWithPaginationRequest({}))
+      dispatch(resetState())
+      close()
+    }
+  }, [success, dispatch]);
 
   return (
     <Form className="flex w-[40%] flex-col gap-6 p-6 bg-white shadow-lg rounded-lg max-w-lg m-6">
