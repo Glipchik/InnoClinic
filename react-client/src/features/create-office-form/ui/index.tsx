@@ -13,7 +13,7 @@ export const CreateOffice = () => {
         </Button>
       </div>
       <div className="flex flex-col items-center">
-        {isCreating && <CreateOfficeForm onCancel={() => setIsCreating(false)} />}
+        {isCreating && <CreateOfficeForm close={() => setIsCreating(false)} />}
       </div>
     </>
   )
