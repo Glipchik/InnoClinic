@@ -35,7 +35,7 @@ const Select: React.FC<SelectProps> = ({
     defaultValueLabel,
     mapData
   }: SelectProps) => (
-  <div className="form-group flex flex-col">
+  <div className="form-group flex flex-col gap-y-2">
     {label && <label htmlFor={id} className="font-medium">{label}</label>}
     {isLoading && <Loading label="Loading..." />}
     {validationError && <Label type="error" value={validationError} />}
