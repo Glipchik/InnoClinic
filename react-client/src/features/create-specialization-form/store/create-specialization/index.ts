@@ -6,7 +6,7 @@ import { AxiosResponse } from 'axios';
 import { CallEffect, PutEffect, call, put, takeLatest } from 'redux-saga/effects';
 
 interface CreateSpecializationState {
-  success: boolean
+  success?: boolean
   loading: boolean
   error?: string
 }
@@ -32,11 +32,16 @@ const createSpecializationSlice = createSlice({
       state.success = false
       state.loading = false;
       state.error = action.payload;
+    },
+    resetState: (state) => {
+      state.loading = false;
+      state.error = undefined
+      state.success = undefined
     }
   }
 });
 
-export const { createSpecializationRequest } = createSpecializationSlice.actions;
+export const { createSpecializationRequest, resetState } = createSpecializationSlice.actions;
 export const createSpecializationSliceReducer = createSpecializationSlice.reducer
 
 type ApiResponse = AxiosResponse<CreateSpecializationModel>;

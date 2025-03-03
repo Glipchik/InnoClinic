@@ -8,6 +8,7 @@ import Input from "@shared/ui/forms/Input";
 import CreateSpecializationModel from "@features/create-specialization-form/models/createSpecializationModel";
 import { useEffect } from "react";
 import { fetchSpecializationsWithPaginationRequest } from "@shared/store/fetch-specializations-with-pagination";
+import { resetState } from "@features/create-specialization-form/store/create-specialization";
 
 interface InnerFormProps {
   close: () => void
@@ -21,6 +22,7 @@ const InnerForm = ({ close }: InnerFormProps) => {
   useEffect(() => {
     if (success) {
       dispatch(fetchSpecializationsWithPaginationRequest({}))
+      dispatch(resetState())
       close()
     }
   }, [success, dispatch]);
