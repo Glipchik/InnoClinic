@@ -29,11 +29,16 @@ const editOfficeSlice = createSlice({
     editOfficeFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
+    },
+    resetState: (state) => {
+      state.loading = false;
+      state.error = undefined;
+      state.success = undefined
     }
   }
 });
 
-export const { editOfficeRequest } = editOfficeSlice.actions;
+export const { editOfficeRequest, resetState } = editOfficeSlice.actions;
 export const editOfficeSliceReducer = editOfficeSlice.reducer
 
 function* editOffice(action: AnyAction) : Generator<CallEffect<AxiosResponse> | PutEffect, void, AxiosResponse> {
