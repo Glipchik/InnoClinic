@@ -1,4 +1,4 @@
-import CreateOffice from "@features/create-office-form/ui";
+import { CreateOffice } from "@features/create-office-form";
 import { OfficesList } from "@features/offices-list";
 
 const OfficesPage = () => {
