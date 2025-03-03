@@ -6,7 +6,7 @@ import { AxiosResponse } from 'axios';
 import { CallEffect, PutEffect, call, put, takeLatest } from 'redux-saga/effects';
 
 interface CreateOfficeState {
-  success: boolean
+  success?: boolean
   loading: boolean
   error?: string
 }
@@ -32,11 +32,16 @@ const createOfficeSlice = createSlice({
       state.success = false
       state.loading = false;
       state.error = action.payload;
+    },
+    resetState: (state) => {
+      state.success = undefined
+      state.loading = false;
+      state.error = undefined;
     }
   }
 });
 
-export const { createOfficeRequest } = createOfficeSlice.actions;
+export const { createOfficeRequest, resetState } = createOfficeSlice.actions;
 export const createOfficeSliceReducer = createOfficeSlice.reducer
 
 type ApiResponse = AxiosResponse<CreateOfficeModel>;
