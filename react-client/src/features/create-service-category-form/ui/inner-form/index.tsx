@@ -8,6 +8,7 @@ import Input from "@shared/ui/forms/Input";
 import { useEffect } from "react";
 import { fetchServiceCategoriesWithPaginationRequest } from "@shared/store/fetch-service-categories-with-pagination";
 import CreateServiceCategoryModel from "@features/create-service-category-form/models/createServiceCategoryModel";
+import { resetState } from "@features/create-service-category-form/store/create-service-category";
 
 interface InnerFormProps {
   close: () => void
@@ -21,6 +22,7 @@ const InnerForm = ({ close }: InnerFormProps) => {
   useEffect(() => {
     if (success) {
       dispatch(fetchServiceCategoriesWithPaginationRequest({}))
+      dispatch(resetState())
       close()
     }
   }, [success, dispatch]);

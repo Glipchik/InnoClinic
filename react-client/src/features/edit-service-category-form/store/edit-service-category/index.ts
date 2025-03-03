@@ -29,11 +29,16 @@ const editServiceCategorySlice = createSlice({
     editServiceCategoryFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
+    },
+    resetState: (state) => {
+      state.loading = false;
+      state.error = undefined;
+      state.success = undefined
     }
   }
 });
 
-export const { editServiceCategoryRequest } = editServiceCategorySlice.actions;
+export const { editServiceCategoryRequest, resetState } = editServiceCategorySlice.actions;
 export const editServiceCategorySliceReducer = editServiceCategorySlice.reducer
 
 function* editServiceCategory(action: AnyAction) : Generator<CallEffect<AxiosResponse> | PutEffect, void, AxiosResponse> {
