@@ -1,4 +1,5 @@
 import React, { ChangeEvent } from 'react';
+import Label from '../containers/Label';
 
 interface DatePickerProps {
   label?: string;
@@ -9,16 +10,17 @@ interface DatePickerProps {
   value?: Date | string;
   disabled?: boolean;
   className?: string;
+  error?: string;
 }
 
-const formatDate = (date: Date | string): string => {
+const formatDate = (date?: Date | string): string => {
   if (!date) return "";
   if (typeof date === "string") return date;
 
   return date.toISOString().split("T")[0];
 };
 
-const DatePicker: React.FC<DatePickerProps> = ({ label, id, name, onChange, onBlur, value, disabled, className }) => (
+const DatePicker: React.FC<DatePickerProps> = ({ label, id, name, onChange, onBlur, value, disabled, className, error }) => (
   <div className="form-group flex flex-col">
     {label && <label htmlFor={id} className="text-gray-700 font-medium">{label}</label>}
     <input
@@ -31,6 +33,7 @@ const DatePicker: React.FC<DatePickerProps> = ({ label, id, name, onChange, onBl
       disabled={disabled}
       className={`mt-1 p-2 text-black border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${className || ''}`}
     />
+    {error && <Label type="error" value={error} />}
   </div>
 );
 

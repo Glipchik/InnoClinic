@@ -2,7 +2,7 @@ export default interface Appointment {
   id: string,
   firstName: string,
   lastName: string,
-  middleName: string | null,
+  middleName?: string,
   specializationId: string,
   accountId: string,
   officeId: string,
