@@ -12,7 +12,7 @@ import { editOfficeSliceReducer, watchEditOffice } from '@features/edit-office-f
 import { fetchOfficeByIdSliceReducer, watchFetchOfficeById } from '@features/edit-office-form/store/fetch-office';
 import { createOfficeSliceReducer, watchCreateOffice } from '@features/create-office-form/store/create-office';
 import { deleteSpecializationSliceReducer, watchDeleteSpecialization } from '@features/specializations-list/store/delete-specialization';
-import { fetchSpecializationsWithPaginationSliceReducer, watchFetchSpecializationsWithPagination } from '@features/specializations-list/store/fetch-specializations';
+import { fetchSpecializationsWithPaginationSliceReducer, watchFetchSpecializationsWithPagination } from '@shared/store/fetch-specializations-with-pagination';
 import { editSpecializationSliceReducer, watchEditSpecialization } from '@features/edit-specialization-form/store/edit-specialization';
 import { fetchSpecializationByIdSliceReducer, watchFetchSpecializationById } from '@features/edit-specialization-form/store/fetch-specialization';
 import { createSpecializationSliceReducer, watchCreateSpecialization } from '@features/create-specialization-form/store/create-specialization';

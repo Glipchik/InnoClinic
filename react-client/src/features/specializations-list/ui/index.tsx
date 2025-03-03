@@ -1,4 +1,4 @@
-import { fetchSpecializationsWithPaginationRequest } from "../store/fetch-specializations";
+import { fetchSpecializationsWithPaginationRequest } from "../../../shared/store/fetch-specializations-with-pagination";
 import { deleteSpecializationRequest } from "../store/delete-specialization";
 import SpecializationCard from "./specialization-card";
 import { RootState } from "@app/store";
