@@ -3,7 +3,6 @@ import {
 } from "react-router-dom"
 import { Login } from '@features/auth/login'
 import { Logout } from '@features/auth/logout'
-import Layout from '@shared/ui/layout'
 import PrivateRoute from "@shared/routes/PrivateRoute/index"
 import { SilentRenew } from "@features//auth/silent-renew"
 import { Register } from "@features//auth/register"
@@ -11,6 +10,13 @@ import { SigninOidc } from "@features//auth/signin-oidc"
 import { HomePage } from "@pages/home"
 import { ForbiddenPage } from "@pages/errors/forbidden"
 import { AppointmentsPage } from "@pages/appointments"
+import Layout from "@shared/ui/layout"
+import { OfficesPage } from "@pages/offices"
+import { EditOfficePage } from "@pages/edit-office"
+import { SpecializationsPage } from "@pages/specializations"
+import { EditSpecializationPage } from "@pages/edit-specialization"
+import { EditServiceCategoryPage } from "@pages/edit-service-category"
+import { ServiceCategoriesPage } from "@pages/service-categories"
 
 const router = createBrowserRouter([
   {
@@ -24,15 +30,42 @@ const router = createBrowserRouter([
       },
       {
         path: "offices",
-        element: <PrivateRoute requiredRole="Receptionist"> <OfficesPage /> </PrivateRoute>,
+        children: [
+          {
+            path: "",
+            element: <PrivateRoute requiredRole="Receptionist"> <OfficesPage /> </PrivateRoute>,
+          },
+          {
+            path: "edit/:id",
+            element: <PrivateRoute requiredRole="Receptionist"> <EditOfficePage /> </PrivateRoute>,
+          },
+        ]
       },
       {
         path: "specializations",
-        element: <PrivateRoute requiredRole="Receptionist"> <SpecializationsPage /> </PrivateRoute>,
+        children: [
+          {
+            path: "",
+            element: <PrivateRoute requiredRole="Receptionist"> <SpecializationsPage /> </PrivateRoute>,
+          },
+          {
+            path: "edit/:id",
+            element: <PrivateRoute requiredRole="Receptionist"> <EditSpecializationPage /> </PrivateRoute>,
+          },
+        ]
       },
       {
         path: "service-categories",
-        element: <PrivateRoute requiredRole="Receptionist"> <ServiceCategoriesPage /> </PrivateRoute>,
+        children: [
+          {
+            path: "",
+            element: <PrivateRoute requiredRole="Receptionist"> <ServiceCategoriesPage /> </PrivateRoute>,
+          },
+          {
+            path: "edit/:id",
+            element: <PrivateRoute requiredRole="Receptionist"> <EditServiceCategoryPage /> </PrivateRoute>,
+          },
+        ]
       },
       {
         path: "services",

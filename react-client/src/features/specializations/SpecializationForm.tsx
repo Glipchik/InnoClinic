@@ -2,7 +2,7 @@ import { useFormik } from "formik";
 import { validationSchema } from "./validationSchema";
 import Input from "../../shared/ui/forms/Input";
 import Button from "../../shared/ui/controls/Button";
-import CreateSpecializationModel from "../../models/specializations/createSpecializationModel";
+import CreateSpecializationModel from "../create-specialization-form/models/createSpecializationModel";
 
 interface SpecializationFormProps {
   createSpecializationModel: CreateSpecializationModel;
