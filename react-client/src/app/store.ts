@@ -6,7 +6,7 @@ import { createAppointmentSliceReducer, watchCreateAppointment } from '@features
 import { fetchDoctorsSliceReducer, watchFetchDoctors } from '@features/create-appointment-form/store/fetch-doctors';
 import { fetchServicesSliceReducer, watchFetchServices } from '@features/create-appointment-form/store/fetch-services';
 import { fetchSpecializationsSliceReducer, watchFetchSpecializations } from '@shared/store/fetch-specializations';
-import { fetchOfficesSliceReducer, watchFetchOffices } from '@features/offices-list/store/fetch-offices';
+import { fetchOfficesSliceReducer, watchFetchOffices } from '@shared/store/fetch-offices';
 import { deleteOfficeSliceReducer, watchDeleteOffice } from '@features/offices-list/store/delete-office';
 import { editOfficeSliceReducer, watchEditOffice } from '@features/edit-office-form/store/edit-office';
 import { fetchOfficeByIdSliceReducer, watchFetchOfficeById } from '@features/edit-office-form/store/fetch-office';

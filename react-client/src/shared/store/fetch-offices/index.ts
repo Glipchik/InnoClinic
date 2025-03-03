@@ -20,7 +20,7 @@ const fetchOfficesSlice = createSlice({
   name: 'FetchOfficesSlice',
   initialState,
   reducers: {
-    fetchOfficesRequest: (state, action: PayloadAction<{ pageIndex: number, pageSize: number }>) => {
+    fetchOfficesRequest: (state, action: PayloadAction<{ pageIndex?: number, pageSize?: number }>) => {
       state.loading = !!action;
     },
     fetchOfficesSuccess: (state, action: PayloadAction<PaginatedList<OfficeModel>>) => {

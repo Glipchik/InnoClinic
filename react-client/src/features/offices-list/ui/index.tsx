@@ -1,4 +1,4 @@
-import { fetchOfficesRequest } from "../store/fetch-offices";
+import { fetchOfficesRequest } from "@shared/store/fetch-offices";
 import { deleteOfficeRequest } from "../store/delete-office";
 import OfficeCard from "./office-card";
 import { RootState } from "@app/store";
