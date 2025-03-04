@@ -38,7 +38,6 @@ const Select: React.FC<SelectProps> = ({
   <div className="form-group flex flex-col gap-y-2">
     {label && <label htmlFor={id} className="font-medium">{label}</label>}
     {isLoading && <Loading label="Loading..." />}
-    {validationError && <Label type="error" value={validationError} />}
     {fetchError && <Label type="error" value={fetchError} />}
     <select
       id={id}
@@ -57,6 +56,7 @@ const Select: React.FC<SelectProps> = ({
         })
       }
     </select>
+    {validationError && <Label type="error" value={validationError} />}
   </div>
 );
 

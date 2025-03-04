@@ -1,5 +1,6 @@
 import React, { ChangeEvent } from 'react';
 import Label from '../containers/Label';
+import toISODateString from '@shared/lib/dateStringExtension';
 
 interface DatePickerProps {
   label?: string;
@@ -17,7 +18,7 @@ const formatDate = (date?: Date | string): string => {
   if (!date) return "";
   if (typeof date === "string") return date;
 
-  return date.toISOString().split("T")[0];
+  return toISODateString(date);
 };
 
 const DatePicker: React.FC<DatePickerProps> = ({ label, id, name, onChange, onBlur, value, disabled, className, error }) => (

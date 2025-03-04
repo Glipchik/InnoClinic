@@ -8,8 +8,8 @@ import { useSelector } from "react-redux";
 import DoctorSelect from "../doctor-select";
 import ServiceSelect from "../service-select";
 import TimeSlotSelect from "../time-slot-select";
-import { CreateAppointmentFormModel } from "../form";
 import FormFooter from "@widgets/form-footer";
+import { CreateAppointmentFormModel } from "..";
 
 const InnerForm = ({ onCancel }: { onCancel: () => void }) => {
   const { values, touched, errors, handleChange, handleBlur } = useFormikContext<CreateAppointmentFormModel>();

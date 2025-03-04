@@ -1,1 +1,1 @@
-export { CreateAppointmentForm } from './ui/form/index'
+export { CreateAppointmentForm } from './ui'

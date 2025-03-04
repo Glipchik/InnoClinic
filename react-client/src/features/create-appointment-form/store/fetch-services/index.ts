@@ -1,5 +1,5 @@
 import servicesApi from '@features/create-appointment-form/api/services';
-import ServiceModel from '@models/services/serviceModel';
+import ServiceModel from '@shared/models/services/serviceModel';
 import { AnyAction, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import handleError, { ApiError } from '@shared/lib/errorHandler';
 import { AxiosResponse } from 'axios';
