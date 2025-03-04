@@ -1,4 +1,4 @@
-import DoctorModel from "@models/doctors/doctorModel";
+import DoctorModel from "@shared/models/doctors/doctorModel";
 import profilesAxiosInstance from "@shared/api/clients/profiles";
 import tokenInterceptor from "@shared/api/interceptors/tokenInterceptor";
 

@@ -1,5 +1,5 @@
 import doctorsApi from '@features/create-appointment-form/api/doctors';
-import DoctorModel from '@models/doctors/doctorModel';
+import DoctorModel from '@shared/models/doctors/doctorModel';
 import { AnyAction, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import handleError, { ApiError } from '@shared/lib/errorHandler';
 import { AxiosResponse } from 'axios';

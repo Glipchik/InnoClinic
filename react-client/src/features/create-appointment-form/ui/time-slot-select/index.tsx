@@ -4,6 +4,7 @@ import { RootState } from "@app/store";
 import Select from "@shared/ui/forms/Select";
 import TimeSlot from "@entities/timeSlot";
 import { fetchDoctorScheduleRequest } from "@features/create-appointment-form/store/fetch-doctor-schedule";
+import '@shared/lib/dateStringExtension'
 
 interface TimeSlotSelectProps {
   id?: string;
@@ -27,11 +28,10 @@ const TimeSlotSelect = ({ id, name, onChange, value, disabled, className, isLoad
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (isLoadingRequired) {
-      if (date && doctorId)
-        dispatch(fetchDoctorScheduleRequest({ date: new Date(date).toISOString().split('T')[0], doctorId: doctorId }))
+    if (isLoadingRequired && date && doctorId) {
+      dispatch(fetchDoctorScheduleRequest({ date: new Date(date).toISODateString(), doctorId: doctorId }))
     }
-  }, [isLoadingRequired, dispatch])
+  }, [isLoadingRequired])
 
   return (
     <Select

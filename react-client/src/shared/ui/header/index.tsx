@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { User } from 'oidc-client';
 import { UserManagerContext } from "@shared/contexts/UserManagerContext";
-import Logo from "@widgets/logo";
+import Logo from "@shared/ui/assets/logo";
 import UserInfo from "@widgets/user-info";
 import { Link } from "react-router-dom";
 

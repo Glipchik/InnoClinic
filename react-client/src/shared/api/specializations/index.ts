@@ -1,4 +1,4 @@
-import SpecializationModel from "@models/specializations/specializationModel";
+import SpecializationModel from "@shared/models/specializations/specializationModel";
 import servicesAxiosInstance from "../clients/services";
 import tokenInterceptor from "../interceptors/tokenInterceptor";
 import PaginatedList from "@models/paginatedList";

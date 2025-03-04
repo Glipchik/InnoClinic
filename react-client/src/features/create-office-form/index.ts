@@ -1,1 +1,1 @@
-export { CreateOffice } from './ui'
+export { CreateOfficeForm } from './ui'

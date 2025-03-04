@@ -8,6 +8,7 @@ import Input from "@shared/ui/forms/Input";
 import { CreateOfficeModel } from "@features/create-office-form/models/createOfficeModel";
 import { fetchOfficesRequest } from "@shared/store/fetch-offices";
 import { useEffect } from "react";
+import { resetState } from "@features/create-office-form/store/create-office";
 
 interface InnerFormProps {
   close: () => void
@@ -21,6 +22,7 @@ const InnerForm = ({ close }: InnerFormProps) => {
   useEffect(() => {
     if (success) {
       dispatch(fetchOfficesRequest({}))
+      dispatch(resetState())
       close()
     }
   }, [success, dispatch]);

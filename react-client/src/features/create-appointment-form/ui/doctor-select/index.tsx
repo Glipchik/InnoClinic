@@ -1,6 +1,6 @@
 import { RootState } from "@app/store";
 import { fetchDoctorsRequest } from "@features/create-appointment-form/store/fetch-doctors";
-import DoctorModel from "@models/doctors/doctorModel";
+import DoctorModel from "@shared/models/doctors/doctorModel";
 import Select from "@shared/ui/forms/Select";
 import { ChangeEvent, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,11 +26,10 @@ const DoctorSelect = ({ id, name, onChange, value, disabled, className, error, i
   const dispatch = useDispatch();
     
   useEffect(() => {
-    if (isLoadingRequired) {
-      if (specializationId)
-        dispatch(fetchDoctorsRequest({specializationId}))
+    if (isLoadingRequired && specializationId) {
+      dispatch(fetchDoctorsRequest({specializationId}))
     }
-  }, [isLoadingRequired, dispatch])
+  }, [isLoadingRequired])
 
   return (
     <Select

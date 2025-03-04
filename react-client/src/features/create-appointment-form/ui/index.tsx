@@ -1,22 +1,43 @@
-import { CreateAppointmentForm } from "@features/create-appointment-form";
-import Button from "@shared/ui/controls/Button";
-import { useState } from "react";
+import { Formik } from "formik";
+import { useDispatch } from "react-redux";
+import { MIN_APPOINTMENT_DATE } from "../lib/dateUtils";
+import CreateAppointmentModel from "../models/createAppointmentModel";
+import { validationSchema } from "../models/validationSchema";
+import { createAppointmentRequest } from "../store/create-appointment";
+import InnerForm from "./inner-form";
 
-const CreateAppointment = () => {
-  const [isCreating, setIsCreating] = useState<boolean>(false);
-  
-  return (
-    <>
-      <div className="flex justify-end m-4">
-        <Button onClick={() => setIsCreating(true)}>
-          Create New Appointment
-        </Button>
-      </div>
-      <div className="flex flex-col items-center">
-        {isCreating && <CreateAppointmentForm onCancel={() => setIsCreating(false)} />}
-      </div>
-    </>
-  )
+interface CreateAppointmentFormProps {
+  onCancel: () => void;
 }
 
-export default CreateAppointment
+export interface CreateAppointmentFormModel {
+  specializationId: string;
+  doctorId: string;
+  serviceId: string;
+  timeSlotId: number;
+  date: string;
+}
+
+const CreateAppointmentForm = ({ onCancel }: CreateAppointmentFormProps) => {
+  const dispatch = useDispatch();
+
+  const initialValues: CreateAppointmentFormModel = {
+    serviceId: "",
+    specializationId: "",
+    date: MIN_APPOINTMENT_DATE.toISODateString(),
+    timeSlotId: -1,
+    doctorId: "",
+  };
+
+  const onSubmit = (values: CreateAppointmentModel) => {
+    dispatch(createAppointmentRequest(values));
+  };
+
+  return (
+    <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
+      <InnerForm onCancel={onCancel} />
+    </Formik>
+  );
+};
+
+export { CreateAppointmentForm };

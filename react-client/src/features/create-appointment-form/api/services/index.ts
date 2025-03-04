@@ -1,4 +1,4 @@
-import ServiceModel from "@models/services/serviceModel";
+import ServiceModel from "@shared/models/services/serviceModel";
 import servicesAxiosInstance from "@shared/api/clients/services";
 import tokenInterceptor from "@shared/api/interceptors/tokenInterceptor";
 

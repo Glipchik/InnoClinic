@@ -1,4 +1,5 @@
 import React, { ChangeEvent } from 'react';
+import '@shared/lib/dateStringExtension'
 import Label from '../containers/Label';
 
 interface DatePickerProps {
@@ -17,11 +18,11 @@ const formatDate = (date?: Date | string): string => {
   if (!date) return "";
   if (typeof date === "string") return date;
 
-  return date.toISOString().split("T")[0];
+  return date.toISODateString();
 };
 
 const DatePicker: React.FC<DatePickerProps> = ({ label, id, name, onChange, onBlur, value, disabled, className, error }) => (
-  <div className="form-group flex flex-col">
+  <div className="form-group flex flex-col gap-y-2">
     {label && <label htmlFor={id} className="text-gray-700 font-medium">{label}</label>}
     <input
       type="date"
