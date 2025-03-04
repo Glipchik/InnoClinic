@@ -1,4 +1,4 @@
-import SpecializationModel from '@models/specializations/specializationModel';
+import SpecializationModel from '@shared/models/specializations/specializationModel';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import specializationsApi from '@shared/api/specializations';
 import handleError, { ApiError } from '@shared/lib/errorHandler';

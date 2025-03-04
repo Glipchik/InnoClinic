@@ -14,7 +14,7 @@ interface InputProps {
 }
 
 const Input: React.FC<InputProps> = ({ value, label, name, placeholder, type, onChange, id, error, onBlur }) => (
-  <div className="form-group flex flex-col">
+  <div className="form-group flex flex-col gap-y-2">
     {label && <label htmlFor="input-field" className="text-gray-700 font-medium">{label}</label>}
     <input
       id={id}

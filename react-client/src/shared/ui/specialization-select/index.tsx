@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "../forms/Select";
-import SpecializationModel from "../../../models/specializations/specializationModel";
+import SpecializationModel from "../../models/specializations/specializationModel";
 import { RootState } from "@app/store";
 import { fetchSpecializationsRequest } from "@shared/store/fetch-specializations";
 
@@ -28,7 +28,7 @@ const SpecializationSelect = ({ id, name, onChange, onBlur, value, disabled, cla
     if (isLoadingRequired) {
       dispatch(fetchSpecializationsRequest())
     }
-  }, [isLoadingRequired, dispatch])
+  }, [isLoadingRequired])
 
   return (
     <Select

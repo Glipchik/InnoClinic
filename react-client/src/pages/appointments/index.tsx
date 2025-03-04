@@ -1,4 +1,4 @@
-import CreateAppointment from "../../features/create-appointment-form/ui";
+import CreateAppointment from "@widgets/create-appointment";
 
 const AppointmentsPage = () => {
   return (
