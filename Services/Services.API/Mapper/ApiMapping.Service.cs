@@ -10,6 +10,7 @@ namespace Services.API.Mapper
             CreateMap<UpdateServiceDto, UpdateServiceModel>();
             CreateMap<ServiceModel, ServiceDto>();
             CreateMap<CreateServiceDto, CreateServiceModel>();
+            CreateMap<ServiceQueryParametresDto, ServiceQueryParametresModel>();
         }
     }
 }

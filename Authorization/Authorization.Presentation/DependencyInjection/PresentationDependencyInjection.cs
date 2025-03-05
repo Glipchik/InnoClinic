@@ -34,6 +34,17 @@ namespace Authorization.Presentation.DependencyInjection
             services.AddFluentValidationAutoValidation()
                     .AddValidatorsFromAssemblyContaining<Program>();
 
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(policy =>
+                {
+                    policy.AllowAnyHeader();
+                    policy.AllowAnyMethod();
+                    policy.WithOrigins("http://localhost:3000");
+                    policy.AllowCredentials();
+                });
+            });
+
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             services
                 .AddIdentityServer(options =>
@@ -43,6 +54,8 @@ namespace Authorization.Presentation.DependencyInjection
                     options.Events.RaiseFailureEvents = true;
                     options.Events.RaiseSuccessEvents = true;
                     options.EmitStaticAudienceClaim = true;
+                    options.Authentication.CookieSameSiteMode = SameSiteMode.None;
+                    options.Authentication.CheckSessionCookieSameSiteMode = SameSiteMode.None;
                 })
                 .AddConfigurationStore(options =>
                 {
@@ -119,6 +132,30 @@ namespace Authorization.Presentation.DependencyInjection
                 GetClient(configuration, "ProfilesApi"),
                 GetClient(configuration, "DocumentsApi"),
                 GetClient(configuration, "AppointmentsApi"),
+                new Client
+                {
+                    AllowedCorsOrigins = { $"{(configuration.GetSection("AuthorizationClients").GetSection("ReactClient")["ClientBaseUrl"] 
+                    ?? throw new ArgumentNullException()).TrimEnd('/')}" },
+                    ClientId = configuration.GetSection("AuthorizationClients").GetSection("ReactClient")["ClientId"]!,
+                    ClientName = configuration.GetSection("AuthorizationClients").GetSection("ReactClient")["ClientName"],
+                    AllowedGrantTypes = GrantTypes.Code,
+                    RequirePkce = true,
+                    RequireClientSecret = false,
+                    RedirectUris = { $"{configuration.GetSection("AuthorizationClients").GetSection("ReactClient")["ClientBaseUrl"]}signin-oidc" },
+                    PostLogoutRedirectUris = { $"{configuration.GetSection("AuthorizationClients").GetSection("ReactClient")["ClientBaseUrl"]}" },
+                    AllowedScopes =
+                    {
+                        "openid",
+                        "profile",
+                        "email",
+                        "roles",
+                        "api_profile",
+                        "api_email",
+                        "api_roles"
+                    },
+                    AlwaysIncludeUserClaimsInIdToken = true,
+                    AlwaysSendClientClaims = true
+                },
                 new Client
                 {
                     ClientId = configuration.GetSection("AuthorizationClients").GetSection("ProfilesAuthM2M")["ClientId"]!,
