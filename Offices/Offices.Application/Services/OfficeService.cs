@@ -4,6 +4,7 @@ using Offices.Application.Services.Abstractions;
 using Offices.Data.Entities;
 using Offices.Data.Repositories.Abstractions;
 using Offices.Domain.Exceptions;
+using Offices.Domain.Models;
 using Offices.MessageBroking.Producers.Abstractions;
 
 namespace Offices.Application.Services
@@ -55,9 +56,22 @@ namespace Offices.Application.Services
             return _mapper.Map<OfficeModel>(office);
         }
 
-        public async Task<IEnumerable<OfficeModel>> GetAll(CancellationToken cancellationToken)
+        public async Task<PaginatedList<OfficeModel>> GetAll(int pageIndex, int pageSize, CancellationToken cancellationToken)
         {
-            return _mapper.Map<IEnumerable<OfficeModel>>(await _officeRepository.GetAllAsync(cancellationToken));
+            var result = new List<OfficeModel>();
+
+            var offices = await _officeRepository.GetAllAsync(pageIndex, pageSize, cancellationToken);
+
+            foreach (var office in offices.Items)
+            {
+                var officeModel = _mapper.Map<OfficeModel>(office);
+
+                officeModel.Doctors = _mapper.Map<IEnumerable<DoctorModel>>(await _doctorRepository.GetDoctorsFromOffice(office.Id, cancellationToken));
+                officeModel.Receptionists = _mapper.Map<IEnumerable<ReceptionistModel>>(await _receptionistsRepository.GetReceptionistsFromOffice(office.Id, cancellationToken));
+                result.Add(officeModel);
+            }
+
+            return new PaginatedList<OfficeModel>(result, offices.PageIndex, offices.TotalPages);
         }
 
         public async Task Delete(Guid id, CancellationToken cancellationToken)
@@ -82,7 +96,7 @@ namespace Offices.Application.Services
         private async Task<bool> CheckIfThereAreActiveDoctorsOrReceptionistsInOffice(Guid officeId, CancellationToken cancellationToken)
         {
             var doctorsInOfficeCount = (await _doctorRepository.GetActiveDoctorsFromOffice(officeId, cancellationToken)).Count();
-            var receptionistsInOfficeCount = (await _receptionistsRepository.GetActiveReceptionistsFromOffice(officeId, cancellationToken)).Count();
+            var receptionistsInOfficeCount = (await _receptionistsRepository.GetReceptionistsFromOffice(officeId, cancellationToken)).Count();
 
             // If someone works in the office, returns true
             return (doctorsInOfficeCount > 0) || (receptionistsInOfficeCount > 0);

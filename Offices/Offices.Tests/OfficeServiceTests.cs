@@ -83,7 +83,7 @@ namespace Offices.Tests
         public async Task Delete_ThereAreReceptionists_ShouldBeException(Guid officeId)
         {
             // Arrange
-            _receptionistRepositoryMock.Setup(repo => repo.GetActiveReceptionistsFromOffice(officeId, CancellationToken.None))
+            _receptionistRepositoryMock.Setup(repo => repo.GetReceptionistsFromOffice(officeId, CancellationToken.None))
                 .ReturnsAsync(new List<Receptionist>
                 {
                     CreateReceptionist(OfficeId: officeId)
@@ -103,7 +103,7 @@ namespace Offices.Tests
             // Arrange
             _doctorRepositoryMock.Setup(repo => repo.GetActiveDoctorsFromOffice(officeId, CancellationToken.None)).
                 ReturnsAsync(new List<Doctor>());
-            _receptionistRepositoryMock.Setup(repo => repo.GetActiveReceptionistsFromOffice(officeId, CancellationToken.None)).
+            _receptionistRepositoryMock.Setup(repo => repo.GetReceptionistsFromOffice(officeId, CancellationToken.None)).
                 ReturnsAsync(new List<Receptionist>());
 
             // Act and Assert
