@@ -18,7 +18,7 @@ const deleteOfficeSlice = createSlice({
   name: 'DeleteOfficeSlice',
   initialState,
   reducers: {
-    deleteOfficeRequest: (state, action: PayloadAction<{ officeId: string }>) => {
+    deleteOfficeRequest: (state, action: PayloadAction<{ id: string }>) => {
       state.loading = !!action;
     },
     deleteOfficeSuccess: (state) => {
@@ -40,8 +40,8 @@ function* deleteOffice(
   action: AnyAction
 ): Generator<CallEffect<AxiosResponse> | PutEffect, void, void> {
   try {
-    const { officeId } = action.payload;
-    yield call(officesApi.delete, officeId);
+    const { id } = action.payload;
+    yield call(officesApi.delete, id);
     yield put(deleteOfficeSlice.actions.deleteOfficeSuccess())
   } catch (error) {
     yield put(deleteOfficeSlice.actions.deleteOfficeFailure(handleError(error as ApiError)))
