@@ -20,21 +20,20 @@ export const List = <T,>({ fetchStateSelector, deleteStateSelector, fetchAction,
   const [isModalOpen, setModalOpen] = useState(false);
   const [itemIdToDelete, setItemIdToDelete] = useState<string | null>(null);
   const [pageIndex, setPageIndex] = useState<number>(1);
-  const pageSize = 2;
 
   const dispatch = useDispatch();
   const { loading, error, data } = useSelector(fetchStateSelector);
   const { loading: deleteLoading, error: deleteError, success } = useSelector(deleteStateSelector);
 
   useEffect(() => {
-    dispatch(fetchAction({ pageIndex, pageSize }));
+    dispatch(fetchAction({ pageIndex, pageSize: import.meta.env.VITE_PAGE_SIZE }));
   }, [pageIndex, dispatch, fetchAction]);
 
   useEffect(() => {
     if (success) {
-      dispatch(fetchAction({ pageIndex, pageSize }));
+      dispatch(fetchAction({ pageIndex, pageSize: import.meta.env.VITE_PAGE_SIZE }));
     }
-  }, [success, dispatch, fetchAction, pageIndex, pageSize]);
+  }, [success, dispatch, fetchAction, pageIndex]);
 
   const handleConfirm = () => {
     if (itemIdToDelete) {
