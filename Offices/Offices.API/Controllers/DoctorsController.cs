@@ -25,19 +25,16 @@ namespace Offices.API.Controllers
         // Validators
         private readonly IValidator<CreateDoctorDto> _createDoctorDtoValidator;
         private readonly IValidator<UpdateDoctorDto> _updateDoctorDtoValidator;
-        private readonly IValidator<ObjectIdDto> _objectIdDtoValidator;
 
         public DoctorsController(IDoctorService doctorService, ILogger<DoctorsController> logger, IMapper mapper,
             IValidator<CreateDoctorDto> createDoctorDtoValidator,
-            IValidator<UpdateDoctorDto> updateDoctorDtoValidator,
-            IValidator<ObjectIdDto> objectIdDtoValidator)
+            IValidator<UpdateDoctorDto> updateDoctorDtoValidator)
         {
             _doctorService = doctorService;
             _logger = logger;
             _mapper = mapper;
             _createDoctorDtoValidator = createDoctorDtoValidator;
             _updateDoctorDtoValidator = updateDoctorDtoValidator;
-            _objectIdDtoValidator = objectIdDtoValidator;
         }
 
         /// <summary>
@@ -76,20 +73,6 @@ namespace Offices.API.Controllers
         [Authorize]
         public async Task<DoctorDto> Get(string id, CancellationToken cancellationToken)
         {
-            // Validation
-            var objectIdDtoValidation = await _objectIdDtoValidator.ValidateAsync(new ObjectIdDto(id), cancellationToken);
-            if (!objectIdDtoValidation.IsValid)
-            {
-                var validationErrors = objectIdDtoValidation.Errors
-                    .GroupBy(e => e.PropertyName)
-                    .ToDictionary(
-                        g => g.Key,
-                        g => g.Select(e => e.ErrorMessage).ToArray()
-                    );
-
-                throw new Domain.Exceptions.ValidationException(validationErrors);
-            }
-
             var doctor = await _doctorService.Get(Guid.Parse(id), cancellationToken);
             _logger.LogInformation("Requested doctor with id {id}", id);
             return _mapper.Map<DoctorDto>(doctor);
@@ -168,20 +151,6 @@ namespace Offices.API.Controllers
         [Authorize(Roles = "Receptionist")]
         public async Task Delete(string id, CancellationToken cancellationToken)
         {
-            // Validation
-            var objectIdDtoValidation = await _objectIdDtoValidator.ValidateAsync(new ObjectIdDto(id), cancellationToken);
-            if (!objectIdDtoValidation.IsValid)
-            {
-                var validationErrors = objectIdDtoValidation.Errors
-                    .GroupBy(e => e.PropertyName)
-                    .ToDictionary(
-                        g => g.Key,
-                        g => g.Select(e => e.ErrorMessage).ToArray()
-                    );
-
-                throw new Domain.Exceptions.ValidationException(validationErrors);
-            }
-
             await _doctorService.Delete(Guid.Parse(id), cancellationToken);
             _logger.LogInformation("Doctor with id {id} was successfully deleted", id);
         }

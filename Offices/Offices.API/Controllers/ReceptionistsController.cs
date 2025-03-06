@@ -24,19 +24,16 @@ namespace Offices.API.Controllers
         // Validators
         private readonly IValidator<CreateReceptionistDto> _createReceptionistDtoValidator;
         private readonly IValidator<UpdateReceptionistDto> _updateReceptionistDtoValidator;
-        private readonly IValidator<ObjectIdDto> _objectIdDtoValidator;
 
         public ReceptionistsController(IReceptionistService receptionistService, ILogger<ReceptionistsController> logger, IMapper mapper,
             IValidator<CreateReceptionistDto> createReceptionistDtoValidator,
-            IValidator<UpdateReceptionistDto> updateReceptionistDtoValidator,
-            IValidator<ObjectIdDto> objectIdDtoValidator)
+            IValidator<UpdateReceptionistDto> updateReceptionistDtoValidator)
         {
             _receptionistService = receptionistService;
             _logger = logger;
             _mapper = mapper;
             _createReceptionistDtoValidator = createReceptionistDtoValidator;
             _updateReceptionistDtoValidator = updateReceptionistDtoValidator;
-            _objectIdDtoValidator = objectIdDtoValidator;
         }
 
         /// <summary>
@@ -75,20 +72,6 @@ namespace Offices.API.Controllers
         [Authorize]
         public async Task<ReceptionistDto> Get(string id, CancellationToken cancellationToken)
         {
-            // Validation
-            var objectIdDtoValidation = await _objectIdDtoValidator.ValidateAsync(new ObjectIdDto(id), cancellationToken);
-            if (!objectIdDtoValidation.IsValid)
-            {
-                var validationErrors = objectIdDtoValidation.Errors
-                    .GroupBy(e => e.PropertyName)
-                    .ToDictionary(
-                        g => g.Key,
-                        g => g.Select(e => e.ErrorMessage).ToArray()
-                    );
-
-                throw new Domain.Exceptions.ValidationException(validationErrors);
-            }
-
             var receptionist = await _receptionistService.Get(Guid.Parse(id), cancellationToken);
             _logger.LogInformation("Requested receptionist with id {id}", id);
             return _mapper.Map<ReceptionistDto>(receptionist);
@@ -167,20 +150,6 @@ namespace Offices.API.Controllers
         [Authorize(Roles = "Receptionist")]
         public async Task Delete(string id, CancellationToken cancellationToken)
         {
-            // Validation
-            var objectIdDtoValidation = await _objectIdDtoValidator.ValidateAsync(new ObjectIdDto(id), cancellationToken);
-            if (!objectIdDtoValidation.IsValid)
-            {
-                var validationErrors = objectIdDtoValidation.Errors
-                    .GroupBy(e => e.PropertyName)
-                    .ToDictionary(
-                        g => g.Key,
-                        g => g.Select(e => e.ErrorMessage).ToArray()
-                    );
-
-                throw new Domain.Exceptions.ValidationException(validationErrors);
-            }
-
             await _receptionistService.Delete(Guid.Parse(id), cancellationToken);
             _logger.LogInformation("Receptionist with id {id} was successfully deleted", id);
         }

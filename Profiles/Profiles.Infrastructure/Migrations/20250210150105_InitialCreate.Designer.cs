@@ -12,7 +12,7 @@ using Profiles.Infrastructure.Contexts;
 namespace Profiles.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250130114246_InitialCreate")]
+    [Migration("20250210150105_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -51,7 +51,6 @@ namespace Profiles.Infrastructure.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("PhotoFileName")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
