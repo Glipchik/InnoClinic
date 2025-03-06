@@ -1,4 +1,5 @@
-﻿using MassTransit;
+﻿using Events.Specialization;
+using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
 using Profiles.Consumers.Consumers.OfficeConsumers;
 using Profiles.Consumers.Consumers.SpecializationConsumers;
@@ -6,6 +7,7 @@ using Profiles.Consumers.Mapper;
 using Profiles.MessageBroking.Mapper;
 using Profiles.MessageBroking.Producers;
 using Profiles.MessageBroking.Producers.Abstractions;
+using RabbitMQ.Client;
 
 namespace Services.Consumers.Consumers.DependencyInjection
 {
@@ -50,11 +52,11 @@ namespace Services.Consumers.Consumers.DependencyInjection
 
         private static void ConfigureOfficeEndpoints(IBusRegistrationContext context, IRabbitMqBusFactoryConfigurator cfg)
         {
-            cfg.ReceiveEndpoint("office-created", e =>
+            cfg.ReceiveEndpoint("profiles-office-created", e =>
             {
                 e.ConfigureConsumer<CreateOfficeConsumer>(context);
             });
-            cfg.ReceiveEndpoint("office-updated", e =>
+            cfg.ReceiveEndpoint("profiles-office-updated", e =>
             {
                 e.ConfigureConsumer<UpdateOfficeConsumer>(context);
             });
@@ -62,11 +64,11 @@ namespace Services.Consumers.Consumers.DependencyInjection
 
         private static void ConfigureSpecializationEndpoints(IBusRegistrationContext context, IRabbitMqBusFactoryConfigurator cfg)
         {
-            cfg.ReceiveEndpoint("specialization-created", e =>
+            cfg.ReceiveEndpoint("profiles-specialization-created", e =>
             {
                 e.ConfigureConsumer<CreateSpecializationConsumer>(context);
             });
-            cfg.ReceiveEndpoint("specialization-updated", e =>
+            cfg.ReceiveEndpoint("profiles-specialization-updated", e =>
             {
                 e.ConfigureConsumer<UpdateSpecializationConsumer>(context);
             });

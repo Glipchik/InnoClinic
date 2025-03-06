@@ -9,7 +9,7 @@ const officesApi = {
   getAll: async (pageIndex?: number, pageSize?: number) => {
     return await officesAxiosInstance.get<PaginatedList<OfficeModel>>('Offices', { params: {
       pageIndex: pageIndex ?? 1,
-      pageSize: pageSize ?? 2
+      pageSize: pageSize ?? import.meta.env.VITE_PAGE_SIZE
     }});
   }
 }
