@@ -8,10 +8,6 @@ namespace Offices.API.Validators
     {
         public UpdateDoctorDtoValidator()
         {
-            RuleFor(doctor => doctor.Id)
-                .NotEmpty().WithMessage("Id must not be empty")
-                .Must(id => ObjectId.TryParse(id, out _))
-                .WithMessage("Invalid ObjectId format");
             RuleFor(doctor => doctor.FirstName).NotEmpty().MaximumLength(50);
             RuleFor(doctor => doctor.MiddleName).MaximumLength(50);
             RuleFor(doctor => doctor.LastName).NotEmpty().MaximumLength(50);
