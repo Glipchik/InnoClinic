@@ -9,12 +9,6 @@ interface CreateOfficeFormProps {
   close: () => void;
 }
 
-export interface CreateOfficeFormModel {
-  address: string,
-  registryPhoneNumber: string,
-  isActive: boolean
-}
-
 const CreateOfficeForm = ({ close }: CreateOfficeFormProps) => {
   const dispatch = useDispatch();
 

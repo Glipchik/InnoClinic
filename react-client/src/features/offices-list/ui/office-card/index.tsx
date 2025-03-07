@@ -1,4 +1,4 @@
-import OfficeModel from "@models/offices/OfficeModel"
+import OfficeModel from "@shared/models/offices/officeModel"
 import Button from "@shared/ui/controls/Button";
 import { Link } from "react-router-dom";
 

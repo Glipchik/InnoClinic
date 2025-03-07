@@ -55,7 +55,7 @@ const router = createBrowserRouter([
         path: "offices",
         children: [
           {
-            path: "",
+            index: true,
             element: <PrivateRoute requiredRole="Receptionist"> <OfficesPage /> </PrivateRoute>,
           },
           {
