@@ -44,7 +44,13 @@ namespace Offices.Application.Services
                 ?? throw new NotFoundException($"Office not found: {updateOfficeModel.Id}");
 
             if (updateOfficeModel.IsActive == false && officeToUpdate.IsActive == true)
-                await Delete(updateOfficeModel.Id, cancellationToken);
+            {
+                if (await CheckIfThereAreActiveDoctorsOrReceptionistsInOffice(updateOfficeModel.Id, cancellationToken))
+                {
+                    // Throw exception if someone works in this office, need to free if first
+                    throw new RelatedObjectFoundException($"Can't delete office with id {updateOfficeModel.Id}, because someone works there, move them!");
+                }
+            }
 
             var office = _mapper.Map<Office>(updateOfficeModel);
             await _officeRepository.UpdateAsync(office, cancellationToken);
