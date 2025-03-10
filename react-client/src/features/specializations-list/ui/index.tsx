@@ -9,6 +9,8 @@ export const SpecializationsList = () => {
     <List
       fetchStateSelector={(state: RootState) => state.fetchSpecializationsWithPagination}
       deleteStateSelector={(state: RootState) => state.deleteSpecialization}
+      editStateSelector={(state: RootState) => state.editSpecialization}
+      createStateSelector={(state: RootState) => state.createSpecialization}
       fetchAction={fetchSpecializationsWithPaginationRequest}
       deleteAction={deleteSpecializationRequest}
       CardComponent={SpecializationCard}

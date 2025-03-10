@@ -10,30 +10,34 @@ import PaginatedList from "@models/paginatedList";
 interface PaginatedListProps<T> {
   fetchStateSelector: (state: RootState) => { loading: boolean; error?: string; data?: PaginatedList<T> };
   deleteStateSelector: (state: RootState) => { loading: boolean; error?: string; success?: boolean };
+  editStateSelector: (state: RootState) => { loading: boolean; error?: string; success?: boolean };
+  createStateSelector: (state: RootState) => { loading: boolean; error?: string; success?: boolean };
   fetchAction: (params: { pageIndex: number; pageSize: number }) => void;
   deleteAction: (params: { id: string }) => void;
   CardComponent: React.ComponentType<{ item: T; onDelete: () => void }>;
   entityName: string;
 }
 
-export const List = <T,>({ fetchStateSelector, deleteStateSelector, fetchAction, deleteAction, CardComponent, entityName }: PaginatedListProps<T>) => {
+export const List = <T,>({ fetchStateSelector, deleteStateSelector, fetchAction, deleteAction, editStateSelector, createStateSelector, CardComponent, entityName }: PaginatedListProps<T>) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [itemIdToDelete, setItemIdToDelete] = useState<string | null>(null);
   const [pageIndex, setPageIndex] = useState<number>(1);
 
   const dispatch = useDispatch();
   const { loading, error, data } = useSelector(fetchStateSelector);
-  const { loading: deleteLoading, error: deleteError, success } = useSelector(deleteStateSelector);
+  const { loading: deleteLoading, error: deleteError, success: deleteSuccess } = useSelector(deleteStateSelector);
+  const { loading: editLoading, error: editError, success: editSuccess } = useSelector(editStateSelector);
+  const { loading: createLoading, error: createError, success: createSuccess } = useSelector(createStateSelector);
 
   useEffect(() => {
     dispatch(fetchAction({ pageIndex, pageSize: import.meta.env.VITE_PAGE_SIZE }));
   }, [pageIndex, dispatch, fetchAction]);
 
   useEffect(() => {
-    if (success) {
+    if (deleteSuccess) {
       dispatch(fetchAction({ pageIndex, pageSize: import.meta.env.VITE_PAGE_SIZE }));
     }
-  }, [success, dispatch, fetchAction, pageIndex]);
+  }, [deleteSuccess, dispatch, fetchAction, pageIndex]);
 
   const handleConfirm = () => {
     if (itemIdToDelete) {
@@ -46,7 +50,15 @@ export const List = <T,>({ fetchStateSelector, deleteStateSelector, fetchAction,
     <div className="flex flex-col my-auto">
       {deleteLoading && <Loading label={`Deleting ${entityName}...`} />}
       {deleteError && <Label value={`Deleting: ${deleteError}`} type="error" />}
-      {success && <Label value={`Deleting: Successfully deleted`} type="success" />}
+      {deleteSuccess && <Label value={`Deleting: Successfully deleted`} type="success" />}
+      
+      {editLoading && <Loading label={`Editing ${entityName}...`} />}
+      {editError && <Label value={`Editing: ${editError}`} type="error" />}
+      {editSuccess && <Label value={`Editing: Successfully edited`} type="success" />}
+      
+      {createLoading && <Loading label={`Creating ${entityName}...`} />}
+      {createError && <Label value={`Creating: ${createError}`} type="error" />}
+      {createSuccess && <Label value={`Creating: Successfully created`} type="success" />}
 
       {loading && <Loading label={`Fetching ${entityName}...`} />}
       {error && <Label value={`Fetching: ${error}`} type="error" />}

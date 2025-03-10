@@ -9,6 +9,8 @@ export function OfficesList() {
     <List
       fetchStateSelector={(state: RootState) => state.fetchOffices}
       deleteStateSelector={(state: RootState) => state.deleteOffice}
+      editStateSelector={(state: RootState) => state.editOffice}
+      createStateSelector={(state: RootState) => state.createOffice}
       fetchAction={fetchOfficesRequest}
       deleteAction={deleteOfficeRequest}
       CardComponent={OfficeCard}
