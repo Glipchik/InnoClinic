@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Services.Application.Exceptions;
 using Services.MessageBroking.Producers.Abstractions;
+using Services.Domain.Models;
 
 namespace Services.Application.Services
 {
@@ -106,6 +107,21 @@ namespace Services.Application.Services
         public async Task<IEnumerable<SpecializationModel>> GetAll(CancellationToken cancellationToken)
         {
             return _mapper.Map<IEnumerable<SpecializationModel>>(await _unitOfWork.SpecializationRepository.GetAllAsync(cancellationToken));
+        }
+
+        public async Task<PaginatedList<SpecializationModel>> GetAll(int pageIndex, int pageSize, CancellationToken cancellationToken)
+        {
+            var result = new List<SpecializationModel>();
+
+            var specializations = await _unitOfWork.SpecializationRepository.GetAllAsync(pageIndex, pageSize, cancellationToken);
+
+            foreach (var specialization in specializations.Items)
+            {
+                var specializationModel = _mapper.Map<SpecializationModel>(specialization);
+                result.Add(specializationModel);
+            }
+
+            return new PaginatedList<SpecializationModel>(result, specializations.PageIndex, specializations.TotalPages);
         }
 
         public async Task Update(UpdateSpecializationModel updateModel, CancellationToken cancellationToken)
