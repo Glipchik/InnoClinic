@@ -1,20 +1,37 @@
-import Button from "@shared/ui/controls/Button";
-import { useState } from "react";
-import { CreateSpecializationForm } from "./form";
+import { Formik } from "formik";
+import { useDispatch } from "react-redux";
+import CreateSpecializationModel from "@features/create-specialization-form/models/createSpecializationModel";
+import { createSpecializationRequest } from "../store/create-specialization";
+import { validationSchema } from "../models/validationSchema";
+import InnerForm from "./inner-form";
 
-export const CreateSpecialization = () => {
-  const [isCreating, setIsCreating] = useState<boolean>(false);
-  
-  return (
-    <>
-      <div className="flex justify-end m-4">
-        <Button onClick={() => setIsCreating(true)}>
-          Create New Specialization
-        </Button>
-      </div>
-      <div className="flex flex-col items-center">
-        {isCreating && <CreateSpecializationForm close={() => setIsCreating(false)} />}
-      </div>
-    </>
-  )
+interface CreateSpecializationFormProps {
+  close: () => void;
 }
+
+export interface CreateSpecializationFormModel {
+  address: string,
+  registryPhoneNumber: string,
+  isActive: boolean
+}
+
+const CreateSpecializationForm = ({ close }: CreateSpecializationFormProps) => {
+  const dispatch = useDispatch();
+
+  const onSubmit = (values: CreateSpecializationModel) => {
+    dispatch(createSpecializationRequest(values));
+  };
+
+  const initialValues: CreateSpecializationModel = {
+    specializationName: "",
+    isActive: true
+  }
+
+  return (
+    <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
+      <InnerForm close={close} />
+    </Formik>
+  );
+};
+
+export { CreateSpecializationForm };

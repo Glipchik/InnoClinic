@@ -9,6 +9,7 @@ import CreateSpecializationModel from "@features/create-specialization-form/mode
 import { useEffect } from "react";
 import { fetchSpecializationsWithPaginationRequest } from "@shared/store/fetch-specializations-with-pagination";
 import { resetState } from "@features/create-specialization-form/store/create-specialization";
+import Checkbox from "@shared/ui/forms/CheckBox";
 
 interface InnerFormProps {
   close: () => void
@@ -39,16 +40,15 @@ const InnerForm = ({ close }: InnerFormProps) => {
         onBlur={handleBlur}
         id="specialization-name-input-for-edit-specialization-form"
       />
-      <label className="flex items-center gap-2">
-        <input
-          type="checkbox"
-          name="isActive"
-          id="is-active-checkbox-for-create-specialization-form"
-          checked={values.isActive}
-          onChange={handleChange}
-        />
-        Is active
-      </label>
+      <Checkbox
+        checked={values.isActive}
+        label="Is active"
+        name="isActive"
+        onChange={handleChange}
+        onBlur={handleBlur}
+        id="is-active-checkbox-input-for-edit-specialization-form"
+        error={(touched.isActive && errors.isActive) ? errors.isActive : undefined}
+      />
       <FormFooter onCancel={close} />
       {loading && <Loading label="Creating specialization..." />}
       {error && <Label value={error} type="error"></Label>}

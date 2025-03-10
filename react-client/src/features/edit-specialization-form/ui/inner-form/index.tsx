@@ -9,6 +9,7 @@ import Input from "@shared/ui/forms/Input";
 import EditSpecializationModel from "@features/edit-specialization-form/models/editSpecializationModel";
 import { useEffect } from "react";
 import { resetState } from "@features/edit-specialization-form/store/edit-specialization";
+import Checkbox from "@shared/ui/forms/CheckBox";
 
 const InnerForm = () => {
   const { values, touched, errors, handleChange, handleBlur } = useFormikContext<EditSpecializationModel>();
@@ -39,16 +40,15 @@ const InnerForm = () => {
         onBlur={handleBlur}
         id="specialization-name-input-for-edit-specialization-form"
       />
-      <label className="flex items-center gap-2">
-        <input
-          type="checkbox"
-          name="isActive"
-          id="is-active-checkbox-for-create-specialization-form"
-          checked={values.isActive}
-          onChange={handleChange}
-        />
-        Is active
-      </label>
+      <Checkbox
+        checked={values.isActive}
+        label="Is active"
+        name="isActive"
+        onChange={handleChange}
+        onBlur={handleBlur}
+        id="is-active-checkbox-input-for-create-specialization-form"
+        error={(touched.isActive && errors.isActive) ? errors.isActive : undefined}
+      />
       <FormFooter onCancel={handleCancel} />
       {loading && <Loading label="Editing specialization..." />}
       {error && <Label value={error} type="error"></Label>}
