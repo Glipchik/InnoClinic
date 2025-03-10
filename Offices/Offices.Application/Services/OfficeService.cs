@@ -43,6 +43,9 @@ namespace Offices.Application.Services
             var officeToUpdate = await _officeRepository.GetAsync(updateOfficeModel.Id, cancellationToken)
                 ?? throw new NotFoundException($"Office not found: {updateOfficeModel.Id}");
 
+            if (updateOfficeModel.IsActive == false && officeToUpdate.IsActive == true)
+                await Delete(updateOfficeModel.Id, cancellationToken);
+
             var office = _mapper.Map<Office>(updateOfficeModel);
             await _officeRepository.UpdateAsync(office, cancellationToken);
             await _officeProducer.PublishOfficeUpdated(office, cancellationToken);
