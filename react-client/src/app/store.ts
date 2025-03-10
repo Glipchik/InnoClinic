@@ -6,13 +6,23 @@ import { createAppointmentSliceReducer, watchCreateAppointment } from '@features
 import { fetchDoctorsSliceReducer, watchFetchDoctors } from '@features/create-appointment-form/store/fetch-doctors';
 import { fetchServicesSliceReducer, watchFetchServices } from '@features/create-appointment-form/store/fetch-services';
 import { fetchSpecializationsSliceReducer, watchFetchSpecializations } from '@shared/store/fetch-specializations';
+import { fetchOfficesSliceReducer, watchFetchOffices } from '@shared/store/fetch-offices';
+import { deleteOfficeSliceReducer, watchDeleteOffice } from '@features/offices-list/store/delete-office';
+import { editOfficeSliceReducer, watchEditOffice } from '@features/edit-office-form/store/edit-office';
+import { fetchOfficeByIdSliceReducer, watchFetchOfficeById } from '@features/edit-office-form/store/fetch-office';
+import { createOfficeSliceReducer, watchCreateOffice } from '@features/create-office-form/store/create-office';
 
 const rootReducer = combineReducers({
   fetchSpecializations: fetchSpecializationsSliceReducer,
   fetchServices: fetchServicesSliceReducer,
   fetchDoctors: fetchDoctorsSliceReducer,
   fetchDoctorSchedule: fetchDoctorScheduleSliceReducer,
-  createAppointment: createAppointmentSliceReducer
+  createAppointment: createAppointmentSliceReducer,
+  fetchOffices: fetchOfficesSliceReducer,
+  deleteOffice: deleteOfficeSliceReducer,
+  editOffice: editOfficeSliceReducer,
+  fetchOfficeById: fetchOfficeByIdSliceReducer,
+  createOffice: createOfficeSliceReducer
 });
 
 const sagaMiddleware = createSagaMiddleware();
@@ -27,6 +37,11 @@ sagaMiddleware.run(watchFetchServices);
 sagaMiddleware.run(watchFetchDoctors);
 sagaMiddleware.run(watchFetchDoctorSchedule);
 sagaMiddleware.run(watchCreateAppointment);
+sagaMiddleware.run(watchFetchOffices);
+sagaMiddleware.run(watchDeleteOffice);
+sagaMiddleware.run(watchEditOffice);
+sagaMiddleware.run(watchFetchOfficeById);
+sagaMiddleware.run(watchCreateOffice);
 
 export default store;
 export type RootState = ReturnType<typeof store.getState>;
