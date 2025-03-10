@@ -12,7 +12,7 @@ const specializationsApi = {
   getAllWithPagination: async (pageIndex?: number, pageSize?: number) => {
     return await servicesAxiosInstance.get<PaginatedList<SpecializationModel>>('Specializations/with-pagination', { params: {
       pageIndex: pageIndex ?? 1,
-      pageSize: pageSize ?? 2
+      pageSize: pageSize ?? import.meta.env.VITE_PAGE_SIZE
     }});
   },
   getById: async (id: string) => {
