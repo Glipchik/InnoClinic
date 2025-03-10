@@ -68,7 +68,7 @@ namespace Services.Tests
                 .ReturnsAsync(CreateServiceCategory(Id: serviceCategoryId, new List<Service> { CreateService() }));
 
             // Act and Assert
-            await Should.ThrowAsync<RelatedObjectNotFoundException>(async () =>
+            await Should.ThrowAsync<RelatedObjectFoundException>(async () =>
             {
                 await _serviceCategoryManager.Delete(serviceCategoryId, CancellationToken.None);
             });
