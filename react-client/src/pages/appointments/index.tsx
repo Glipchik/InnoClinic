@@ -1,4 +1,4 @@
-import CreateAppointment from "@widgets/create-appointment";
+import { CreateAppointment } from "@widgets/create-appointment";
 
 const AppointmentsPage = () => {
   return (

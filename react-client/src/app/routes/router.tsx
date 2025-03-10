@@ -57,7 +57,7 @@ const router = createBrowserRouter([
         path: "offices",
         children: [
           {
-            path: "",
+            index: true,
             element: <PrivateRoute requiredRole="Receptionist"> <OfficesPage /> </PrivateRoute>,
           },
           {
@@ -70,7 +70,7 @@ const router = createBrowserRouter([
         path: "specializations",
         children: [
           {
-            path: "",
+            index: true,
             element: <PrivateRoute requiredRole="Receptionist"> <SpecializationsPage /> </PrivateRoute>,
           },
           {
@@ -78,7 +78,7 @@ const router = createBrowserRouter([
             element: <PrivateRoute requiredRole="Receptionist"> <EditSpecializationPage /> </PrivateRoute>,
           },
         ]
-      },
+      }
     ]
   }
 ]);

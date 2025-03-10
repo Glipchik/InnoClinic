@@ -1,1 +1,1 @@
-export { CreateSpecialization } from './ui'
+export { CreateSpecialization } from '../../widgets/create-specialization'
