@@ -9,7 +9,7 @@
       "@shared/*": ["./src/shared/*"],
       "@entities/*": ["./src/entities/*"],
       "@app/*": ["./src/app/*"],
-      "@models/*": ["./src/models/*"],
+      "@models/*": ["./src/shared/models/*"],
       "@widgets/*": ["./src/widgets/*"]
     },
     "lib": ["ES2020", "DOM", "DOM.Iterable"],

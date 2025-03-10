@@ -1,4 +1,4 @@
-import { CreateOffice } from "@features/create-office-form";
+import { CreateOffice } from "@widgets/create-office";
 import { OfficesList } from "@features/offices-list";
 
 const OfficesPage = () => {

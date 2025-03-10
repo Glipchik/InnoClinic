@@ -1,7 +1,7 @@
 import { fetchOfficesRequest } from "@shared/store/fetch-offices";
-import { deleteOfficeRequest } from "../store/delete-office";
-import OfficeCard from "./office-card";
 import { RootState } from "@app/store";
+import OfficeCard from "./office-card";
+import { deleteOfficeRequest } from "../store/delete-office";
 import { List } from "@widgets/list";
 
 export function OfficesList() {
@@ -12,7 +12,7 @@ export function OfficesList() {
       fetchAction={fetchOfficesRequest}
       deleteAction={deleteOfficeRequest}
       CardComponent={OfficeCard}
-      entityName="office"
+      entityName="Office"
     />
   );
 }

@@ -2,17 +2,20 @@ import { RootState } from "@app/store";
 import Label from "@shared/ui/containers/Label";
 import Loading from "@shared/ui/controls/Loading";
 import { Form, useFormikContext } from "formik";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import FormFooter from "@widgets/form-footer";
 import Input from "@shared/ui/forms/Input";
 import { EditOfficeModel } from "@features/edit-office-form/models/editOfficeModel";
 import { useEffect } from "react";
+import { resetState } from "@features/edit-office-form/store/edit-office";
+import Checkbox from "@shared/ui/forms/CheckBox";
 
 const InnerForm = () => {
   const { values, touched, errors, handleChange, handleBlur } = useFormikContext<EditOfficeModel>();
   const { loading, error, success } = useSelector((state: RootState) => state.editOffice);
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const handleCancel = () => {
     navigate(-1)
@@ -20,6 +23,7 @@ const InnerForm = () => {
   
   useEffect(() => {
     if (success) {
+      dispatch(resetState())
       navigate(-1)
     }
   }, [success, navigate]);
@@ -46,16 +50,15 @@ const InnerForm = () => {
         onBlur={handleBlur}
         id="registry-phone-number-input-for-edit-office-form"
       />
-      <label className="flex items-center gap-2">
-        <input
-          type="checkbox"
-          name="isActive"
-          id="is-active-checkbox-for-create-office-form"
-          checked={values.isActive}
-          onChange={handleChange}
-        />
-        Is active
-      </label>
+      <Checkbox
+        checked={values.isActive}
+        label="Is active"
+        name="isActive"
+        onChange={handleChange}
+        onBlur={handleBlur}
+        id="is-active-checkbox-input-for-edit-office-form"
+        error={(touched.isActive && errors.isActive) ? errors.isActive : undefined}
+      />
       <FormFooter onCancel={handleCancel} />
       {loading && <Loading label="Editing office..." />}
       {error && <Label value={error} type="error"></Label>}

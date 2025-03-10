@@ -8,6 +8,8 @@ import Input from "@shared/ui/forms/Input";
 import { CreateOfficeModel } from "@features/create-office-form/models/createOfficeModel";
 import { fetchOfficesRequest } from "@shared/store/fetch-offices";
 import { useEffect } from "react";
+import { resetState } from "@features/create-office-form/store/create-office";
+import Checkbox from "@shared/ui/forms/CheckBox";
 
 interface InnerFormProps {
   close: () => void
@@ -21,6 +23,7 @@ const InnerForm = ({ close }: InnerFormProps) => {
   useEffect(() => {
     if (success) {
       dispatch(fetchOfficesRequest({}))
+      dispatch(resetState())
       close()
     }
   }, [success, dispatch]);
@@ -47,16 +50,15 @@ const InnerForm = ({ close }: InnerFormProps) => {
         onBlur={handleBlur}
         id="registry-phone-number-input-for-create-office-form"
       />
-      <label className="flex items-center gap-2">
-        <input
-          type="checkbox"
-          name="isActive"
-          id="is-active-checkbox-for-create-office-form"
-          checked={values.isActive}
-          onChange={handleChange}
-        />
-        Is active
-      </label>
+      <Checkbox
+        checked={values.isActive}
+        label="Is active"
+        name="isActive"
+        onChange={handleChange}
+        onBlur={handleBlur}
+        id="is-active-checkbox-input-for-edit-office-form"
+        error={(touched.isActive && errors.isActive) ? errors.isActive : undefined}
+      />
       <FormFooter onCancel={close} />
       {loading && <Loading label="Creating office..." />}
       {error && <Label value={error} type="error"></Label>}

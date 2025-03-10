@@ -77,15 +77,15 @@ namespace Appointments.MessageBroking.DependencyInjection
 
         private static void ConfigurePatientEndpoints(IBusRegistrationContext context, IRabbitMqBusFactoryConfigurator cfg)
         {
-            cfg.ReceiveEndpoint("patient-created", e =>
+            cfg.ReceiveEndpoint("appointments-patient-created", e =>
             {
                 e.ConfigureConsumer<CreatePatientConsumer>(context);
             });
-            cfg.ReceiveEndpoint("patient-updated", e =>
+            cfg.ReceiveEndpoint("appointments-patient-updated", e =>
             {
                 e.ConfigureConsumer<UpdatePatientConsumer>(context);
             });
-            cfg.ReceiveEndpoint("patient-deleted", e =>
+            cfg.ReceiveEndpoint("appointments-patient-deleted", e =>
             {
                 e.ConfigureConsumer<DeletePatientConsumer>(context);
             });
@@ -93,11 +93,11 @@ namespace Appointments.MessageBroking.DependencyInjection
 
         private static void ConfigureDoctorEndpoints(IBusRegistrationContext context, IRabbitMqBusFactoryConfigurator cfg)
         {
-            cfg.ReceiveEndpoint("doctor-created", e =>
+            cfg.ReceiveEndpoint("appointments-doctor-created", e =>
             {
                 e.ConfigureConsumer<CreateDoctorConsumer>(context);
             });
-            cfg.ReceiveEndpoint("doctor-updated", e =>
+            cfg.ReceiveEndpoint("appointments-doctor-updated", e =>
             {
                 e.ConfigureConsumer<UpdateDoctorConsumer>(context);
             });
@@ -105,11 +105,11 @@ namespace Appointments.MessageBroking.DependencyInjection
 
         private static void ConfigureSpecializationEndpoints(IBusRegistrationContext context, IRabbitMqBusFactoryConfigurator cfg)
         {
-            cfg.ReceiveEndpoint("specialization-created", e =>
+            cfg.ReceiveEndpoint("appointments-specialization-created", e =>
             {
                 e.ConfigureConsumer<CreateSpecializationConsumer>(context);
             });
-            cfg.ReceiveEndpoint("specialization-updated", e =>
+            cfg.ReceiveEndpoint("appointments-specialization-updated", e =>
             {
                 e.ConfigureConsumer<UpdateSpecializationConsumer>(context);
             });
@@ -117,11 +117,11 @@ namespace Appointments.MessageBroking.DependencyInjection
 
         private static void ConfigureServiceEndpoints(IBusRegistrationContext context, IRabbitMqBusFactoryConfigurator cfg)
         {
-            cfg.ReceiveEndpoint("service-created", e =>
+            cfg.ReceiveEndpoint("appointments-service-created", e =>
             {
                 e.ConfigureConsumer<CreateServiceConsumer>(context);
             });
-            cfg.ReceiveEndpoint("service-updated", e =>
+            cfg.ReceiveEndpoint("appointments-service-updated", e =>
             {
                 e.ConfigureConsumer<UpdateServiceConsumer>(context);
             });
@@ -129,15 +129,15 @@ namespace Appointments.MessageBroking.DependencyInjection
 
         private static void ConfigureServiceCategoryEndpoints(IBusRegistrationContext context, IRabbitMqBusFactoryConfigurator cfg)
         {
-            cfg.ReceiveEndpoint("service-category-created", e =>
+            cfg.ReceiveEndpoint("appointments-service-category-created", e =>
             {
                 e.ConfigureConsumer<CreateServiceCategoryConsumer>(context);
             });
-            cfg.ReceiveEndpoint("service-category-updated", e =>
+            cfg.ReceiveEndpoint("appointments-service-category-updated", e =>
             {
                 e.ConfigureConsumer<UpdateServiceCategoryConsumer>(context);
             });
-            cfg.ReceiveEndpoint("service-category-deleted", e =>
+            cfg.ReceiveEndpoint("appointments-service-category-deleted", e =>
             {
                 e.ConfigureConsumer<DeleteServiceCategoryConsumer>(context);
             });

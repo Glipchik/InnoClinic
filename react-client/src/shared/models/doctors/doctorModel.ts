@@ -1,4 +1,4 @@
-import { DoctorStatus } from "../../entities/enums/doctorStatus";
+import { DoctorStatus } from "../../../entities/enums/doctorStatus";
 
 export default interface DoctorModel {
   id: string,

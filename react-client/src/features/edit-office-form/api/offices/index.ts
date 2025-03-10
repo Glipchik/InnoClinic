@@ -1,5 +1,5 @@
 import { EditOfficeModel } from "@features/edit-office-form/models/editOfficeModel";
-import OfficeModel from "@models/offices/OfficeModel";
+import OfficeModel from "@shared/models/offices/officeModel";
 import officesAxiosInstance from "@shared/api/clients/offices";
 import tokenInterceptor from "@shared/api/interceptors/tokenInterceptor";
 

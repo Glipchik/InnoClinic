@@ -2,7 +2,7 @@ import { ChangeEvent, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@app/store";
 import Select from "@shared/ui/forms/Select";
-import ServiceModel from "@models/services/serviceModel";
+import ServiceModel from "@shared/models/services/serviceModel";
 import { fetchServicesRequest } from "@features/create-appointment-form/store/fetch-services";
 
 interface ServiceSelectProps {
@@ -26,11 +26,10 @@ const ServiceSelect = ({ id, name, onChange, value, disabled, className, isLoadi
   const dispatch = useDispatch();
   
   useEffect(() => {
-    if (isLoadingRequired) {
-      if (specializationId)
-        dispatch(fetchServicesRequest({specializationId}))
+    if (isLoadingRequired && specializationId) {
+      dispatch(fetchServicesRequest({specializationId}))
     }
-  }, [isLoadingRequired, dispatch])
+  }, [isLoadingRequired])
     
   return (
     <Select

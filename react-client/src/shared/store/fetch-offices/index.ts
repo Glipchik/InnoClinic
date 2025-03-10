@@ -1,5 +1,5 @@
 import officesApi from '@shared/api/offices';
-import OfficeModel from '@models/offices/OfficeModel';
+import OfficeModel from '@shared/models/offices/officeModel';
 import PaginatedList from '@models/paginatedList';
 import { AnyAction, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import handleError, { ApiError } from '@shared/lib/errorHandler';
