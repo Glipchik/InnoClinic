@@ -16,12 +16,12 @@ const PrivateRoute = ({ requiredRole, children }: PrivateRouteProps) => {
   useEffect(() => {
     if (userManager) {
       userManager.getUser().then((user) => {
-        if (!user || user.expired) {
+        if (user === null || user.expired) {
           setIsAuthorized(false)
           setIsForbidden(false)
         } else {
           setIsAuthorized(true)
-          setIsForbidden(!user.profile.role.includes(requiredRole))
+          setIsForbidden(user.profile.role.includes(requiredRole))
         }
       });
     }
