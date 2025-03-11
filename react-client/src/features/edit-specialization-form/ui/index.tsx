@@ -1,6 +1,6 @@
 import { Formik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
-import { editSpecializationRequest } from "../store/edit-specialization";
+import { editSpecializationRequest, resetState } from "../store/edit-specialization";
 import { validationSchema } from "../models/validationSchema";
 import InnerForm from "./inner-form";
 import { RootState } from "@app/store";
@@ -9,6 +9,7 @@ import { fetchSpecializationByIdRequest } from "../store/fetch-specialization";
 import Loading from "@shared/ui/controls/Loading";
 import Label from "@shared/ui/containers/Label";
 import EditSpecializationModel from "../models/editSpecializationModel";
+import { useNavigate } from "react-router-dom";
 
 interface EditSpecializationFormProps {
   specializationId: string
@@ -16,12 +17,25 @@ interface EditSpecializationFormProps {
 
 const EditSpecializationForm = ({ specializationId }: EditSpecializationFormProps) => {
   const dispatch = useDispatch();
+  const { success } = useSelector((state: RootState) => state.editSpecialization);
   const { loading, error, data } = useSelector((state: RootState) => state.fetchSpecializationById);
   const [initialValues, setInitialValues] = useState<EditSpecializationModel | null>(null);
+  const [isSubmited, setIsSubmited] = useState(false);
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    dispatch(resetState());
+  }, []);
+
+  useEffect(() => {
+    if (success && isSubmited) {
+      navigate(-1)
+    }
+  }, [success, isSubmited]);
 
   useEffect(() => {
     dispatch(fetchSpecializationByIdRequest({specializationId}));
-  }, [dispatch, specializationId]);
+  }, [specializationId]);
 
   useEffect(() => {
     if (data) {
@@ -35,6 +49,7 @@ const EditSpecializationForm = ({ specializationId }: EditSpecializationFormProp
 
   const onSubmit = (values: EditSpecializationModel) => {
     dispatch(editSpecializationRequest(values));
+    setIsSubmited(true);
   };
 
   if (loading) return (<Loading label="Fetching specialization"></Loading>)

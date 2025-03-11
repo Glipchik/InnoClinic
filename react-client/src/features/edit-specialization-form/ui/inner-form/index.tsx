@@ -2,31 +2,21 @@ import { RootState } from "@app/store";
 import Label from "@shared/ui/containers/Label";
 import Loading from "@shared/ui/controls/Loading";
 import { Form, useFormikContext } from "formik";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import FormFooter from "@widgets/form-footer";
 import Input from "@shared/ui/forms/Input";
 import EditSpecializationModel from "@features/edit-specialization-form/models/editSpecializationModel";
-import { useEffect } from "react";
-import { resetState } from "@features/edit-specialization-form/store/edit-specialization";
 import Checkbox from "@shared/ui/forms/CheckBox";
 
 const InnerForm = () => {
   const { values, touched, errors, handleChange, handleBlur } = useFormikContext<EditSpecializationModel>();
   const { loading, error, success } = useSelector((state: RootState) => state.editSpecialization);
   const navigate = useNavigate()
-  const dispatch = useDispatch()
 
   const handleCancel = () => {
-    dispatch(resetState())
     navigate(-1)
   }
-
-  useEffect(() => {
-    if (success) {
-      navigate(-1)
-    }
-  }, [success, navigate]);
 
   return (
     <Form className="flex w-[40%] flex-col gap-6 p-6 bg-white shadow-lg rounded-lg max-w-lg m-6">

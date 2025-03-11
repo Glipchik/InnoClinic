@@ -50,15 +50,15 @@ export const List = <T,>({ fetchStateSelector, deleteStateSelector, fetchAction,
     <div className="flex flex-col my-auto">
       {deleteLoading && <Loading label={`Deleting ${entityName}...`} />}
       {deleteError && <Label value={`Deleting: ${deleteError}`} type="error" />}
-      {deleteSuccess && <Label value={`Deleting: Successfully deleted`} type="success" />}
+      {deleteSuccess && deleteSuccess === true && <Label value={`Deleting: Successfully deleted`} type="success" />}
       
       {editLoading && <Loading label={`Editing ${entityName}...`} />}
       {editError && <Label value={`Editing: ${editError}`} type="error" />}
-      {editSuccess && <Label value={`Editing: Successfully edited`} type="success" />}
+      {editSuccess && editSuccess === true && <Label value={`Editing: Successfully edited`} type="success" />}
       
       {createLoading && <Loading label={`Creating ${entityName}...`} />}
       {createError && <Label value={`Creating: ${createError}`} type="error" />}
-      {createSuccess && <Label value={`Creating: Successfully created`} type="success" />}
+      {createSuccess && createSuccess === true && <Label value={`Creating: Successfully created`} type="success" />}
 
       {loading && <Loading label={`Fetching ${entityName}...`} />}
       {error && <Label value={`Fetching: ${error}`} type="error" />}
