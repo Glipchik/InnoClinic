@@ -11,12 +11,6 @@ interface CreateSpecializationFormProps {
   close: () => void;
 }
 
-export interface CreateSpecializationFormModel {
-  address: string,
-  registryPhoneNumber: string,
-  isActive: boolean
-}
-
 const CreateSpecializationForm = ({ close }: CreateSpecializationFormProps) => {
   const dispatch = useDispatch();
   const [isSubmited, setIsSubmited] = useState(false);
