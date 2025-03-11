@@ -45,7 +45,7 @@ namespace Services.Application.Services
 
             if (serviceCategoryToDelete.Services.Any())
             {   
-                throw new RelatedObjectNotFoundException($"Related active services to category with id {id} found. Can't delete category.");
+                throw new RelatedObjectFoundException($"Related active services to category with id {id} found. Can't delete category.");
             }
 
             await _unitOfWork.ServiceCategoryRepository.DeleteAsync(id, cancellationToken);

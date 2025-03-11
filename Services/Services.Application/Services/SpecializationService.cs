@@ -56,46 +56,50 @@ namespace Services.Application.Services
                     throw new NotFoundException($"Specialization with id: {id} is not found. Can't delete.");
                 }
 
-                foreach (var doctor in specializationToDelete.Doctors)
-                {
-                    if (doctor.Status != DoctorStatus.AtWork)
-                    {
-                        doctor.Status = _mapper.Map<DoctorStatus>(DoctorStatusModel.Inactive);
-                        await _unitOfWork.DoctorRepository.UpdateAsync(doctor, cancellationToken);
-                    }
-                }
-
-                foreach (var service in specializationToDelete.Services)
-                {
-                    if (service.IsActive)
-                    {
-                        service.IsActive = false;
-                        await _unitOfWork.ServiceRepository.UpdateAsync(service, cancellationToken);
-                    }
-                }
-
+                await DeactivateRelatedEntities(specializationToDelete, cancellationToken);
                 specializationToDelete.IsActive = false;
                 await _unitOfWork.SpecializationRepository.UpdateAsync(specializationToDelete, cancellationToken);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
                 await transaction.CommitAsync(cancellationToken);
 
-                foreach (var doctor in specializationToDelete.Doctors)
-                {
-                    if (doctor.Status != DoctorStatus.AtWork)
-                    {
-                        await _doctorProducer.PublishDoctorDeactivated(doctor.Id, cancellationToken);
-                    }
-                }
-
-                foreach (var service in specializationToDelete.Services)
-                {
-                    if (service.IsActive)
-                    {
-                        await _serviceProducer.PublishServiceUpdated(service, cancellationToken);
-                    }
-                }
-
                 await _specializationProducer.PublishSpecializationUpdated(specializationToDelete, cancellationToken);
+            }
+        }
+
+        private async Task DeactivateRelatedEntities(Specialization specializationToDelete, CancellationToken cancellationToken)
+        {
+            foreach (var doctor in specializationToDelete.Doctors)
+            {
+                if (doctor.Status != DoctorStatus.AtWork)
+                {
+                    doctor.Status = _mapper.Map<DoctorStatus>(DoctorStatusModel.Inactive);
+                    await _unitOfWork.DoctorRepository.UpdateAsync(doctor, cancellationToken);
+                }
+            }
+
+            foreach (var service in specializationToDelete.Services)
+            {
+                if (service.IsActive)
+                {
+                    service.IsActive = false;
+                    await _unitOfWork.ServiceRepository.UpdateAsync(service, cancellationToken);
+                }
+            }
+
+            foreach (var doctor in specializationToDelete.Doctors)
+            {
+                if (doctor.Status != DoctorStatus.AtWork)
+                {
+                    await _doctorProducer.PublishDoctorDeactivated(doctor.Id, cancellationToken);
+                }
+            }
+
+            foreach (var service in specializationToDelete.Services)
+            {
+                if (service.IsActive)
+                {
+                    await _serviceProducer.PublishServiceUpdated(service, cancellationToken);
+                }
             }
         }
 
@@ -131,7 +135,7 @@ namespace Services.Application.Services
 
             if (updateModel.IsActive == false && specializationToUpdate.IsActive == true)
             {
-                await Delete(updateModel.Id, cancellationToken);
+                await DeactivateRelatedEntities(specializationToUpdate, cancellationToken);
             }
 
             _mapper.Map(updateModel, specializationToUpdate);
