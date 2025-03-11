@@ -2,13 +2,10 @@ import { RootState } from "@app/store";
 import Label from "@shared/ui/containers/Label";
 import Loading from "@shared/ui/controls/Loading";
 import { Form, useFormikContext } from "formik";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import FormFooter from "@widgets/form-footer";
 import Input from "@shared/ui/forms/Input";
 import CreateSpecializationModel from "@features/create-specialization-form/models/createSpecializationModel";
-import { useEffect } from "react";
-import { fetchSpecializationsWithPaginationRequest } from "@shared/store/fetch-specializations-with-pagination";
-import { resetState } from "@features/create-specialization-form/store/create-specialization";
 import Checkbox from "@shared/ui/forms/CheckBox";
 
 interface InnerFormProps {
@@ -18,15 +15,6 @@ interface InnerFormProps {
 const InnerForm = ({ close }: InnerFormProps) => {
   const { values, touched, errors, handleChange, handleBlur } = useFormikContext<CreateSpecializationModel>();
   const { loading, error, success } = useSelector((state: RootState) => state.createSpecialization);
-  const dispatch = useDispatch()
-
-  useEffect(() => {
-    if (success) {
-      dispatch(fetchSpecializationsWithPaginationRequest({}))
-      dispatch(resetState())
-      close()
-    }
-  }, [success, dispatch]);
 
   return (
     <Form className="flex w-[40%] flex-col gap-6 p-6 bg-white shadow-lg rounded-lg max-w-lg m-6">
