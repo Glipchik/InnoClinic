@@ -11,6 +11,11 @@ import { deleteOfficeSliceReducer, watchDeleteOffice } from '@features/offices-l
 import { editOfficeSliceReducer, watchEditOffice } from '@features/edit-office-form/store/edit-office';
 import { fetchOfficeByIdSliceReducer, watchFetchOfficeById } from '@features/edit-office-form/store/fetch-office';
 import { createOfficeSliceReducer, watchCreateOffice } from '@features/create-office-form/store/create-office';
+import { deleteSpecializationSliceReducer, watchDeleteSpecialization } from '@features/specializations-list/store/delete-specialization';
+import { fetchSpecializationsWithPaginationSliceReducer, watchFetchSpecializationsWithPagination } from '@shared/store/fetch-specializations-with-pagination';
+import { editSpecializationSliceReducer, watchEditSpecialization } from '@features/edit-specialization-form/store/edit-specialization';
+import { fetchSpecializationByIdSliceReducer, watchFetchSpecializationById } from '@features/edit-specialization-form/store/fetch-specialization';
+import { createSpecializationSliceReducer, watchCreateSpecialization } from '@features/create-specialization-form/store/create-specialization';
 
 const rootReducer = combineReducers({
   fetchSpecializations: fetchSpecializationsSliceReducer,
@@ -22,7 +27,12 @@ const rootReducer = combineReducers({
   deleteOffice: deleteOfficeSliceReducer,
   editOffice: editOfficeSliceReducer,
   fetchOfficeById: fetchOfficeByIdSliceReducer,
-  createOffice: createOfficeSliceReducer
+  createOffice: createOfficeSliceReducer,
+  deleteSpecialization: deleteSpecializationSliceReducer,
+  fetchSpecializationsWithPagination: fetchSpecializationsWithPaginationSliceReducer,
+  editSpecialization: editSpecializationSliceReducer,
+  fetchSpecializationById: fetchSpecializationByIdSliceReducer,
+  createSpecialization: createSpecializationSliceReducer
 });
 
 const sagaMiddleware = createSagaMiddleware();
@@ -42,6 +52,11 @@ sagaMiddleware.run(watchDeleteOffice);
 sagaMiddleware.run(watchEditOffice);
 sagaMiddleware.run(watchFetchOfficeById);
 sagaMiddleware.run(watchCreateOffice);
+sagaMiddleware.run(watchDeleteSpecialization);
+sagaMiddleware.run(watchFetchSpecializationsWithPagination);
+sagaMiddleware.run(watchEditSpecialization);
+sagaMiddleware.run(watchFetchSpecializationById);
+sagaMiddleware.run(watchCreateSpecialization);
 
 export default store;
 export type RootState = ReturnType<typeof store.getState>;

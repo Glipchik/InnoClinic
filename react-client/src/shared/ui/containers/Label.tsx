@@ -19,7 +19,7 @@ const Label: React.FC<LabelProps> = ({ value, className, type }) => {
   if (!visible) return null;
 
   return (
-    <div className={`flex ${colorClasses[type]} rounded-lg w-full p-3 ${className || ''}`}>
+    <div className={`flex ${colorClasses[type]} rounded-lg w-full p-3 my-3 ${className || ''}`}>
       <span className="flex-grow">{value}</span>
       {type !== 'error' && 
       <button onClick={() => setVisible(false)} className="ml-2 text-gray-500 hover:text-gray-700">

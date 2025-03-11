@@ -13,6 +13,8 @@ import { ForbiddenPage } from "@pages/errors/forbidden"
 import { AppointmentsPage } from "@pages/appointments"
 import { OfficesPage } from "@pages/offices"
 import { EditOfficePage } from "@pages/edit-office"
+import { SpecializationsPage } from "@pages/specializations"
+import { EditSpecializationPage } from "@pages/edit-specialization"
 
 const router = createBrowserRouter([
   {
@@ -61,6 +63,19 @@ const router = createBrowserRouter([
           {
             path: "edit/:id",
             element: <PrivateRoute requiredRole="Receptionist"> <EditOfficePage /> </PrivateRoute>,
+          },
+        ]
+      },
+      {
+        path: "specializations",
+        children: [
+          {
+            index: true,
+            element: <PrivateRoute requiredRole="Receptionist"> <SpecializationsPage /> </PrivateRoute>,
+          },
+          {
+            path: "edit/:id",
+            element: <PrivateRoute requiredRole="Receptionist"> <EditSpecializationPage /> </PrivateRoute>,
           },
         ]
       }

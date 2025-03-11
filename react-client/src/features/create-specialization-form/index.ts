@@ -1,0 +1,1 @@
+export { CreateSpecialization } from '../../widgets/create-specialization'

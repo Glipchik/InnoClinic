@@ -10,7 +10,7 @@ const FormFooter = ({ onCancel }: FormFooterProps) => {
       <Button type="submit" className="w-full bg-blue-600 text-white hover:bg-blue-700">
         Submit
       </Button>
-      <Button onClick={onCancel} className="w-full bg-gray-600 text-white hover:bg-gray-700">
+      <Button onClick={onCancel} type="button" className="w-full bg-gray-600 text-white hover:bg-gray-700">
         Cancel
       </Button>
     </div>
