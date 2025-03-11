@@ -2,13 +2,10 @@ import { RootState } from "@app/store";
 import Label from "@shared/ui/containers/Label";
 import Loading from "@shared/ui/controls/Loading";
 import { Form, useFormikContext } from "formik";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import FormFooter from "@widgets/form-footer";
 import Input from "@shared/ui/forms/Input";
 import { CreateOfficeModel } from "@features/create-office-form/models/createOfficeModel";
-import { fetchOfficesRequest } from "@shared/store/fetch-offices";
-import { useEffect } from "react";
-import { resetState } from "@features/create-office-form/store/create-office";
 import Checkbox from "@shared/ui/forms/CheckBox";
 
 interface InnerFormProps {
@@ -18,15 +15,6 @@ interface InnerFormProps {
 const InnerForm = ({ close }: InnerFormProps) => {
   const { values, touched, errors, handleChange, handleBlur } = useFormikContext<CreateOfficeModel>();
   const { loading, error, success } = useSelector((state: RootState) => state.createOffice);
-  const dispatch = useDispatch()
-
-  useEffect(() => {
-    if (success) {
-      dispatch(fetchOfficesRequest({}))
-      dispatch(resetState())
-      close()
-    }
-  }, [success, dispatch]);
 
   return (
     <Form className="flex w-[40%] flex-col gap-6 p-6 bg-white shadow-lg rounded-lg max-w-lg m-6">
