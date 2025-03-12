@@ -19,11 +19,13 @@ const OfficeCard = ({ item: officeModel, onDelete }: OfficeCardProps) => {
           <p className="text-lg">Is active: {officeModel.isActive ? 'Yes' : 'No'}</p>
         </div>
         <div className="flex justify-between mt-4">
-          <Button>
-            <Link to={`/offices/edit/${officeModel.id}`}> Edit </Link>
-          </Button>
-          <Button onClick={onDelete} className="bg-red-600 hover:bg-red-700">
-            Delete
+            <Link to={`/offices/edit/${officeModel.id}`}>
+              <Button> 
+                Edit
+              </Button>
+            </Link>
+          <Button onClick={onDelete} className="bg-red-600 hover:bg-red-700 disabled:bg-red-800 disabled:text-gray-100" disabled={!officeModel.isActive}>
+            Deactivate
           </Button>
         </div>
       </div>

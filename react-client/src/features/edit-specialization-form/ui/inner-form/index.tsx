@@ -2,19 +2,26 @@ import { RootState } from "@app/store";
 import Label from "@shared/ui/containers/Label";
 import Loading from "@shared/ui/controls/Loading";
 import { Form, useFormikContext } from "formik";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import FormFooter from "@widgets/form-footer";
 import Input from "@shared/ui/forms/Input";
 import EditSpecializationModel from "@features/edit-specialization-form/models/editSpecializationModel";
 import Checkbox from "@shared/ui/forms/CheckBox";
+import { resetState } from "@features/edit-specialization-form/store/fetch-specialization";
 
-const InnerForm = () => {
+interface InnerFormProps {
+  originalValues: EditSpecializationModel
+}
+
+const InnerForm = ({ originalValues }: InnerFormProps) => {
   const { values, touched, errors, handleChange, handleBlur } = useFormikContext<EditSpecializationModel>();
   const { loading, error, success } = useSelector((state: RootState) => state.editSpecialization);
   const navigate = useNavigate()
+  const dispatch = useDispatch();
 
   const handleCancel = () => {
+    dispatch(resetState())
     navigate(-1)
   }
 
@@ -39,7 +46,7 @@ const InnerForm = () => {
         id="is-active-checkbox-input-for-create-specialization-form"
         error={(touched.isActive && errors.isActive) ? errors.isActive : undefined}
       />
-      <FormFooter onCancel={handleCancel} />
+      <FormFooter onCancel={handleCancel} submitDisabled={JSON.stringify(values) == JSON.stringify(originalValues)}/>
       {loading && <Loading label="Editing specialization..." />}
       {error && <Label value={error} type="error"></Label>}
       {success && success === true && <Label value="Specialization was updated successfully" type="success"></Label>}

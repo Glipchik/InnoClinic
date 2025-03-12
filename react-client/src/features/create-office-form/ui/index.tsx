@@ -6,6 +6,7 @@ import { createOfficeRequest, resetState } from "../store/create-office";
 import InnerForm from "./inner-form";
 import { RootState } from "@app/store";
 import { useState, useEffect } from "react";
+import { fetchOfficesRequest } from "@shared/store/fetch-offices";
 
 interface CreateOfficeFormProps {
   close: () => void;
@@ -22,6 +23,7 @@ const CreateOfficeForm = ({ close }: CreateOfficeFormProps) => {
 
   useEffect(() => {
     if (success && isSubmited) {
+      dispatch(fetchOfficesRequest({ pageIndex: 1, pageSize: import.meta.env.VITE_PAGE_SIZE }));
       close()
     }
   }, [success, isSubmited]);

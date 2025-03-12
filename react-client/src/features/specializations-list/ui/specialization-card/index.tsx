@@ -18,11 +18,13 @@ const SpecializationCard = ({ item: specializationModel, onDelete }: Specializat
           <p className="text-lg">Is active: {specializationModel.isActive ? 'Yes' : 'No'}</p>
         </div>
         <div className="flex justify-between mt-4">
+          <Link to={`/specializations/edit/${specializationModel.id}`}> 
             <Button>
-            <Link to={`/specializations/edit/${specializationModel.id}`}> Edit </Link>
-            </Button>
-          <Button onClick={onDelete} className="bg-red-600 hover:bg-red-700">
-            Delete
+              Edit
+            </Button> 
+          </Link>
+          <Button onClick={onDelete} className="bg-red-600 hover:bg-red-700 disabled:bg-red-800 disabled:text-gray-100" disabled={!specializationModel.isActive}>
+            Deactivate
           </Button>
         </div>
       </div>

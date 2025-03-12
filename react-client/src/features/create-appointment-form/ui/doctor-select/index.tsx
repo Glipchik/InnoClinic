@@ -29,7 +29,7 @@ const DoctorSelect = ({ id, name, onChange, value, disabled, className, error, i
     if (isLoadingRequired && specializationId) {
       dispatch(fetchDoctorsRequest({specializationId}))
     }
-  }, [isLoadingRequired])
+  }, [isLoadingRequired, specializationId])
 
   return (
     <Select

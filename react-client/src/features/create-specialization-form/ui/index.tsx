@@ -6,6 +6,7 @@ import { validationSchema } from "../models/validationSchema";
 import InnerForm from "./inner-form";
 import { useEffect, useState } from "react";
 import { RootState } from "@app/store";
+import { fetchSpecializationsWithPaginationRequest } from "@shared/store/fetch-specializations-with-pagination";
 
 interface CreateSpecializationFormProps {
   close: () => void;
@@ -22,6 +23,7 @@ const CreateSpecializationForm = ({ close }: CreateSpecializationFormProps) => {
 
   useEffect(() => {
     if (success && isSubmited) {
+      dispatch(fetchSpecializationsWithPaginationRequest({ pageIndex: 1, pageSize: import.meta.env.VITE_PAGE_SIZE }));
       close()
     }
   }, [success, isSubmited]);
