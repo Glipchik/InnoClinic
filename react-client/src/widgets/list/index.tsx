@@ -97,7 +97,7 @@ export const List = <T,>({
         <Label value={`Deactivating: ${deleteError}`} type="error" />
       )}
       {deleteSuccess && deleteSuccess === true && (
-        <Label value={`Deactivating: Successfully deleted`} type="success" />
+        <Label value={`Deactivating: Successfully deactivated`} type="success" />
       )}
 
       {editLoading && <Loading label={`Editing ${entityName}...`} />}
