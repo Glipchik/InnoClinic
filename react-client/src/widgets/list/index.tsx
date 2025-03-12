@@ -83,8 +83,8 @@ export const List = <T,>({
   }, [deleteSuccess, dispatch, fetchAction, pageIndex]);
 
   const handleConfirm = () => {
-    dispatch(resetDeleteState());
     if (itemIdToDelete) {
+      dispatch(resetDeleteState());
       dispatch(deleteAction({ id: itemIdToDelete }));
     }
     setModalOpen(false);
