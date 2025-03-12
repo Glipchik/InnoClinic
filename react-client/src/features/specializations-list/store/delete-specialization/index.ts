@@ -29,11 +29,16 @@ const deleteSpecializationSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
       state.success = false
+    },
+    resetState: (state) => {
+      state.loading = false;
+      state.error = undefined;
+      state.success = undefined; 
     }
   }
 });
 
-export const { deleteSpecializationRequest } = deleteSpecializationSlice.actions;
+export const { deleteSpecializationRequest, resetState } = deleteSpecializationSlice.actions;
 export const deleteSpecializationSliceReducer = deleteSpecializationSlice.reducer
 
 function* deleteSpecialization(

@@ -23,7 +23,7 @@ const UserInfo = ({ user } : UserInfoProps) => {
         </>
       ) : (
         <>
-          <li className="list-none"> <Link to="/login"> <Button> Sign up </Button> </Link> </li>
+          <li className="list-none"> <Link to="/login"> <Button> Sign in/up </Button> </Link> </li>
         </>
       )}
     </div>
