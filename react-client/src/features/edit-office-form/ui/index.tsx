@@ -2,7 +2,6 @@ import { Formik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { editOfficeRequest, resetState } from "../store/edit-office";
 import { EditOfficeModel } from "../models/editOfficeModel";
-import { validationSchema } from "../models/validationSchema";
 import InnerForm from "./inner-form";
 import { RootState } from "@app/store";
 import { useEffect, useState } from "react";
@@ -10,6 +9,7 @@ import { fetchOfficeByIdRequest, resetState as resetFetchOfficeByIdState } from 
 import Loading from "@shared/ui/controls/Loading";
 import Label from "@shared/ui/containers/Label";
 import { useNavigate } from "react-router-dom";
+import { validationSchema } from "@shared/models/specializations/validationSchema";
 
 interface EditOfficeFormProps {
   officeId: string

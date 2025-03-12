@@ -1,7 +1,7 @@
 import { Formik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { CreateOfficeModel } from "../models/createOfficeModel";
-import { validationSchema } from "../models/validationSchema";
+import { validationSchema } from "../../../shared/models/offices/validationSchema";
 import { createOfficeRequest, resetState } from "../store/create-office";
 import InnerForm from "./inner-form";
 import { RootState } from "@app/store";

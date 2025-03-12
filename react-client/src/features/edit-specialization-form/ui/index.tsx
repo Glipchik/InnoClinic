@@ -1,7 +1,7 @@
 import { Formik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { editSpecializationRequest, resetState } from "../store/edit-specialization";
-import { validationSchema } from "../models/validationSchema";
+import { validationSchema } from "../../../shared/models/specializations/validationSchema";
 import InnerForm from "./inner-form";
 import { RootState } from "@app/store";
 import { useEffect, useState } from "react";
