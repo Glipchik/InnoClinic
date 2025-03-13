@@ -29,11 +29,16 @@ const deleteOfficeSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
       state.success = false
+    },
+    resetState: (state) => {
+      state.loading = false;
+      state.error = undefined;
+      state.success = undefined; 
     }
   }
 });
 
-export const { deleteOfficeRequest } = deleteOfficeSlice.actions;
+export const { deleteOfficeRequest, resetState } = deleteOfficeSlice.actions;
 export const deleteOfficeSliceReducer = deleteOfficeSlice.reducer
 
 function* deleteOffice(

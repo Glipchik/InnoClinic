@@ -1,11 +1,11 @@
 import { Formik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { editSpecializationRequest, resetState } from "../store/edit-specialization";
-import { validationSchema } from "../models/validationSchema";
+import { validationSchema } from "../../../shared/models/specializations/validationSchema";
 import InnerForm from "./inner-form";
 import { RootState } from "@app/store";
 import { useEffect, useState } from "react";
-import { fetchSpecializationByIdRequest } from "../store/fetch-specialization";
+import { fetchSpecializationByIdRequest, resetState as resetFetchSpecializationByIdState } from "../store/fetch-specialization";
 import Loading from "@shared/ui/controls/Loading";
 import Label from "@shared/ui/containers/Label";
 import EditSpecializationModel from "../models/editSpecializationModel";
@@ -29,6 +29,7 @@ const EditSpecializationForm = ({ specializationId }: EditSpecializationFormProp
 
   useEffect(() => {
     if (success && isSubmited) {
+      dispatch(resetFetchSpecializationByIdState())
       navigate(-1)
     }
   }, [success, isSubmited]);
@@ -58,7 +59,7 @@ const EditSpecializationForm = ({ specializationId }: EditSpecializationFormProp
   if (initialValues)
     return (
       <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
-        <InnerForm />
+        <InnerForm originalValues={initialValues} />
       </Formik>
     );
 };

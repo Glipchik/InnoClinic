@@ -145,7 +145,7 @@ namespace Appointments.Application.Services
             {
                 var currentTime = time.AddMinutes(i * _timeSlotSize);
 
-                var currentIndex = doctorSchedule.SingleOrDefault(t => t.Start <= currentTime && t.Finish >= currentTime)
+                var currentIndex = doctorSchedule.FirstOrDefault(t => t.Start <= currentTime && t.Finish >= currentTime)
                     ?? throw new BadRequestException("Not enough available slots for this service");
 
                 if (!currentIndex.IsAvailable)

@@ -2,19 +2,26 @@ import { RootState } from "@app/store";
 import Label from "@shared/ui/containers/Label";
 import Loading from "@shared/ui/controls/Loading";
 import { Form, useFormikContext } from "formik";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import FormFooter from "@widgets/form-footer";
 import Input from "@shared/ui/forms/Input";
 import { EditOfficeModel } from "@features/edit-office-form/models/editOfficeModel";
 import Checkbox from "@shared/ui/forms/CheckBox";
+import { resetState } from "@features/edit-office-form/store/fetch-office";
 
-const InnerForm = () => {
+interface InnerFormProps {
+  originalValues: EditOfficeModel
+}
+
+const InnerForm = ({ originalValues }: InnerFormProps) => {
   const { values, touched, errors, handleChange, handleBlur } = useFormikContext<EditOfficeModel>();
   const { loading, error, success } = useSelector((state: RootState) => state.editOffice);
   const navigate = useNavigate()
+  const dispatch = useDispatch();
 
   const handleCancel = () => {
+    dispatch(resetState())
     navigate(-1)
   }
 
@@ -49,7 +56,7 @@ const InnerForm = () => {
         id="is-active-checkbox-input-for-edit-office-form"
         error={(touched.isActive && errors.isActive) ? errors.isActive : undefined}
       />
-      <FormFooter onCancel={handleCancel} />
+      <FormFooter onCancel={handleCancel} submitDisabled={JSON.stringify(values) == JSON.stringify(originalValues)}/>
       {loading && <Loading label="Editing office..." />}
       {error && <Label value={error} type="error"></Label>}
       {success && success === true && <Label value="Office was updated successfully" type="success"></Label>}

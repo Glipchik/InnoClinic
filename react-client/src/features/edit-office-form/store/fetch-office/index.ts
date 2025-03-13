@@ -29,11 +29,16 @@ const fetchOfficeByIdSlice = createSlice({
     fetchOfficeByIdFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
+    },
+    resetState: (state) => {
+      state.loading = false;
+      state.error = undefined;
+      state.data = undefined;
     }
   }
 });
 
-export const { fetchOfficeByIdRequest } = fetchOfficeByIdSlice.actions;
+export const { fetchOfficeByIdRequest, resetState } = fetchOfficeByIdSlice.actions;
 export const fetchOfficeByIdSliceReducer = fetchOfficeByIdSlice.reducer
 
 type ApiResponse = AxiosResponse<OfficeModel>;

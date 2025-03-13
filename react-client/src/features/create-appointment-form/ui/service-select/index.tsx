@@ -29,7 +29,7 @@ const ServiceSelect = ({ id, name, onChange, value, disabled, className, isLoadi
     if (isLoadingRequired && specializationId) {
       dispatch(fetchServicesRequest({specializationId}))
     }
-  }, [isLoadingRequired])
+  }, [isLoadingRequired, specializationId])
     
   return (
     <Select

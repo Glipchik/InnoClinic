@@ -29,11 +29,16 @@ const fetchSpecializationByIdSlice = createSlice({
     fetchSpecializationByIdFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
+    },
+    resetState: (state) => {
+      state.loading = false;
+      state.error = undefined;
+      state.data = undefined;
     }
   }
 });
 
-export const { fetchSpecializationByIdRequest } = fetchSpecializationByIdSlice.actions;
+export const { fetchSpecializationByIdRequest, resetState } = fetchSpecializationByIdSlice.actions;
 export const fetchSpecializationByIdSliceReducer = fetchSpecializationByIdSlice.reducer
 
 type ApiResponse = AxiosResponse<SpecializationModel>;

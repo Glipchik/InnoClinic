@@ -2,14 +2,14 @@ import { Formik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { editOfficeRequest, resetState } from "../store/edit-office";
 import { EditOfficeModel } from "../models/editOfficeModel";
-import { validationSchema } from "../models/validationSchema";
 import InnerForm from "./inner-form";
 import { RootState } from "@app/store";
 import { useEffect, useState } from "react";
-import { fetchOfficeByIdRequest } from "../store/fetch-office";
+import { fetchOfficeByIdRequest, resetState as resetFetchOfficeByIdState } from "../store/fetch-office";
 import Loading from "@shared/ui/controls/Loading";
 import Label from "@shared/ui/containers/Label";
 import { useNavigate } from "react-router-dom";
+import { validationSchema } from "@shared/models/specializations/validationSchema";
 
 interface EditOfficeFormProps {
   officeId: string
@@ -29,6 +29,7 @@ const EditOfficeForm = ({ officeId }: EditOfficeFormProps) => {
 
   useEffect(() => {
     if (success && isSubmited) {
+      dispatch(resetFetchOfficeByIdState())
       navigate(-1)
     }
   }, [success, isSubmited]);
@@ -59,7 +60,7 @@ const EditOfficeForm = ({ officeId }: EditOfficeFormProps) => {
   if (initialValues)
     return (
       <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
-        <InnerForm />
+        <InnerForm originalValues={initialValues} />
       </Formik>
     );
 };
