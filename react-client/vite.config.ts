@@ -1,7 +1,7 @@
-import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import path from 'path';
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   server: {
@@ -19,5 +19,10 @@ export default defineConfig({
       "@widgets": path.resolve(__dirname, "./src/widgets")
     }
   },
-  plugins: [react(), tailwindcss()]
+  plugins: [react(), tailwindcss()],
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: "./src/tests/setup.ts"
+  }
 });

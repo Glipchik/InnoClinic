@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 
 const Header = () => {
   const userManager = useContext(UserManagerContext);
-  const [user, setUser] = useState<User | null | undefined>();
+  const [user, setUser] = useState<User | null>(null);
   useEffect(() => {
     if (!userManager) return;
 
