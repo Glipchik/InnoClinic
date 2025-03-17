@@ -23,8 +23,13 @@ const CreateOfficeForm = ({ close }: CreateOfficeFormProps) => {
 
   useEffect(() => {
     if (success && isSubmited) {
-      dispatch(fetchOfficesRequest({ pageIndex: 1, pageSize: import.meta.env.VITE_PAGE_SIZE }));
-      close()
+      dispatch(
+        fetchOfficesRequest({
+          pageIndex: 1,
+          pageSize: import.meta.env.VITE_PAGE_SIZE,
+        })
+      );
+      close();
     }
   }, [success, isSubmited]);
 
@@ -36,13 +41,19 @@ const CreateOfficeForm = ({ close }: CreateOfficeFormProps) => {
   const initialValues: CreateOfficeModel = {
     address: "",
     isActive: true,
-    registryPhoneNumber: ""
-  }
+    registryPhoneNumber: "",
+  };
 
   return (
-    <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
-      <InnerForm close={close} />
-    </Formik>
+    <div data-testid="create-office-form">
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={onSubmit}
+      >
+        <InnerForm close={close} />
+      </Formik>
+    </div>
   );
 };
 

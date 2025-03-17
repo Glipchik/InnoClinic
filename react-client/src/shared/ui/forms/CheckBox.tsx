@@ -1,5 +1,5 @@
-import React, { ChangeEvent } from 'react';
-import Label from '../containers/Label';
+import React, { ChangeEvent } from "react";
+import Label from "../containers/Label";
 
 interface CheckboxProps {
   checked: boolean;
@@ -9,10 +9,20 @@ interface CheckboxProps {
   onBlur: (e: ChangeEvent<HTMLInputElement>) => void;
   id?: string;
   error?: string;
+  data_testid?: string;
 }
 
-const Checkbox: React.FC<CheckboxProps> = ({ checked, label, name, onChange, onBlur, id, error }) => (
-  <div className="form-group flex flex-col gap-y-2">
+const Checkbox: React.FC<CheckboxProps> = ({
+  checked,
+  label,
+  name,
+  onChange,
+  onBlur,
+  id,
+  error,
+  data_testid,
+}) => (
+  <div className="form-group flex flex-col gap-y-2" data-testid={data_testid}>
     <label className="flex items-center gap-2">
       <input
         id={id}

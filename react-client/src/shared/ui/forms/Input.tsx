@@ -1,5 +1,5 @@
-import React, { ChangeEvent } from 'react';
-import Label from '../containers/Label';
+import React, { ChangeEvent } from "react";
+import Label from "../containers/Label";
 
 interface InputProps {
   value: string;
@@ -10,12 +10,28 @@ interface InputProps {
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onBlur?: (e: ChangeEvent<HTMLInputElement>) => void;
   id?: string;
-  error?: string
+  error?: string;
+  data_testid?: string;
 }
 
-const Input: React.FC<InputProps> = ({ value, label, name, placeholder, type, onChange, id, error, onBlur }) => (
-  <div className="form-group flex flex-col gap-y-2">
-    {label && <label htmlFor="input-field" className="text-gray-700 font-medium">{label}</label>}
+const Input: React.FC<InputProps> = ({
+  value,
+  label,
+  name,
+  placeholder,
+  type,
+  onChange,
+  id,
+  error,
+  onBlur,
+  data_testid,
+}) => (
+  <div className="form-group flex flex-col gap-y-2" data-testid={data_testid}>
+    {label && (
+      <label htmlFor="input-field" className="text-gray-700 font-medium">
+        {label}
+      </label>
+    )}
     <input
       id={id}
       type={type}

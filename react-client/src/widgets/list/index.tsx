@@ -91,34 +91,85 @@ export const List = <T,>({
   };
 
   return (
-    <div className="flex flex-col my-auto">
-      {deleteLoading && <Loading label={`Deactivating ${entityName}...`} />}
+    <div className="flex flex-col my-auto" data-testid="list">
+      {deleteLoading && (
+        <Loading
+          data_testid="deactivateLoading"
+          label={`Deactivating ${entityName}...`}
+        />
+      )}
       {deleteError && (
-        <Label value={`Deactivating: ${deleteError}`} type="error" />
+        <Label
+          value={`Deactivating: ${deleteError}`}
+          data_testid="deleteError"
+          type="error"
+        />
       )}
       {deleteSuccess && deleteSuccess === true && (
         <Label
+          data_testid="deleteSuccess"
           value={`Deactivating: Successfully deactivated`}
           type="success"
         />
       )}
 
-      {editLoading && <Loading label={`Editing ${entityName}...`} />}
-      {editError && <Label value={`Editing: ${editError}`} type="error" />}
+      {editLoading && (
+        <Loading data_testid="editLoading" label={`Editing ${entityName}...`} />
+      )}
+      {editError && (
+        <Label
+          data_testid="editError"
+          value={`Editing: ${editError}`}
+          type="error"
+        />
+      )}
       {editSuccess && editSuccess === true && (
-        <Label value={`Editing: Successfully edited`} type="success" />
+        <Label
+          data_testid="editSuccess"
+          value={`Editing: Successfully edited`}
+          type="success"
+        />
       )}
 
-      {createLoading && <Loading label={`Creating ${entityName}...`} />}
-      {createError && <Label value={`Creating: ${createError}`} type="error" />}
+      {createLoading && (
+        <Loading
+          data_testid="createLoading"
+          label={`Creating ${entityName}...`}
+        />
+      )}
+      {createError && (
+        <Label
+          data_testid="createError"
+          value={`Creating: ${createError}`}
+          type="error"
+        />
+      )}
       {createSuccess && createSuccess === true && (
-        <Label value={`Creating: Successfully created`} type="success" />
+        <Label
+          data_testid="createSuccess"
+          value={`Creating: Successfully created`}
+          type="success"
+        />
       )}
 
-      {loading && <Loading label={`Fetching ${entityName}...`} />}
-      {error && <Label value={`Fetching: ${error}`} type="error" />}
+      {loading && (
+        <Loading
+          data_testid="fetchLoading"
+          label={`Fetching ${entityName}...`}
+        />
+      )}
+      {error && (
+        <Label
+          data_testid="fetchError"
+          value={`Fetching: ${error}`}
+          type="error"
+        />
+      )}
       {data && (
-        <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <ul
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          data-testid="fetchData"
+        >
           {data.items.map((item) => (
             <CardComponent
               key={(item as { id: string }).id}
