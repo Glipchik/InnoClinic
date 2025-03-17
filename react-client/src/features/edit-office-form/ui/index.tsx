@@ -5,22 +5,29 @@ import { EditOfficeModel } from "../models/editOfficeModel";
 import InnerForm from "./inner-form";
 import { RootState } from "@app/store";
 import { useEffect, useState } from "react";
-import { fetchOfficeByIdRequest, resetState as resetFetchOfficeByIdState } from "../store/fetch-office";
+import {
+  fetchOfficeByIdRequest,
+  resetState as resetFetchOfficeByIdState,
+} from "../store/fetch-office";
 import Loading from "@shared/ui/controls/Loading";
 import Label from "@shared/ui/containers/Label";
 import { useNavigate } from "react-router-dom";
 import { validationSchema } from "@shared/models/specializations/validationSchema";
 
 interface EditOfficeFormProps {
-  officeId: string
+  officeId: string;
 }
 
 const EditOfficeForm = ({ officeId }: EditOfficeFormProps) => {
   const dispatch = useDispatch();
-  const { loading, error, data } = useSelector((state: RootState) => state.fetchOfficeById);
+  const { loading, error, data } = useSelector(
+    (state: RootState) => state.fetchOfficeById
+  );
   const { success } = useSelector((state: RootState) => state.editOffice);
   const navigate = useNavigate();
-  const [initialValues, setInitialValues] = useState<EditOfficeModel | null>(null);
+  const [initialValues, setInitialValues] = useState<EditOfficeModel | null>(
+    null
+  );
   const [isSubmited, setIsSubmited] = useState(false);
 
   useEffect(() => {
@@ -29,13 +36,13 @@ const EditOfficeForm = ({ officeId }: EditOfficeFormProps) => {
 
   useEffect(() => {
     if (success && isSubmited) {
-      dispatch(resetFetchOfficeByIdState())
-      navigate(-1)
+      dispatch(resetFetchOfficeByIdState());
+      navigate(-1);
     }
   }, [success, isSubmited]);
 
   useEffect(() => {
-    dispatch(fetchOfficeByIdRequest({officeId}));
+    dispatch(fetchOfficeByIdRequest({ officeId }));
   }, [officeId]);
 
   useEffect(() => {
@@ -44,7 +51,7 @@ const EditOfficeForm = ({ officeId }: EditOfficeFormProps) => {
         id: data.id,
         address: data.address,
         registryPhoneNumber: data.registryPhoneNumber,
-        isActive: data.isActive
+        isActive: data.isActive,
       });
     }
   }, [data]);
@@ -54,14 +61,20 @@ const EditOfficeForm = ({ officeId }: EditOfficeFormProps) => {
     setIsSubmited(true);
   };
 
-  if (loading) return (<Loading label="Fetching office"></Loading>)
-  if (error) return (<Label type="error" value="Error fetching office"></Label>)
+  if (loading) return <Loading label="Fetching office"></Loading>;
+  if (error) return <Label type="error" value="Error fetching office"></Label>;
 
   if (initialValues)
     return (
-      <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
-        <InnerForm originalValues={initialValues} />
-      </Formik>
+      <div data-testid="edit-office-form">
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={onSubmit}
+        >
+          <InnerForm originalValues={initialValues} />
+        </Formik>
+      </div>
     );
 };
 
