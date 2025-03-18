@@ -9,7 +9,7 @@ interface OfficeCardProps {
 
 const OfficeCard = ({ item: officeModel, onDelete }: OfficeCardProps) => {
   return (
-    <li data-testid="office-card" key={officeModel.id} className="flex flex-col p-6 bg-white rounded-lg shadow-lg hover:shadow-2xl transition-shadow">
+    <li data-testid="office-card" id="office-card" key={officeModel.id} className="flex flex-col p-6 bg-white rounded-lg shadow-lg hover:shadow-2xl transition-shadow">
       <div className="flex flex-col space-y-3">
         <div>
           <h3 className="text-xl font-semibold">Address: {officeModel.address}</h3>

@@ -54,7 +54,7 @@ const InnerForm = ({ close }: InnerFormProps) => {
         name="isActive"
         onChange={handleChange}
         onBlur={handleBlur}
-        id="is-active-checkbox-input-for-edit-office-form"
+        id="is-active-checkbox-input-for-create-office-form"
         error={
           touched.isActive && errors.isActive ? errors.isActive : undefined
         }

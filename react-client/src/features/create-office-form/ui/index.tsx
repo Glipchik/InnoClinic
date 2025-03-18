@@ -45,7 +45,7 @@ const CreateOfficeForm = ({ close }: CreateOfficeFormProps) => {
   };
 
   return (
-    <div data-testid="create-office-form">
+    <div data-testid="create-office-form" className="w-full flex justify-center">
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}

@@ -12,7 +12,7 @@ import {
 import Loading from "@shared/ui/controls/Loading";
 import Label from "@shared/ui/containers/Label";
 import { useNavigate } from "react-router-dom";
-import { validationSchema } from "@shared/models/specializations/validationSchema";
+import { validationSchema } from "@shared/models/offices/validationSchema";
 
 interface EditOfficeFormProps {
   officeId: string;
