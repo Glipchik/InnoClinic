@@ -26,13 +26,14 @@ const Input: React.FC<InputProps> = ({
   onBlur,
   data_testid,
 }) => (
-  <div className="form-group flex flex-col gap-y-2" data-testid={data_testid}>
+  <div className="form-group flex flex-col gap-y-2">
     {label && (
       <label htmlFor="input-field" className="text-gray-700 font-medium">
         {label}
       </label>
     )}
     <input
+      data-testid={data_testid}
       id={id}
       type={type}
       value={value}
