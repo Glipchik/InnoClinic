@@ -22,9 +22,10 @@ const Checkbox: React.FC<CheckboxProps> = ({
   error,
   data_testid,
 }) => (
-  <div className="form-group flex flex-col gap-y-2" data-testid={data_testid}>
+  <div className="form-group flex flex-col gap-y-2">
     <label className="flex items-center gap-2">
       <input
+        data-testid={data_testid}
         id={id}
         type="checkbox"
         name={name}
