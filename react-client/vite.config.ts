@@ -1,7 +1,8 @@
-import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
-import path from 'path';
+import path from "path";
+import { defineConfig } from "vite";
+import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
   server: {
@@ -16,8 +17,8 @@ export default defineConfig({
       "@entities": path.resolve(__dirname, "./src/entities"),
       "@app": path.resolve(__dirname, "./src/app"),
       "@models": path.resolve(__dirname, "./src/models"),
-      "@widgets": path.resolve(__dirname, "./src/widgets")
-    }
+      "@widgets": path.resolve(__dirname, "./src/widgets"),
+    },
   },
-  plugins: [react(), tailwindcss()]
+  plugins: [react(), tailwindcss(), tsconfigPaths()],
 });
