@@ -22,24 +22,24 @@ describe("Pagination", () => {
     const { queryByTestId } = renderPagination(false, false, 1, 1);
 
     await waitFor(() => {
-      expect(queryByTestId("paginationText")).toBeInTheDocument();
-      expect(queryByTestId("hasNextPageButton")).toBeInTheDocument();
-      expect(queryByTestId("hasPreviousPageButton")).toBeInTheDocument();
+      expect(queryByTestId("pagination-text")).toBeInTheDocument();
+      expect(queryByTestId("has-next-page-button")).toBeInTheDocument();
+      expect(queryByTestId("has-previous-page-button")).toBeInTheDocument();
     });
   });
 
   it("pageIndex is correct", () => {
     const { getByTestId } = renderPagination(true, true, 2, 3);
 
-    expect(getByTestId("paginationText")).toHaveTextContent("2 / 3");
+    expect(getByTestId("pagination-text")).toHaveTextContent("2 / 3");
   });
 
   it("buttons are enabled when there are next and previous pages", async () => {
     const { getByTestId } = renderPagination(true, true, 2, 3);
 
     await waitFor(() => {
-      expect(getByTestId("hasNextPageButton")).toBeEnabled();
-      expect(getByTestId("hasPreviousPageButton")).toBeEnabled();
+      expect(getByTestId("has-next-page-button")).toBeEnabled();
+      expect(getByTestId("has-previous-page-button")).toBeEnabled();
     });
   });
 
@@ -47,8 +47,8 @@ describe("Pagination", () => {
     const { getByTestId } = renderPagination(false, false, 2, 3);
 
     await waitFor(() => {
-      expect(getByTestId("hasNextPageButton")).toBeDisabled();
-      expect(getByTestId("hasPreviousPageButton")).toBeDisabled();
+      expect(getByTestId("has-next-page-button")).toBeDisabled();
+      expect(getByTestId("has-previous-page-button")).toBeDisabled();
     });
   });
 });

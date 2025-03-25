@@ -21,18 +21,18 @@ export function Pagination({
       data-testid="pagination"
     >
       <Button
-        data_testid="hasPreviousPageButton"
+        data_testid="has-previous-page-button"
         onClick={() => onPageChange(pageIndex - 1)}
         disabled={!hasPreviousPage}
       >
         Back
       </Button>
       <span
-        data-testid="paginationText"
+        data-testid="pagination-text"
         className="px-4 py-2"
       >{`${pageIndex} / ${totalPages}`}</span>
       <Button
-        data_testid="hasNextPageButton"
+        data_testid="has-next-page-button"
         onClick={() => onPageChange(pageIndex + 1)}
         disabled={!hasNextPage}
       >

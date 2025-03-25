@@ -44,7 +44,7 @@ describe("OfficesList", () => {
     );
 
     await waitFor(() => {
-      expect(queryByTestId("fetchLoading")).toBeInTheDocument();
+      expect(queryByTestId("fetch-loading")).toBeInTheDocument();
       expectNoOfficeCard(queryByTestId);
     });
   });
@@ -58,7 +58,7 @@ describe("OfficesList", () => {
     );
 
     await waitFor(() => {
-      expect(queryByTestId("fetchError")).toBeInTheDocument();
+      expect(queryByTestId("fetch-error")).toBeInTheDocument();
       expectNoOfficeCard(queryByTestId);
     });
   });
