@@ -8,31 +8,31 @@ interface PaginationProps {
   onPageChange: (newPage: number) => void;
 }
 
-export function Pagination({
+export const Pagination = ({
   pageIndex,
   totalPages,
   hasPreviousPage,
   hasNextPage,
   onPageChange,
-}: PaginationProps) {
+}: PaginationProps) => {
   return (
     <div
       className="mt-4 flex justify-center space-x-4"
       data-testid="pagination"
     >
       <Button
-        data_testid="hasPreviousPageButton"
+        data_testid="has-previous-page-button"
         onClick={() => onPageChange(pageIndex - 1)}
         disabled={!hasPreviousPage}
       >
         Back
       </Button>
       <span
-        data-testid="paginationText"
+        data-testid="pagination-text"
         className="px-4 py-2"
       >{`${pageIndex} / ${totalPages}`}</span>
       <Button
-        data_testid="hasNextPageButton"
+        data_testid="has-next-page-button"
         onClick={() => onPageChange(pageIndex + 1)}
         disabled={!hasNextPage}
       >
@@ -40,4 +40,4 @@ export function Pagination({
       </Button>
     </div>
   );
-}
+};

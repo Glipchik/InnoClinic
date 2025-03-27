@@ -44,7 +44,7 @@ describe("OfficesList", () => {
     );
 
     await waitFor(() => {
-      expect(queryByTestId("fetchLoading")).toBeInTheDocument();
+      expect(queryByTestId("fetch-loading")).toBeInTheDocument();
       expectNoOfficeCard(queryByTestId);
     });
   });
@@ -58,19 +58,19 @@ describe("OfficesList", () => {
     );
 
     await waitFor(() => {
-      expect(queryByTestId("fetchError")).toBeInTheDocument();
+      expect(queryByTestId("fetch-error")).toBeInTheDocument();
       expectNoOfficeCard(queryByTestId);
     });
   });
 });
 
-function expectNoOfficeCard(
+const expectNoOfficeCard = (
   queryByTestId: (
     id: Matcher,
     options?: MatcherOptions | undefined
   ) => HTMLElement | null
-) {
+) => {
   expect(queryByTestId("office-card")).not.toBeInTheDocument();
   expect(queryByTestId("deactivate-button")).not.toBeInTheDocument();
   expect(queryByTestId("pagination")).not.toBeInTheDocument();
-}
+};

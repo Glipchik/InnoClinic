@@ -4,7 +4,10 @@ import { OfficesList } from "@features/offices-list";
 const OfficesPage = () => {
   return (
     <>
-      <h1 className="text-4xl font-semibold m-4">
+      <h1
+        className="text-4xl font-semibold m-4"
+        data-testid="offices-page-header"
+      >
         Offices
       </h1>
       <CreateOffice />
@@ -12,7 +15,7 @@ const OfficesPage = () => {
         <OfficesList />
       </div>
     </>
-  )
-}
+  );
+};
 
 export { OfficesPage };

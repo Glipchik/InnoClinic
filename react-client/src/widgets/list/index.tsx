@@ -48,10 +48,10 @@ export const List = <T,>({
 }: PaginatedListProps<T>) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [itemIdToDelete, setItemIdToDelete] = useState<string | null>(null);
-  const [pageIndex, setPageIndex] = useState<number>(1);
+  const { loading, error, data } = useSelector(fetchStateSelector);
+  const [pageIndex, setPageIndex] = useState<number>(data ? data.pageIndex : 1);
 
   const dispatch = useDispatch();
-  const { loading, error, data } = useSelector(fetchStateSelector);
   const {
     loading: deleteLoading,
     error: deleteError,
@@ -154,13 +154,13 @@ export const List = <T,>({
 
       {loading && (
         <Loading
-          data_testid="fetchLoading"
+          data_testid="fetch-loading"
           label={`Fetching ${entityName}...`}
         />
       )}
       {error && (
         <Label
-          data_testid="fetchError"
+          data_testid="fetch-error"
           value={`Fetching: ${error}`}
           type="error"
         />
