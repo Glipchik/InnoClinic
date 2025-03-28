@@ -1,6 +1,6 @@
 import { render, waitFor } from "@testing-library/react";
 import { Pagination } from "@widgets/pagination";
-
+// s
 const renderPagination = (
   hasNextPage: boolean,
   hasPreviousPage: boolean,
