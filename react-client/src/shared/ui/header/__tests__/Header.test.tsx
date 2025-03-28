@@ -87,4 +87,9 @@ describe("Header", () => {
       expect(queryByTestId("logout-page")).toBeInTheDocument();
     });
   });
+
+  it("matches snapshot", () => {
+    const { asFragment } = renderHeader(mockUserManager);
+    expect(asFragment()).toMatchSnapshot();
+  });
 });

@@ -40,10 +40,7 @@ describe("OfficeCard", () => {
   });
 
   it("disables deactivate button when office is not active", async () => {
-    const inactiveOffice: OfficeModel = {
-      ...mockOfficeModel,
-      isActive: false,
-    };
+    const inactiveOffice: OfficeModel = { ...mockOfficeModel, isActive: false };
 
     const { getByTestId } = renderOfficeCard(inactiveOffice, mockOnDelete);
 
@@ -58,7 +55,15 @@ describe("OfficeCard", () => {
 
     await waitFor(async () => {
       const editButton = getByTestId("edit-button");
-      expect(editButton.closest("a")).toHaveAttribute("href", "/offices/edit/1");
+      expect(editButton.closest("a")).toHaveAttribute(
+        "href",
+        "/offices/edit/1"
+      );
     });
+  });
+
+  it("matches snapshot", () => {
+    const { asFragment } = renderOfficeCard(mockOfficeModel, mockOnDelete);
+    expect(asFragment()).toMatchSnapshot();
   });
 });

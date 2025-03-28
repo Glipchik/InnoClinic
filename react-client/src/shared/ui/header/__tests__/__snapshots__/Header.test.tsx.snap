@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Header matches snapshot 1`] = `
+<DocumentFragment>
+  <header
+    class="w-full inline-flex py-7 px-3 items-center bg-gray-100 text-black"
+  >
+    <div
+      class="w-[25%] h-full"
+      data-testid="logo"
+    >
+      <h1
+        class="text-5xl font-bold"
+      >
+        InnoClinic
+      </h1>
+    </div>
+    <div
+      class="w-[45%] h-full"
+    />
+    <div
+      class="w-[30%] h-full"
+    >
+      <div
+        class="flex w-full h-full items items-center space-x-3 justify-end"
+      >
+        <li
+          class="list-none"
+        >
+          <a
+            data-discover="true"
+            href="/login"
+          >
+            <button
+              class="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-blue-900 disabled:text-gray-400 disabled:hover:cursor-not-allowed hover:bg-blue-600 focus:outline-none cursor-pointer undefined"
+              data-testid="sign-in-up-button"
+            >
+               Sign in/up 
+            </button>
+          </a>
+        </li>
+      </div>
+    </div>
+  </header>
+</DocumentFragment>
+`;
