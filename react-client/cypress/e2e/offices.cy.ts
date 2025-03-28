@@ -1,9 +1,9 @@
 import uuidv4 from "../utils/uuidv4";
 
 const login = () => {
-  cy.visit("http://localhost:3000");
+  cy.visit(Cypress.env("BASE_URL"));
   cy.get('[data-testid="sign-in-up-button"]', { withinSubject: null }).click();
-  cy.origin("https://localhost:5001", () => {
+  cy.origin(Cypress.env("AUTH_SERVER_BASE_URL"), () => {
     cy.get("#Input_Email", { timeout: 2000 }).type("westcrime7777@gmail.com");
     cy.get("#Input_Password", { timeout: 2000 }).type("123456");
     cy.contains("button", "Login").click();
@@ -11,7 +11,7 @@ const login = () => {
   cy.contains("Offices", { timeout: 2000 }).click();
 };
 
-const createOffice = (address) => {
+const createOffice = (address: string) => {
   cy.get('[data-testid="create-button"]').click();
   cy.get("#address-input-for-create-office-form", { timeout: 2000 }).type(
     address
@@ -26,7 +26,7 @@ const createOffice = (address) => {
   cy.contains("span", "Creating: Successfully created").should("exist");
 };
 
-const processPage = (address, action) => {
+const processPage = (address: string, action) => {
   cy.get('[data-testid="office-card"]').then(($cards) => {
     let isOfficeFound = false;
 
@@ -39,7 +39,7 @@ const processPage = (address, action) => {
     });
 
     if (!isOfficeFound) {
-      cy.get('[data-testid="hasNextPageButton"]').click();
+      cy.get('[data-testid="has-next-page-button"]').click();
       cy.wait(200);
       processPage(address, action);
     }
