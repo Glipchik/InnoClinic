@@ -191,26 +191,26 @@ describe("OfficesPage", () => {
   });
 });
 
-async function openCreateOfficeForm(
+const openCreateOfficeForm = async (
   getByTestId: (
     id: Matcher,
     options?: MatcherOptions | undefined
   ) => HTMLElement
-) {
+) => {
   const officeCard = getByTestId("office-card");
   expect(officeCard).toBeInTheDocument();
   const createButton = getByTestId("create-button");
   await userEvent.click(createButton);
-}
+};
 
-async function clickDeactivateButton(
+const clickDeactivateButton = async (
   getByTestId: (
     id: Matcher,
     options?: MatcherOptions | undefined
   ) => HTMLElement
-) {
+) => {
   const officeCard = getByTestId("office-card");
   expect(officeCard).toBeInTheDocument();
   const deactivateButton = getByTestId("deactivate-button");
   await userEvent.click(deactivateButton);
-}
+};

@@ -8,13 +8,13 @@ interface PaginationProps {
   onPageChange: (newPage: number) => void;
 }
 
-export function Pagination({
+export const Pagination = ({
   pageIndex,
   totalPages,
   hasPreviousPage,
   hasNextPage,
   onPageChange,
-}: PaginationProps) {
+}: PaginationProps) => {
   return (
     <div
       className="mt-4 flex justify-center space-x-4"
@@ -40,4 +40,4 @@ export function Pagination({
       </Button>
     </div>
   );
-}
+};

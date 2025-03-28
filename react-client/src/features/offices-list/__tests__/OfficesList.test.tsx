@@ -64,13 +64,13 @@ describe("OfficesList", () => {
   });
 });
 
-function expectNoOfficeCard(
+const expectNoOfficeCard = (
   queryByTestId: (
     id: Matcher,
     options?: MatcherOptions | undefined
   ) => HTMLElement | null
-) {
+) => {
   expect(queryByTestId("office-card")).not.toBeInTheDocument();
   expect(queryByTestId("deactivate-button")).not.toBeInTheDocument();
   expect(queryByTestId("pagination")).not.toBeInTheDocument();
-}
+};
