@@ -51,4 +51,9 @@ describe("Pagination", () => {
       expect(getByTestId("has-previous-page-button")).toBeDisabled();
     });
   });
+
+  it("matches snapshot", () => {
+    const { asFragment } = renderPagination(true, true, 2, 3);
+    expect(asFragment()).toMatchSnapshot();
+  });
 });

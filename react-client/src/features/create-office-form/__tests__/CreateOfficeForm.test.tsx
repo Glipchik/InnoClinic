@@ -20,9 +20,7 @@ const renderCreateOfficeForm = (store: Store) =>
 describe("CreateOfficeForm", () => {
   it("renders", async () => {
     const { getByTestId } = renderCreateOfficeForm(
-      createMockStore({
-        loading: false,
-      })
+      createMockStore({ loading: false })
     );
 
     await waitFor(() => {
@@ -47,9 +45,7 @@ describe("CreateOfficeForm", () => {
 
   it("calls onClose when close button is clicked", async () => {
     const { getByTestId } = renderCreateOfficeForm(
-      createMockStore({
-        loading: false,
-      })
+      createMockStore({ loading: false })
     );
 
     await waitFor(async () => {
@@ -87,10 +83,7 @@ describe("CreateOfficeForm", () => {
   });
 
   it("displays validation errors when form is submitted with invalid data", async () => {
-    const store = createMockStore({
-      loading: false,
-      success: false,
-    });
+    const store = createMockStore({ loading: false, success: false });
     const { getByTestId, getByText } = renderCreateOfficeForm(store);
 
     const submitButton = getByTestId("submit-button");
@@ -100,5 +93,10 @@ describe("CreateOfficeForm", () => {
       expect(getByText("Address is required")).toBeInTheDocument();
       expect(getByText("Phone number is required")).toBeInTheDocument();
     });
+  });
+
+  it("matches snapshot", () => {
+    const { asFragment } = renderCreateOfficeForm(store);
+    expect(asFragment()).toMatchSnapshot();
   });
 });

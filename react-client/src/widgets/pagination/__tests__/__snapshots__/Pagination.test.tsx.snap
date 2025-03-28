@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Pagination matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="mt-4 flex justify-center space-x-4"
+    data-testid="pagination"
+  >
+    <button
+      class="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-blue-900 disabled:text-gray-400 disabled:hover:cursor-not-allowed hover:bg-blue-600 focus:outline-none cursor-pointer undefined"
+      data-testid="has-previous-page-button"
+    >
+      Back
+    </button>
+    <span
+      class="px-4 py-2"
+      data-testid="pagination-text"
+    >
+      2 / 3
+    </span>
+    <button
+      class="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-blue-900 disabled:text-gray-400 disabled:hover:cursor-not-allowed hover:bg-blue-600 focus:outline-none cursor-pointer undefined"
+      data-testid="has-next-page-button"
+    >
+      Next
+    </button>
+  </div>
+</DocumentFragment>
+`;
