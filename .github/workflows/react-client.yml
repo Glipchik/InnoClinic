@@ -49,7 +49,7 @@ jobs:
         working-directory: ./react-client
 
       - name: Start server
-        run: npm run start &
+        run: npm run dev &
         working-directory: ./react-client
         env:
           NODE_ENV: test
